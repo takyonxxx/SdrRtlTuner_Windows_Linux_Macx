@@ -13,7 +13,9 @@
  sudo apt install portaudio19-dev</br>
  
  Install Rtl-sdr Tools</br>
- 
+ sudo apt  install cmake</br>
+ sudo apt  install git</br>
+
  git clone git://git.osmocom.org/rtl-sdr.git</br>
  cd rtl-sdr/</br>
  mkdir build</br>
