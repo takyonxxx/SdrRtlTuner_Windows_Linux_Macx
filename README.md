@@ -1,5 +1,5 @@
 # SdrRtlTuner_Windows_Linux_Macx
- SdrRtlTuner for Windows Linux Macx
+ <b>SdrRtlTuner for Windows Linux Macx</b>
  
  Sdr library took from https://github.com/hmatuschek/libsdr
  
@@ -7,12 +7,12 @@
  GNU radio not used because of windows compile problems. Windows libraries located in project folder libs.</br>
  Project should compile with MinGw64 in windows10.</br>
  
- Used libraries are:</br>
+ <b>Used libraries are:</b></br>
  sudo apt install libfftw3-dev </br>
  sudo apt install libportaudio2 </br>
  sudo apt install portaudio19-dev</br>
  
- Install Rtl-sdr Tools</br>
+ <b>Install Rtl-sdr Tools</b></br>
  sudo apt  install cmake</br>
  sudo apt  install git</br>
 
