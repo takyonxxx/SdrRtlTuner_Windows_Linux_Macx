@@ -4,20 +4,20 @@
  Sdr library took from https://github.com/hmatuschek/libsdr
  
  A simple software defined radio (SDR) application.
- GNU radio not used because of windows compile problems.
+ GNU radio not used because of windows compile problems.</br>
  
- Used libraries are:
- sudo apt install libfftw3-dev 
- sudo apt install libportaudio2 
- sudo apt install portaudio19-dev
+ Used libraries are:</br>
+ sudo apt install libfftw3-dev </br>
+ sudo apt install libportaudio2 </br>
+ sudo apt install portaudio19-dev</br>
  
- Install Rtl-sdr Tools
+ Install Rtl-sdr Tools</br>
  
- git clone git://git.osmocom.org/rtl-sdr.git
- cd rtl-sdr/
- mkdir build
- cd build
- cmake ../
- make
- sudo make install
- sudo ldconfig
+ git clone git://git.osmocom.org/rtl-sdr.git</br>
+ cd rtl-sdr/</br>
+ mkdir build</br>
+ cd build</br>
+ cmake ../</br>
+ make</br>
+ sudo make install</br>
+ sudo ldconfig</br>
