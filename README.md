@@ -4,7 +4,7 @@
  Sdr library took from https://github.com/hmatuschek/libsdr
  
  A simple software defined radio (SDR) application.
- GNU radio not used because of windows compile problems.</br>
+ GNU radio not used because of windows compile problems. Windows libraries located in project folder libs. Project should compile with MinGw64 in windows10</br>
  
  Used libraries are:</br>
  sudo apt install libfftw3-dev </br>
