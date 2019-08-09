@@ -25,3 +25,7 @@
  make</br>
  sudo make install</br>
  sudo ldconfig</br>
+
+<p align="center"><a href="https://github.com/takyonxxx/SdrRtlTuner_Windows_Linux_Macx/blob/master/rtl-sdr.jpg">
+		<img src="https://github.com/takyonxxx/SdrRtlTuner_Windows_Linux_Macx/blob/master/rtl-sdr.jpg" 
+		name="Image3" align="bottom" width="800" height="520" border="1"></a></p>
