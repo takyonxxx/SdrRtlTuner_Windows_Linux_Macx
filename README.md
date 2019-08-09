@@ -8,6 +8,7 @@
  Project should compile with MinGw64 in windows10.</br>
  
  <b>Used libraries are:</b></br>
+ sudo apt install libusb-1.0-0-dev
  sudo apt install libfftw3-dev </br>
  sudo apt install libportaudio2 </br>
  sudo apt install portaudio19-dev</br>
