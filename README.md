@@ -5,9 +5,12 @@
  
  A simple software defined radio (SDR) application.
  GNU radio not used because of windows compile problems.</br>
- Windows libraries located in project folder libs.</br>
- For windows : Project should compile with MinGw64 in windows10.</br>
  
+ <b>For windows :</b>
+ Project should compile with MinGw64 in windows10.</br>
+ Windows libraries located in project folder libs.</br>
+ 
+ <b>For linux, macx(use sudo port install, first do sudo port -v selfupdate)  : </b>
  <b>Used libraries are:</b></br>
  sudo apt install libusb-1.0-0-dev</br>
  sudo apt install libfftw3-dev </br>
