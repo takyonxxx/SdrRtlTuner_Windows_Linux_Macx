@@ -162,10 +162,10 @@ size_t RTLDataSource::getDeviceID() const
     return deviceID;
 }
 
-void
+bool
 RTLDataSource::setDevice(size_t idx) {
     // Check for correct idx
-    if (idx >= numDevices()) { return; }
+    if (idx >= numDevices()) { return false; }
     // Stop queue if running
     bool is_running = sdr::Queue::get().isRunning();
     if (is_running) { sdr::Queue::get().stop(); }
@@ -176,18 +176,21 @@ RTLDataSource::setDevice(size_t idx) {
     }
     // Try to start device
     try {
-        _device = new RTLSource(DEFAULT_FREQUENCY, 2e6, idx);
+        _device = new RTLSource(DEFAULT_FREQUENCY, DEFAULT_SAMPLE_RATE, idx);
         _device->connect(_to_int16, true);
         deviceID = idx;
 
         // restart queue if it was running
         if (is_running) { sdr::Queue::get().start(); }
+        return true;
 
     } catch (sdr::SDRError &err) {
         sdr::LogMessage msg(sdr::LOG_WARNING);
-        msg << "Can not open RTL2832 device: " << err.what();
-        sdr::Logger::get().log(msg);
+        msg << err.what();
+        sdr::Logger::get().log(msg);         
     }
+
+    return false;
 }
 
 void
@@ -348,7 +351,14 @@ RTLCtrlView::~RTLCtrlView() {
 void
 RTLCtrlView::onDeviceSelected(int idx)
 {
-    _source->setDevice(idx);
+    if(!_source->setDevice(idx))
+    {
+        _infoMessage->setText("Can not open RTL2832 USB device");
+    }
+    else
+    {
+        _infoMessage->setText(QString(RTLDataSource::deviceName(idx).c_str()));
+    }
 }
 
 void

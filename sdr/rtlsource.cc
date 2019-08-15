@@ -1,12 +1,12 @@
 #include "rtlsource.hh"
 #include "logger.hh"
-
+#include "QDebug"
 using namespace sdr;
 
 
 RTLSource::RTLSource(double frequency, double sample_rate, size_t device_idx)
   : Source(), _frequency(frequency), _sample_rate(sample_rate), _agc_enabled(true), _gains(),
-    _buffer_size(131072), _device(0)
+    _buffer_size(131072), _device(nullptr)
 {
   {
     LogMessage msg(LOG_DEBUG);

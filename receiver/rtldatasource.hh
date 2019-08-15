@@ -66,7 +66,7 @@ public:
   double IQBalance() const;
   void setIQBalance(double balance);
 
-  void setDevice(size_t idx);
+  bool setDevice(size_t idx);
 
   static size_t numDevices();
   static std::string deviceName(size_t idx);

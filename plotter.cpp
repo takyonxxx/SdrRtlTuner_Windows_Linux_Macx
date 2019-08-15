@@ -631,7 +631,6 @@ void CPlotter::setFftRate(int rate_hz)
 {
     fft_rate = rate_hz;
     clearWaterfall();
-    printf("setFftRate %d\n",rate_hz);
 }
 
 // Called when a mouse button is pressed

@@ -12,7 +12,7 @@
 #define DEFAULT_SAMPLE_RATE         MHZ(2.4)
 #define DEFAULT_FREQUENCY		    MHZ(101.75)
 #define DEFAULT_FFT_SIZE		    8192 * 4
-#define DEFAULT_FFT_RATE		    50 //Hz
+#define DEFAULT_FFT_RATE		    25 //Hz
 #define DEFAULT_FREQ_STEP           5 //kHz
 #define DEFAULT_AUDIO_GAIN          50
 #define MAX_FFT_SIZE                DEFAULT_FFT_SIZE
