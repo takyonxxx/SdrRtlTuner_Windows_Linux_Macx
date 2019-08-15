@@ -1,7 +1,7 @@
 # SdrRtlTuner_Windows_Linux_Macx
  <b>SdrRtlTuner for Windows Linux Macx</b>
  
- Sdr library took from https://github.com/hmatuschek/libsdr
+ Sdr library was taken from here https://github.com/hmatuschek/libsdr
  
  A simple software defined radio (SDR) application.
  GNU radio not used because of windows compile problems. Windows libraries located in project folder libs.</br>
