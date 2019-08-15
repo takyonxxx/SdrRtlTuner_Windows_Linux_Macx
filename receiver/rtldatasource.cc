@@ -252,11 +252,9 @@ RTLCtrlView::RTLCtrlView(RTLDataSource *source, QWidget *parent)
 
     // Sample rate:
     _sampleRates = new QComboBox();
-    _sampleRates->addItem("2.5 MS/s", 25e5);
+    _sampleRates->addItem("2.4 MS/s", 24e5);
     _sampleRates->addItem("2 MS/s", 2e6);
     _sampleRates->addItem("1 MS/s", 1e6);
-    _sampleRates->addItem("900 kS/s", 900e3);
-    _sampleRates->addItem("300 kS/s", 300e3);
     _sampleRates->setCurrentIndex(0);
     onSampleRateSelected(0);
 

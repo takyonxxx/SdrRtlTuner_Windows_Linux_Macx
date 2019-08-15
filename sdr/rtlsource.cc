@@ -76,11 +76,7 @@ RTLSource::setFreqCorrection(double ppm) {
 
 void
 RTLSource::setSampleRate(double sample_rate) {
-  uint32_t sr = sample_rate;
-  if (sr < 225001) { sr = 225001; }
-  else if ((sr>300000) && (sr<900001)) { sr = 900001; }
-  else if (sr>2400000) { sr = 2400000; }
-
+  uint32_t sr = static_cast<uint32_t>(sample_rate);
   rtlsdr_set_sample_rate(_device, sr);
   rtlsdr_reset_buffer(_device);
   _sample_rate = rtlsdr_get_sample_rate(_device);

@@ -71,7 +71,7 @@ static inline quint64 time_ms(void)
 {
     struct timeval  tval;
 
-    gettimeofday(&tval, NULL);
+    gettimeofday(&tval, nullptr);
 
     return 1e3 * tval.tv_sec + 1e-3 * tval.tv_usec;
 }
@@ -123,10 +123,10 @@ CPlotter::CPlotter(QWidget *parent) : QFrame(parent)
     m_PeakHoldValid = false;
 
     m_FftCenter = 0;
-    m_CenterFreq = 144500000;
-    m_DemodCenterFreq = 144500000;
-    m_DemodHiCutFreq = 5000;
-    m_DemodLowCutFreq = -5000;
+    m_CenterFreq = 0;
+    m_DemodCenterFreq = 0;
+    m_DemodHiCutFreq = 0;
+    m_DemodLowCutFreq = 0;
 
     m_FLowCmin = -500000;
     m_FLowCmax = -1000;
@@ -215,12 +215,12 @@ void CPlotter::setWaterfallPalette(int pal)
 
     case COLPAL_BLUE:
 
-        for (i = 0; i < 256-63; i++)
-            m_ColorTbl[i].setRgb(1+i, 1+i, 63+i);
-        for (i = 256-63; i< 256; i++)
+        for (i = 0; i < 256-90; i++)
+            m_ColorTbl[i].setRgb(1+i, 1+i, 90+i);
+        for (i = 256-90; i< 256; i++)
             m_ColorTbl[i].setRgb(i, i, 255);
         break;
-    }
+    }   
 }
 
 
