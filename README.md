@@ -29,6 +29,11 @@
  make</br>
  sudo make install</br>
  sudo ldconfig</br>
+ 
+Qt5 (http://qt-project.org) - Enables the libsdr-gui library implementing some graphical user interface elements like a spectrum view.
+fftw3 (http://www.fftw.org) - Also required by the GUI library and allows for FFT-convolution filters.
+PortAudio (http://www.portaudio.com) - Allows for sound-card input and output.
+librtlsdr (http://rtlsdr.org) - Allows to interface RTL2382U based USB dongles.
 
 <p align="center"><a href="https://github.com/takyonxxx/SdrRtlTuner_Windows_Linux_Macx/blob/master/rtl-sdr.jpg">
 		<img src="https://github.com/takyonxxx/SdrRtlTuner_Windows_Linux_Macx/blob/master/rtl-sdr.jpg" 
