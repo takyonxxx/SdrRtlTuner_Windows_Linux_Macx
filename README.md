@@ -5,7 +5,7 @@
  
  A simple software defined radio (SDR) application.
  GNU radio not used because of windows compile problems. Windows libraries located in project folder libs.</br>
- Project should compile with MinGw64 in windows10.</br>
+ For windows : Project should compile with MinGw64 in windows10.</br>
  
  <b>Used libraries are:</b></br>
  sudo apt install libusb-1.0-0-dev</br>
