@@ -128,12 +128,11 @@ macx{
 
 unix:!macx{
     message("unix enabled")
-    LIBPATH +=/usr/lib
-    LIBPATH +=/usr/local/lib
+    LIBPATH += /usr/lib
+    LIBPATH += /usr/local/lib
     LIBPATH += /usr/lib/x86_64-linux-gnu
 
-    LIBS += -lrt -lportaudio -lrtlsdr -lfftw3f
-    INCLUDEPATH += /usr/local/include
+    LIBS += -lrt -lportaudio -lrtlsdr -lfftw3
 }
 
 win32{
