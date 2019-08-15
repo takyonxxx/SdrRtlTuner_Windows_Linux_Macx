@@ -94,30 +94,7 @@ CPlotter::CPlotter(QWidget *parent) : QFrame(parent)
     setTooltipsEnabled(false);
     setStatusTip(tr(STATUS_TIP));
 
-    // default waterfall color scheme
-    /*for (int i = 0; i < 256; i++)
-    {
-       // level 0: black background
-       if (i < 20)
-           m_ColorTbl[i].setRgb(0, 0, 0);
-       // level 1: black -> blue
-       else if ((i >= 20) && (i < 70))
-           m_ColorTbl[i].setRgb(0, 0, 140*(i-20)/50);
-       // level 2: blue -> light-blue / greenish
-       else if ((i >= 70) && (i < 100))
-           m_ColorTbl[i].setRgb(60*(i-70)/30, 125*(i-70)/30, 115*(i-70)/30 + 140);
-       // level 3: light blue -> yellow
-       else if ((i >= 100) && (i < 150))
-           m_ColorTbl[i].setRgb(195*(i-100)/50 + 60, 130*(i-100)/50 + 125, 255-(255*(i-100)/50));
-       // level 4: yellow -> red
-       else if ((i >= 150) && (i < 250))
-           m_ColorTbl[i].setRgb(255, 255-255*(i-150)/100, 0);
-       // level 5: red -> white
-       else if (i >= 250)
-           m_ColorTbl[i].setRgb(255, 255*(i-250)/5, 255*(i-250)/5);
-    }*/
-
-    setWaterfallPalette(COLPAL_DEFAULT);
+    setWaterfallPalette(COLPAL_MIX);
 
     m_PeakHoldActive = false;
     m_PeakHoldValid = false;
@@ -203,22 +180,45 @@ void CPlotter::setWaterfallPalette(int pal)
     switch (pal)
     {
     default:
-    case COLPAL_DEFAULT:
-        for (i = 0, j = 0; i < 256; i++, j+=3)
-            m_ColorTbl[255-i].setRgb(PALTBL[j], PALTBL[j+1], PALTBL[j+2]);
+    case COLPAL_MIX:
+        /*for (i = 0, j = 0; i < 256; i++, j+=3)
+            m_ColorTbl[255-i].setRgb(PALTBL[j], PALTBL[j+1], PALTBL[j+2]);*/
+        for (int i = 0; i < 256; i++)
+            {
+               // level 0: black background
+               if (i < 20)
+                   m_ColorTbl[i].setRgb(0, 0, 0);
+               // level 1: black -> blue
+               else if ((i >= 20) && (i < 70))
+                   m_ColorTbl[i].setRgb(0, 0, 140*(i-20)/50);
+               // level 2: blue -> light-blue / greenish
+               else if ((i >= 70) && (i < 100))
+                   m_ColorTbl[i].setRgb(60*(i-70)/30, 125*(i-70)/30, 115*(i-70)/30 + 140);
+               // level 3: light blue -> yellow
+               else if ((i >= 100) && (i < 150))
+                   m_ColorTbl[i].setRgb(195*(i-100)/50 + 60, 130*(i-100)/50 + 125, 255-(255*(i-100)/50));
+               // level 4: yellow -> red
+               else if ((i >= 150) && (i < 250))
+                   m_ColorTbl[i].setRgb(255, 255-255*(i-150)/100, 0);
+               // level 5: red -> white
+               else if (i >= 250)
+                   m_ColorTbl[i].setRgb(255, 255*(i-250)/5, 255*(i-250)/5);
+            }
         break;
 
-    case COLPAL_GRAY:
+    case COLPAL_RED:
         for (i = 0; i < 256; i++)
-            m_ColorTbl[i].setRgb(i, i, i);
+            m_ColorTbl[i].setRgb(i, 0, 0);
+        break;
+
+    case COLPAL_GREEN:
+        for (i = 0; i < 256; i++)
+            m_ColorTbl[i].setRgb(0, i, 0);
         break;
 
     case COLPAL_BLUE:
-
-        for (i = 0; i < 256-90; i++)
-            m_ColorTbl[i].setRgb(1+i, 1+i, 90+i);
-        for (i = 256-90; i< 256; i++)
-            m_ColorTbl[i].setRgb(i, i, 255);
+        for (i = 0; i < 256; i++)
+            m_ColorTbl[i].setRgb(0, i, i);
         break;
     }   
 }

@@ -254,12 +254,12 @@ This is an offset from the hardware RF frequency.&lt;/p&gt;&lt;/body&gt;&lt;/htm
            </property>
            <item>
             <property name="text">
-             <string>250</string>
+             <string>100</string>
             </property>
            </item>
            <item>
             <property name="text">
-             <string>100</string>
+             <string>75</string>
             </property>
            </item>
            <item>
@@ -327,17 +327,22 @@ This is an offset from the hardware RF frequency.&lt;/p&gt;&lt;/body&gt;&lt;/htm
            </property>
            <item>
             <property name="text">
-             <string>COLPAL_DEFAULT</string>
+             <string>DEFAULT</string>
             </property>
            </item>
            <item>
             <property name="text">
-             <string>COLPAL_GRAY</string>
+             <string>RED</string>
             </property>
            </item>
            <item>
             <property name="text">
-             <string>COLPAL_BLUE</string>
+             <string>GREEN</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>BLUE</string>
             </property>
            </item>
           </widget>

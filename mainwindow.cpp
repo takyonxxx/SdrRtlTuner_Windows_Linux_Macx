@@ -92,7 +92,7 @@ void MainWindow::setPlotterSettings()
 {
     ui->plotter->setSampleRate(sampleRate);
     ui->plotter->setFftRate(fftrate);
-    ui->waterFallColor->setCurrentIndex(COLPAL_DEFAULT);
+    ui->waterFallColor->setCurrentIndex(COLPAL_MIX);
     setFreqStep(freqStep);
     setFftRate(fftrate);    
 }
@@ -225,10 +225,10 @@ void MainWindow::initSpectrumGraph()
     ui->plotter->setPercent2DScreen(50);
     ui->plotter->setFilterBoxEnabled(true);
     ui->plotter->setCenterLineEnabled(true);
-    ui->plotter->setClickResolution(10);
+    ui->plotter->setClickResolution(1);
 
     ui->plotter->setFftPlotColor(QColor("#CEECF5"));
-    ui->plotter->setWheelConstant(KHZ(25));
+    ui->plotter->setWheelConstant(KHZ(5));
 
     //ui->plotter->setPeakDetection(true ,2);
     ui->plotter->setFftFill(true);

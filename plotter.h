@@ -13,12 +13,13 @@
 #define VERT_DIVS_MIN 5
 #define MAX_SCREENSIZE 16384
 
-#define PEAK_CLICK_MAX_H_DISTANCE 10 //Maximum horizontal distance of clicked point from peak
-#define PEAK_CLICK_MAX_V_DISTANCE 20 //Maximum vertical distance of clicked point from peak
-#define PEAK_H_TOLERANCE 2
-#define COLPAL_DEFAULT  0
-#define COLPAL_GRAY     1
-#define COLPAL_BLUE     2
+#define PEAK_CLICK_MAX_H_DISTANCE   10 //Maximum horizontal distance of clicked point from peak
+#define PEAK_CLICK_MAX_V_DISTANCE   20 //Maximum vertical distance of clicked point from peak
+#define PEAK_H_TOLERANCE            2
+#define COLPAL_MIX                  0
+#define COLPAL_RED                  1
+#define COLPAL_GREEN                2
+#define COLPAL_BLUE                 3
 
 class CPlotter : public QFrame
 {
