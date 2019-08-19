@@ -65,8 +65,8 @@ public:
 
     // Perform demodulation
     for (size_t i=0; i<buffer.size(); i++) {
-      out_buffer[i] = std::sqrt(buffer[i].real()*buffer[i].real() +
-                                buffer[i].imag()*buffer[i].imag());
+      out_buffer[i] = _gain_const * (std::sqrt(buffer[i].real()*buffer[i].real() +
+                                buffer[i].imag()*buffer[i].imag()));
     }
 
     // If the source allowed to overwrite the buffer, this source will allow it too.
@@ -76,6 +76,7 @@ public:
 
 protected:
   Buffer<Scalar> _buffer;
+  float _gain_const = 2.0;
 };
 
 
@@ -225,7 +226,7 @@ protected:
     // update last value
     last_value = in[0];
     // calc output (prob. overwriting the last value)
-    out[0] = fast_atan2<iScalar, oScalar>(a, b);
+    out[0] = _gain_const*fast_atan2<iScalar, oScalar>(a, b);
     //out[0] = (1<<12)*(std::atan2(float(a),float(b))/M_PI);
 
     // Calc remaining values
@@ -236,7 +237,7 @@ protected:
           - (SScalar(in[i].real())*SScalar(last_value.imag()))/2;
       a >>= Traits<iScalar>::shift; b >>= Traits<iScalar>::shift;
       last_value = in[i];
-      out[i] = fast_atan2<iScalar,oScalar>(a, b);
+      out[i] = _gain_const*fast_atan2<iScalar,oScalar>(a, b);
       //out[i] = (1<<12)*(std::atan2(float(a),float(b))/M_PI);
     }
 
@@ -252,6 +253,7 @@ protected:
   std::complex<iScalar> _last_value;
   bool _can_overwrite;
   Buffer<oScalar> _buffer;
+  float _gain_const = 2.0;
 };
 
 
