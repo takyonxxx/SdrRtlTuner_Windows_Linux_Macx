@@ -10,12 +10,19 @@
  Project should compile with MinGw64 in windows10.</br>
  Windows libraries located in project folder libs.</br>
  
- <b>For linux,  macx (use sudo port install, first do sudo port -v selfupdate) : </b></br>
+ <b>For linux: </b></br>
  <b>Used libraries are:</b></br>
  sudo apt install libusb-1.0-0-dev</br>
  sudo apt install libfftw3-dev </br>
  sudo apt install libportaudio2 </br>
  sudo apt install portaudio19-dev</br>
+ 
+ <b>For macx: </b></br>
+ <b>Used libraries are:</b></br>
+ brew install libusb</br>
+ brew install fftw</br>
+ brew install rtl-sdr</br>
+ brew install portaudio</br>
  
  <b>Install Rtl-sdr Tools</b></br>
  sudo apt  install cmake</br>
