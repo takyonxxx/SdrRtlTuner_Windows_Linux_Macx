@@ -20,8 +20,7 @@ MainWindow::MainWindow(Receiver *receiver, QWidget *parent) :
     fftrate         = DEFAULT_FFT_RATE;
     freqStep        = DEFAULT_FREQ_STEP;
     demodGain       = DEFAULT_AUDIO_GAIN;
-    m_HiCutFreq     = KHZ(100);
-    m_LowCutFreq    = -KHZ(100);
+
     signal_level = 0;
 
     d_realFftData = new float[MAX_FFT_SIZE];
@@ -37,7 +36,11 @@ MainWindow::MainWindow(Receiver *receiver, QWidget *parent) :
     if (!m_Receiver) { exit(1); }
 
     m_Demodulator = m_Receiver->demod();
-    m_Demodulator->setFilterWidth(2*m_HiCutFreq);
+    if (!m_Demodulator) { exit(1); }
+
+    m_HiCutFreq     = KHZ(3);
+    m_LowCutFreq    = -KHZ(3);
+    m_Demodulator->setFilterWidth(2*m_HiCutFreq, true);
     fftrate = static_cast<unsigned int>(m_Demodulator->rrate());
 
     QObject::connect(m_Demodulator, &DemodulatorCtrl::spectrumUpdated, this, &MainWindow::fftTimeout);
@@ -71,6 +74,9 @@ MainWindow::~MainWindow()
     delete [] d_realFftData;
     delete [] d_iirFftData;
     delete [] d_pwrFftData;
+    delete [] m_Demodulator;
+    delete [] m_Receiver;
+
     delete ui;
 }
 

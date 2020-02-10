@@ -278,8 +278,8 @@ DemodulatorCtrlView::DemodulatorCtrlView(DemodulatorCtrl *demodulator, QWidget *
     _layout->addWidget(_demodulator->demod()->createView(), 1, Qt::AlignTop);
   }
 
-  _demodList->setCurrentIndex(1);
-  onDemodSelected(1);
+  _demodList->setCurrentIndex(0);
+  onDemodSelected(0);
 
   this->setLayout(_layout);
 }
