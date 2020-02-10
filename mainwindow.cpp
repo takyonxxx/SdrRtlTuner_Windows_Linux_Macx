@@ -30,7 +30,7 @@ MainWindow::MainWindow(Receiver *receiver, QWidget *parent) :
     for (int i = 0; i < MAX_FFT_SIZE; i++)
         d_iirFftData[i] = RESET_FFT_FACTOR;  // dBFS
 
-    /* meter timer */
+    // meter timer
     meter_timer = new QTimer(this);
     connect(meter_timer, &QTimer::timeout, this, &MainWindow::tunerTimeout);
 

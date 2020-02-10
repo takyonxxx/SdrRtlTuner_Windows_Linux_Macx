@@ -30,7 +30,7 @@ public:
 private:
 
     char log_buffer[250];
-    QTimer   *meter_timer;
+    QTimer   *meter_timer{};
 
     std::map<QString, QVariant> devList;
 
@@ -72,7 +72,7 @@ private slots:
 
 protected:
   Receiver *m_Receiver{};
-  DemodulatorCtrl *m_Demodulator;
+  DemodulatorCtrl *m_Demodulator{};
 
 private:
     Ui::MainWindow *ui;

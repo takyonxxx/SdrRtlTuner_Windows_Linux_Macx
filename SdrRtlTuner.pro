@@ -121,9 +121,9 @@ HEADERS += \
 macx{
     message("macx enabled")
 
+    INCLUDEPATH += /usr/local/include
     LIBS += /usr/local/lib/librtlsdr.dylib /usr/local/lib/libfftw3.dylib /usr/local/lib/libportaudio.dylib
 
-    INCLUDEPATH += /usr/local/include
 }
 
 unix:!macx{
@@ -151,6 +151,7 @@ message("Win32 enabled")
     INCLUDEPATH += $$PWD\libs\fftw-3.3.5-dll64
     INCLUDEPATH += $$PWD\libs\portaudio-r1891\include
 }
+
 
 DISTFILES += \
     icons/app.ico \
