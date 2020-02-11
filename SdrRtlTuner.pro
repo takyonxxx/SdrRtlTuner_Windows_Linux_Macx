@@ -118,16 +118,14 @@ HEADERS += \
         sdr/utils.hh \
         sdr/wavfile.hh
 
-macx
-{
+macx{
     message("macx enabled")
 
     INCLUDEPATH += /usr/local/include
     LIBS += /usr/local/lib/librtlsdr.dylib /usr/local/lib/libfftw3.dylib /usr/local/lib/libportaudio.dylib
 }
 
-unix:!macx
-{
+unix:!macx{
     message("linux enabled")
 
     LIBPATH += /usr/lib
@@ -137,8 +135,7 @@ unix:!macx
     LIBS += -lrt -lportaudio -lrtlsdr -lfftw3
 }
 
-win32
-{
+win32{
     message("Win32 enabled")
 
     LIBS += -L$$PWD\libs\rtl-sdr-lib\x64 \
