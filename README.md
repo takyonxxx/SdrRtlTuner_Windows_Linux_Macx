@@ -16,19 +16,8 @@
  sudo apt install libfftw3-dev </br>
  sudo apt install libportaudio2 </br>
  sudo apt install portaudio19-dev</br>
-  	<b>Install Rtl-sdr Tools</b></br>
-	 sudo apt  install cmake</br>
-	 sudo apt  install git</br>
-
-	 git clone git://git.osmocom.org/rtl-sdr.git</br>
-	 cd rtl-sdr/</br>
-	 mkdir build</br>
-	 cd build</br>
-	 cmake ../</br>
-	 make</br>
-	 sudo make install</br>
-	 sudo ldconfig</br>
- 
+ sudo apt install rtl-sdr
+  	
  <b>For macx: </b></br>
  <b>Used libraries are:</b></br>
  brew install libusb</br>
@@ -36,7 +25,6 @@
  brew install rtl-sdr</br>
  brew install portaudio</br>
  
-
  
 <b>Qt5</b> (http://qt-project.org) - Enables the libsdr-gui library implementing some graphical user interface elements like a spectrum view.</br>
 <b>fftw3</b> (http://www.fftw.org) - Also required by the GUI library and allows for FFT-convolution filters.</br>
