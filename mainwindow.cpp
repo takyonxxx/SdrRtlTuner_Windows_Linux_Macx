@@ -15,6 +15,8 @@ MainWindow::MainWindow(Receiver *receiver, QWidget *parent) :
     qRegisterMetaType<sdr::RawBuffer>("RawBuffer");
     theInstance_ = this;
 
+    initObjects();
+
     sampleRate      = static_cast<qint64>(DEFAULT_SAMPLE_RATE);
     fftSize         = DEFAULT_FFT_SIZE;
     fftrate         = DEFAULT_FFT_RATE;
@@ -46,7 +48,6 @@ MainWindow::MainWindow(Receiver *receiver, QWidget *parent) :
     QObject::connect(m_Demodulator, &DemodulatorCtrl::spectrumUpdated, this, &MainWindow::fftTimeout);
     QObject::connect(m_Demodulator, &DemodulatorCtrl::filterChanged, this, &MainWindow::onFilterChanged);
 
-    initObjects();
     initSpectrumGraph();
     setPlotterSettings();
 
@@ -61,6 +62,7 @@ MainWindow::MainWindow(Receiver *receiver, QWidget *parent) :
     ctrls->addTab(m_Receiver->createDemodCtrlView(), "Demodulator");
     ctrls->addTab(m_Receiver->createAudioCtrlView(), "Audio");
     ctrls->addTab(ui->frame_controls, "Settings");
+    ctrls->setMinimumWidth(300);
     ui->gridLayoutSource->addWidget(ctrls);
 }
 
