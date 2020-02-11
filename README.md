@@ -17,7 +17,7 @@
  sudo apt install libportaudio2 </br>
  sudo apt install portaudio19-dev</br>
  sudo apt install rtl-sdr
- sudo apt-get install librtlsdr-dev
+ sudo apt install librtlsdr-dev
   	
  <b>For macx: </b></br>
  <b>Used libraries are:</b></br>
