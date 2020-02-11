@@ -25,7 +25,7 @@ RTLDataSourceConfig::~RTLDataSourceConfig() {
 
 double
 RTLDataSourceConfig::frequency() const {
-    return _config.value("RTLDataSource/frequency", 100.0e6).toDouble();
+    return _config.value("RTLDataSource/frequency", 433.9e6).toDouble();
 }
 
 void
@@ -35,7 +35,7 @@ RTLDataSourceConfig::storeFrequency(double f) {
 
 double
 RTLDataSourceConfig::sampleRate() const {
-    return _config.value("RTLDataSource/sampleRate", 1.0e6).toDouble();
+    return _config.value("RTLDataSource/sampleRate", 2.35e6).toDouble();
 }
 
 void
@@ -105,7 +105,7 @@ RTLDataSource::sampleRate() const {
 }
 
 void
-RTLDataSource::setSampleRate(double rate) {
+RTLDataSource::setSampleRate(double rate) {    
     bool is_running = sdr::Queue::get().isRunning();
     if (is_running) { sdr::Queue::get().stop(); }
     _device->setSampleRate(rate);
@@ -255,11 +255,9 @@ RTLCtrlView::RTLCtrlView(RTLDataSource *source, QWidget *parent)
 
     // Sample rate:
     _sampleRates = new QComboBox();
-    _sampleRates->addItem("2.4 MS/s", 24e5);
+    _sampleRates->addItem("2.35 MS/s", 2.35e6);
     _sampleRates->addItem("2 MS/s", 2e6);
     _sampleRates->addItem("1 MS/s", 1e6);
-    _sampleRates->setCurrentIndex(0);
-    onSampleRateSelected(0);
 
     _gain = new QComboBox();
     _agc = new QCheckBox();

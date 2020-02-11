@@ -30,6 +30,7 @@ public:
   /** Can be overwritten by any sub-class to provide the tuner frequency of the source. By default,
    * this method returns 0, means there is no tuner. */
   virtual double tunerFrequency() const;
+  virtual double sampleRate() const;
   virtual bool setTunerFrequency(qreal freq);
   virtual size_t getDeviceID() const;
 };
@@ -57,6 +58,7 @@ public:
   /** Returns the tuner frequency of the current source or 0 if the source does not have a tuner. */
   double tunerFrequency() const;
   bool setTunerFrequency(qreal freq);
+  double tunerSampleRate() const;
   size_t getDeviceId();
 
 protected:

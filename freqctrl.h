@@ -1,6 +1,3 @@
-/*
- * Frequency controller widget (originally from CuteSDR)
- */
 #pragma once
 
 #include <QFrame>

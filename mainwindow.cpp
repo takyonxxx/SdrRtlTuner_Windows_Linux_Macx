@@ -3,19 +3,16 @@
 #include "sdr/logger.hh"
 #include <QSplitter>
 
-MainWindow *MainWindow::theInstance_;
 using namespace  std;
 
-MainWindow::MainWindow(Receiver *receiver, QWidget *parent) :
+MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    m_Receiver(receiver),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    qRegisterMetaType<sdr::RawBuffer>("RawBuffer");
-    theInstance_ = this;
+    setAttribute(Qt::WA_DeleteOnClose);
 
-    initObjects();
+    qRegisterMetaType<sdr::RawBuffer>("RawBuffer");
 
     sampleRate      = static_cast<qint64>(DEFAULT_SAMPLE_RATE);
     fftSize         = DEFAULT_FFT_SIZE;
@@ -31,55 +28,66 @@ MainWindow::MainWindow(Receiver *receiver, QWidget *parent) :
     for (int i = 0; i < MAX_FFT_SIZE; i++)
         d_iirFftData[i] = RESET_FFT_FACTOR;  // dBFS
 
+
+    m_HiCutFreq     = KHZ(3);
+    m_LowCutFreq    = -KHZ(3);
+
+    initObjects();
+
+    // Install log message handler:
+    sdr::Logger::get().addHandler(new sdr::StreamLogHandler(std::cerr, sdr::LOG_INFO));
+    m_Receiver = new Receiver();
+    if (!m_Receiver) QApplication::quit();
+
     // meter timer
     meter_timer = new QTimer(this);
     connect(meter_timer, &QTimer::timeout, this, &MainWindow::tunerTimeout);
 
-    if (!m_Receiver) { exit(1); }
+    if (!m_Receiver) QApplication::quit();
+    QObject::connect(m_Receiver, SIGNAL(started()), SLOT(onReceiverStarted()));
+    QObject::connect(m_Receiver, SIGNAL(stopped()), SLOT(onReceiverStopped()));
 
     m_Demodulator = m_Receiver->demod();
-    if (!m_Demodulator) { exit(1); }
+    if (!m_Demodulator) QApplication::quit();
 
-    m_HiCutFreq     = KHZ(3);
-    m_LowCutFreq    = -KHZ(3);
     m_Demodulator->setFilterWidth(2*m_HiCutFreq, true);
     fftrate = static_cast<unsigned int>(m_Demodulator->rrate());
-
     QObject::connect(m_Demodulator, &DemodulatorCtrl::spectrumUpdated, this, &MainWindow::fftTimeout);
     QObject::connect(m_Demodulator, &DemodulatorCtrl::filterChanged, this, &MainWindow::onFilterChanged);
 
     initSpectrumGraph();
-    setPlotterSettings();
+    setPlotterSettings();  
 
     if (m_Receiver->isRunning()) { ui->push_connect->setChecked(true); ui->push_connect->setText("Stop"); }
     else { ui->push_connect->setChecked(false); ui->push_connect->setText("Start"); }
-
-    QObject::connect(m_Receiver, SIGNAL(started()), SLOT(onReceiverStarted()));
-    QObject::connect(m_Receiver, SIGNAL(stopped()), SLOT(onReceiverStopped()));
 
     QTabWidget *ctrls = new QTabWidget();
     ctrls->addTab(m_Receiver->createSourceCtrlView(), "Source");
     ctrls->addTab(m_Receiver->createDemodCtrlView(), "Demodulator");
     ctrls->addTab(m_Receiver->createAudioCtrlView(), "Audio");
     ctrls->addTab(ui->frame_controls, "Settings");
-    ctrls->setMinimumWidth(300);
+    ctrls->setMinimumWidth(400);
     ui->gridLayoutSource->addWidget(ctrls);
-}
-
-MainWindow *MainWindow::instance()
-{
-    return theInstance_;
 }
 
 MainWindow::~MainWindow()
 {
-    delete [] d_realFftData;
-    delete [] d_iirFftData;
-    delete [] d_pwrFftData;
-    delete [] m_Demodulator;
-    delete [] m_Receiver;
+    qDebug() << "exiting...";
+
+    if(m_Receiver)m_Receiver->stop();
+
+    if(d_realFftData)delete [] d_realFftData;
+    if(d_iirFftData)delete [] d_iirFftData;
+    if(d_pwrFftData)delete [] d_pwrFftData;
+    if(m_Demodulator)delete [] m_Demodulator;
+    if(m_Receiver)delete [] m_Receiver;
 
     delete ui;
+}
+
+void MainWindow::on_push_exit_clicked()
+{
+    QApplication::quit();
 }
 
 void MainWindow::on_push_connect_clicked()
@@ -121,6 +129,21 @@ void MainWindow::onReceiverStarted() {
 
     meter_timer->start(100);
     ui->push_connect->setText("Stop"); ui->push_connect->setEnabled(true);
+
+    auto deviceId = m_Receiver->getDeviceID();
+    auto deviceName = rtlsdr_get_device_name(deviceId);
+    auto tunerFreq = m_Receiver->tunerFrequency();
+    auto sampleRate = m_Receiver->sampleRate();
+    QString info;
+    info.append(QString(deviceName) + " Receiver started.\n");
+    info.append("-> Tuner Frequency: " + QString::number(tunerFreq / 1000000.0, 'f', 2) + " MHz\n");
+    info.append("-> Sample Rate: " + QString::number(sampleRate / 1000000.0, 'f', 2) + " MS/s\n");
+    info.append("-> Fft Size: " + QString::number(fftSize) + "\n");
+    info.append("-> Gain: " + QString::number(demodGain, 'f', 2)  + " dB\n");
+    info.append("-> HiCutFreq: " + QString::number(m_HiCutFreq / 1000.0, 'f', 2) + " Khz\n");
+    info.append("-> LowCutFreq: " + QString::number(m_LowCutFreq / 1000.0, 'f', 2) + " Khz\n");
+    info.append("-> FFT Refresh Rate: " + QString::number(fftrate) + " Hz");
+    appentTextBrowser(info.toStdString().c_str());
 }
 
 void MainWindow::onReceiverStopped()
@@ -135,11 +158,6 @@ void MainWindow::onReceiverStopped()
     appentTextBrowser(info.toStdString().c_str());
 
     ui->push_connect->setText("Start"); ui->push_connect->setEnabled(true);
-}
-
-void MainWindow::on_push_exit_clicked()
-{
-    exit(0);
 }
 
 void MainWindow::on_fftRateSelector_currentIndexChanged(const QString &arg1)
@@ -193,16 +211,10 @@ void MainWindow::on_plotter_newFilterFreq(int low, int high)
 ///OBJECT FUNCTIONS
 
 void MainWindow::initObjects()
-{
-    QString const& pingURL = QString("xset -dpms");
-    int status = system(pingURL.toStdString().c_str());
-    if (-1 != status)
-    {
-        printf("Monitor auto turn off, Disabled.\n");
-    }
-    ui->push_exit->setStyleSheet("color: white;background-color: CadetBlue;");
-    ui->push_connect->setStyleSheet("color: white;background-color: CadetBlue;");
-    ui->text_terminal->setStyleSheet("font: 12px; color: #00cccc; background-color: #001a1a;");
+{   
+    ui->push_exit->setStyleSheet("font-size: 18pt; font-weight: bold; color: white;background-color: #8F3A3A; padding: 6px; spacing: 6px");
+    ui->push_connect->setStyleSheet("font-size: 18pt; font-weight: bold; color: white;background-color:#154360; padding: 6px; spacing: 6px;");
+    ui->text_terminal->setStyleSheet("font: 10pt; color: #00cccc; background-color: #001a1a;");   
 
     ui->filterFreq->setup(0, 0 ,1000e3, 1, FCTL_UNIT_KHZ);
     ui->filterFreq->setDigitColor(QColor("#FF5733"));
@@ -274,8 +286,6 @@ int MainWindow::setFftRate(int rate)
 
 void MainWindow::tunerTimeout()
 {
-    ui->text_terminal->clear();
-
     sampleRate      = static_cast<unsigned int>(m_Demodulator->sampleRate());
     fftSize         = static_cast<unsigned int>(m_Demodulator->fftSize());
     demodGain       = m_Demodulator->gain();
@@ -291,19 +301,6 @@ void MainWindow::tunerTimeout()
    // ui->plotter->setHiLowCutFrequencies(m_LowCutFreq, m_HiCutFreq);
    // ui->plotter->setDemodRanges(m_LowCutFreq, -KHZ(5), KHZ(5),m_HiCutFreq, true);
 
-    auto deviceId = m_Receiver->getDeviceID();
-    auto deviceName = rtlsdr_get_device_name(deviceId);
-
-    QString info;
-    info.append(QString(deviceName) + " Receiver started.\n");
-    info.append("-> Tuner Frequency: " + QString::number(tunerFreq / 1000000.0, 'f', 1) + " MHz\n");
-    info.append("-> Sample Rate: " + QString::number(sampleRate / 1000000.0, 'f', 1) + " MS/s\n");
-    info.append("-> Fft Size: " + QString::number(fftSize) + "\n");
-    info.append("-> Gain: " + QString::number(demodGain, 'f', 1)  + " dB\n");
-    info.append("-> HiCutFreq: " + QString::number(m_HiCutFreq / 1000.0, 'f', 1) + " Khz\n");
-    info.append("-> LowCutFreq: " + QString::number(m_LowCutFreq / 1000.0, 'f', 1) + " Khz\n");
-    info.append("-> FFT Refresh Rate: " + QString::number(fftrate) + " Hz");
-    appentTextBrowser(info.toStdString().c_str());
 }
 
 void MainWindow::onFilterChanged()

@@ -193,7 +193,7 @@ This is an offset from the hardware RF frequency.&lt;/p&gt;&lt;/body&gt;&lt;/htm
            <property name="maximumSize">
             <size>
              <width>16777215</width>
-             <height>25</height>
+             <height>16777215</height>
             </size>
            </property>
            <property name="toolTip">
@@ -268,7 +268,7 @@ This is an offset from the hardware RF frequency.&lt;/p&gt;&lt;/body&gt;&lt;/htm
            <property name="maximumSize">
             <size>
              <width>16777215</width>
-             <height>25</height>
+             <height>16777215</height>
             </size>
            </property>
            <property name="toolTip">
@@ -342,7 +342,7 @@ This is an offset from the hardware RF frequency.&lt;/p&gt;&lt;/body&gt;&lt;/htm
            <property name="maximumSize">
             <size>
              <width>16777215</width>
-             <height>25</height>
+             <height>16777215</height>
             </size>
            </property>
            <property name="toolTip">
@@ -456,14 +456,14 @@ This is an offset from the hardware RF frequency.&lt;/p&gt;&lt;/body&gt;&lt;/htm
        <widget class="QPushButton" name="push_exit">
         <property name="minimumSize">
          <size>
-          <width>100</width>
-          <height>30</height>
+          <width>0</width>
+          <height>0</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
-          <width>100</width>
-          <height>30</height>
+          <width>16777215</width>
+          <height>16777215</height>
          </size>
         </property>
         <property name="text">
@@ -475,14 +475,14 @@ This is an offset from the hardware RF frequency.&lt;/p&gt;&lt;/body&gt;&lt;/htm
        <widget class="QPushButton" name="push_connect">
         <property name="minimumSize">
          <size>
-          <width>100</width>
-          <height>30</height>
+          <width>0</width>
+          <height>0</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
-          <width>100</width>
-          <height>30</height>
+          <width>16777215</width>
+          <height>16777215</height>
          </size>
         </property>
         <property name="text">

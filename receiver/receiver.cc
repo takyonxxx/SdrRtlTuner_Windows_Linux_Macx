@@ -60,6 +60,11 @@ Receiver::setTunerFrequency(qreal freq)
     return _src->setTunerFrequency(freq);
 }
 
+double Receiver::sampleRate() const
+{
+    return _src->sampleRate();
+}
+
 size_t Receiver::getDeviceID() const
 {
     return _src->getDeviceId();

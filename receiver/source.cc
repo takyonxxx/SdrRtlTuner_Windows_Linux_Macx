@@ -44,6 +44,11 @@ DataSource::tunerFrequency() const {
   return 0;
 }
 
+double
+DataSource::sampleRate() const {
+  return 0;
+}
+
 bool
 DataSource::setTunerFrequency(qreal freq){
   // pass...
@@ -111,6 +116,11 @@ bool
 DataSourceCtrl::setTunerFrequency(qreal freq)
 {
     return _src_obj->setTunerFrequency(freq);
+}
+
+double DataSourceCtrl::tunerSampleRate() const
+{
+    return _src_obj->sampleRate();
 }
 
 size_t DataSourceCtrl::getDeviceId()

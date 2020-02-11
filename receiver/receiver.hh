@@ -9,7 +9,7 @@
 
 #define MHZ(x)                      ((x)*1000*1000)
 #define KHZ(x)                      ((x)*1*1000)
-#define DEFAULT_SAMPLE_RATE         MHZ(2.4)
+#define DEFAULT_SAMPLE_RATE         MHZ(2.35)
 #define DEFAULT_FREQUENCY		    MHZ(433.9)
 #define DEFAULT_FFT_SIZE		    8192 * 4
 #define DEFAULT_FFT_RATE		    25 //Hz
@@ -35,6 +35,7 @@ public:
   /** Returns the tuner frequency of the source or 0 if the source does not have a tuner. */
   double tunerFrequency() const;
   bool setTunerFrequency(qreal);
+  double sampleRate() const;
   size_t getDeviceID() const;
 
   DemodulatorCtrl *demod() const;

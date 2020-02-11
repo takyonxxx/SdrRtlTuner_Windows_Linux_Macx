@@ -9,6 +9,7 @@
 #include <stdint.h>
 #include <string.h>
 #include "freqctrl.h"
+#include "gui/gui.hh"
 #include "receiver/receiver.hh"
 #include "sdr/buffer.hh"
 
@@ -21,10 +22,9 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(Receiver *receiver, QWidget *parent = nullptr);
+    explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    static MainWindow *instance();
     void setFrequency(qint64 freq);
 
 private:
@@ -76,7 +76,6 @@ protected:
 
 private:
     Ui::MainWindow *ui;
-    static MainWindow *theInstance_;
 };
 
 
