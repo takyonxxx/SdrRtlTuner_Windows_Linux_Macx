@@ -2,7 +2,7 @@
 #include "node.hh"
 #include "config.hh"
 #include "logger.hh"
-
+#include <QDebug>
 using namespace sdr;
 
 
@@ -97,8 +97,9 @@ Queue::_main()
     while (_queue.size() > 0) {
       // Get a Message from the queue
       pthread_mutex_lock(&_queue_lock);
-      Message msg(_queue.front()); _queue.pop_front();
-      pthread_mutex_unlock(&_queue_lock);
+      Message msg(_queue.front());
+      _queue.pop_front();
+      pthread_mutex_unlock(&_queue_lock);     
       // Process message
       msg.sink()->handleBuffer(msg.buffer(), msg.allowOverwrite());
       // Mark buffer unused
@@ -151,18 +152,7 @@ Queue::_signalStop() {
 void *
 Queue::__thread_start(void *ptr) {
   Queue *queue = reinterpret_cast<Queue *>(ptr);
-  try {
-    queue->_main();
-  } catch (std::exception &err) {
-    LogMessage msg(LOG_ERROR);
-    msg << "Caught exception in thread: " << err.what()
-        << " -> Stop thread.";
-    Logger::get().log(msg);
-  } catch (...) {
-    LogMessage msg(LOG_ERROR);
-    msg << "Caught (known) exception in thread -> Stop thread.";
-    Logger::get().log(msg);
-  }
+  queue->_main();
   queue->_running = false;
   pthread_exit(0);
   return 0;

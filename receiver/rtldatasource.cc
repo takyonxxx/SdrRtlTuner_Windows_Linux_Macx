@@ -243,9 +243,9 @@ RTLCtrlView::RTLCtrlView(RTLDataSource *source, QWidget *parent)
 
     // Frequency
     _freq = new QLineEdit();
-    QDoubleValidator *freq_val = new QDoubleValidator();
+    /*QDoubleValidator *freq_val = new QDoubleValidator();
     freq_val->setBottom(0);
-    _freq->setValidator(freq_val);
+    _freq->setValidator(freq_val);*/
 
     // set frequencies
     QAction *setFreqAction = new QAction(QIcon::fromTheme("document-save"), "Set",this);
@@ -271,7 +271,7 @@ RTLCtrlView::RTLCtrlView(RTLDataSource *source, QWidget *parent)
 
     QHBoxLayout *freqLayout = new QHBoxLayout();
     freqLayout->addWidget(_freq, 1); freqLayout->addWidget(setFreqButton, 0);
-    layout->addRow("Frequency", freqLayout);
+    layout->addRow("Frequency (MHz)", freqLayout);
 
     layout->addRow("Sample rate", _sampleRates);
     layout->addRow("Gain", _gain);
@@ -283,7 +283,8 @@ RTLCtrlView::RTLCtrlView(RTLDataSource *source, QWidget *parent)
     QObject::connect(_gain, SIGNAL(currentIndexChanged(int)), this, SLOT(onGainChanged(int)));
     QObject::connect(_agc, SIGNAL(toggled(bool)), this, SLOT(onAGCToggled(bool)));
 
-    for (size_t i=0; i<_devices->count(); i++)
+
+    /*for (size_t i=0; i<_devices->count(); i++)
     {
         char maker[256];      // manufacturer
         char prodname[256];   // product name
@@ -298,7 +299,7 @@ RTLCtrlView::RTLCtrlView(RTLDataSource *source, QWidget *parent)
             _devices->setCurrentIndex(i);
             onDeviceSelected(i);
         }
-    }
+    }*/
 
     if(_source->isActive())
     {
@@ -320,7 +321,7 @@ RTLCtrlView::RTLCtrlView(RTLDataSource *source, QWidget *parent)
         _infoMessage->setText(sMaker + " " + QString(RTLDataSource::deviceName(deviceId).c_str()));
 
         double f = _source->frequency();
-        _freq->setText(QString::number(f));
+        _freq->setText(QString::number(f/1000000, 'f', 2));
 
         for (size_t i=0; i<_source->gainFactors().size(); i++) {
             _gain->addItem(QString("%1 dB").arg(_source->gainFactors()[i]/10), _source->gainFactors()[i]);
@@ -329,8 +330,8 @@ RTLCtrlView::RTLCtrlView(RTLDataSource *source, QWidget *parent)
         _agc->setChecked(_source->agcEnabled());
         if (_source->agcEnabled()) { _gain->setEnabled(false); }
 
-        double rate = _sampleRates->itemData(0).toDouble();
-        _source->setSampleRate(rate);
+        /*double rate = _sampleRates->itemData(0).toDouble();
+        _source->setSampleRate(rate);*/
     }
     else if (! _source->isActive())
     {
@@ -344,6 +345,12 @@ RTLCtrlView::RTLCtrlView(RTLDataSource *source, QWidget *parent)
 
 RTLCtrlView::~RTLCtrlView() {
     // pass...
+}
+
+void RTLCtrlView::update()
+{
+    double f = _source->frequency();
+    _freq->setText(QString::number(f/1000000, 'f', 2));
 }
 
 void
@@ -363,7 +370,7 @@ void
 RTLCtrlView::onSetFrequency() {
     double freq = _freq->text().toDouble();
     if (! _source->isActive()) { return; }
-    _source->setFrequency(freq);
+    _source->setFrequency(freq*1000000);
     std::cerr << "Set frequency " << _source->tunerFrequency() << std::endl;
 }
 

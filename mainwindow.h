@@ -11,6 +11,7 @@
 #include "freqctrl.h"
 #include "gui/gui.hh"
 #include "receiver/receiver.hh"
+#include "receiver/rtldatasource.hh"
 #include "sdr/buffer.hh"
 
 namespace Ui {
@@ -39,9 +40,14 @@ private:
     unsigned int freqStep;
     unsigned int fftSize;
     unsigned int fftrate;
-
+    qint64       tunerFrequency;
     int         m_HiCutFreq;
     int         m_LowCutFreq;
+
+    DemodulatorCtrl::Demod currentDemod;
+    DataSourceCtrlView* sourceView {};
+    DemodulatorCtrlView* demodView {};
+    AudioPostProcView* audioView = {};
 
     float               *d_realFftData;
     float               *d_iirFftData;
@@ -49,12 +55,16 @@ private:
     float               d_fftAvg;
     float               signal_level;
 
-    void initObjects();    
+    void initObjects();
     void appentTextBrowser(const char* );
     void initSpectrumGraph();
     int  setFreqStep(int );
     int  setFftRate(int );
     void setPlotterSettings();
+    void loadSettings();
+    void saveSettings();
+
+    QString m_sSettingsFile;
 
 private slots:
     void fftTimeout();
@@ -71,8 +81,8 @@ private slots:
     void onReceiverStopped();
 
 protected:
-  Receiver *m_Receiver{};
-  DemodulatorCtrl *m_Demodulator{};
+    Receiver *m_Receiver{};
+    DemodulatorCtrl *m_Demodulator{};
 
 private:
     Ui::MainWindow *ui;

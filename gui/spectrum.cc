@@ -98,7 +98,6 @@ Spectrum::spectrum() const {
 void
 Spectrum::handleBuffer(const RawBuffer &buffer, bool allow_overwrite)
 {
-
     double scale=1, offset=0;
     switch (_input_type) {
     case Config::Type_u8:   scale = 1<<8;  offset=-128;   break;

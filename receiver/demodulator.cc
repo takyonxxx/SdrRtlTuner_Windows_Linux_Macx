@@ -96,8 +96,6 @@ DemodulatorCtrl::DemodulatorCtrl(Receiver *receiver) :
   _agc->enable(_config.agcEnabled());
   _agc->setTau(_config.agcTau());
   _agc->setGain(_config.gain());
-
-  setDemod(DEMOD_AM);
 }
 
 
@@ -209,9 +207,15 @@ DemodulatorCtrl::setDemod(Demod demod) {
   _demodObj->audioSource()->connect(_audio_source);
 
   // Restart queue if it was running...
-  if (was_running) { _receiver->start(); }
+  if (was_running) { _receiver->start(); }  
+
+  currentDemod = demod;
 }
 
+DemodulatorCtrl::Demod DemodulatorCtrl::getDemod()
+{
+    return currentDemod;
+}
 
 QWidget *
 DemodulatorCtrl::createCtrlView() {
@@ -276,12 +280,18 @@ DemodulatorCtrlView::DemodulatorCtrlView(DemodulatorCtrl *demodulator, QWidget *
 
   if (_demodulator->demod()) {
     _layout->addWidget(_demodulator->demod()->createView(), 1, Qt::AlignTop);
-  }
-
-  _demodList->setCurrentIndex(0);
-  onDemodSelected(0);
+  }  
 
   this->setLayout(_layout);
+
+
+  /*_demodList->setCurrentIndex(DemodulatorCtrl::DEMOD_WFM);
+  onDemodSelected(DemodulatorCtrl::DEMOD_WFM);*/
+}
+
+void DemodulatorCtrlView::setDemodIndex(DemodulatorCtrl::Demod demod)
+{
+    _demodList->setCurrentIndex(demod);
 }
 
 

@@ -103,12 +103,14 @@ public slots:
   void setFilterWidth(double w, bool sendEmit = true);
 
   void setDemod(Demod demod);
+  Demod getDemod();
 
 protected:
   Receiver *_receiver;
 
   /** The currently selected demodulator. */
-  DemodInterface *_demodObj;
+  DemodInterface *_demodObj{};
+  Demod currentDemod{};
 
   // A AGC
   sdr::AGC< std::complex<int16_t> > *_agc;
@@ -127,6 +129,7 @@ class DemodulatorCtrlView : public QWidget
 
 public:
   explicit DemodulatorCtrlView(DemodulatorCtrl *demodulator, QWidget *parent = 0);
+  void setDemodIndex(DemodulatorCtrl::Demod demod);
 
 protected slots:
   void onDemodSelected(int idx);

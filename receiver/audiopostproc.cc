@@ -83,6 +83,8 @@ AudioPostProc::spectrum() const {
 AudioPostProcView::AudioPostProcView(AudioPostProc *proc, QWidget *parent)
   : QWidget(parent), _proc(proc)
 {
+  _lb_info = new QLabel("PortAudio");
+
   QCheckBox *lp_enable = new QCheckBox("enable");
   lp_enable->setChecked(proc->lowPassEnabled());
 
@@ -110,6 +112,7 @@ AudioPostProcView::AudioPostProcView(AudioPostProc *proc, QWidget *parent)
   // Layout
   QVBoxLayout *layout = new QVBoxLayout();
   QFormLayout *table = new QFormLayout();
+  table->addRow("Device: ", _lb_info);
   table->addRow("Low Pass (Hz)", _lp_freq);
   table->addRow("order", _lp_order);
   table->addWidget(lp_enable);

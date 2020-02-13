@@ -8,6 +8,8 @@
 #include "config.hh"
 #include "logger.hh"
 
+#include <QBuffer>
+
 namespace sdr {
 
 /** "Namespace" to collect all static, PortAudio related functions. */
@@ -32,6 +34,7 @@ public:
   static std::string deviceName(int idx);
 };
 
+using namespace std;
 
 /** PortAudio playback node.
  * @ingroup sinks */

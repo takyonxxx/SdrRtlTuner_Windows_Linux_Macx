@@ -165,3 +165,8 @@ DataSourceCtrlView::~DataSourceCtrlView() {
     // pass...
 }
 
+QWidget *DataSourceCtrlView::currentSrcCtrl() const
+{
+    return _currentSrcCtrl;
+}
+

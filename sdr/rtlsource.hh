@@ -72,7 +72,7 @@ protected:
   /** Parallel routine to receive some data from the device. */
   static void *__rtl_sdr_parallel_main(void *ctx);
   /** Callback to process received data. */
-  static void __rtl_sdr_callback(unsigned char *buffer, uint32_t len, void *ctx);
+  static void __rtl_sdr_callback(unsigned char *buffer, uint32_t len, void *ctx);  
 
 protected:
   /** The current tuner frequency. */

@@ -84,6 +84,8 @@ public:
   DataSourceCtrlView(DataSourceCtrl *src_ctrl, QWidget *parent = nullptr);
   virtual ~DataSourceCtrlView();
 
+  QWidget *currentSrcCtrl() const;
+
 protected:
   DataSourceCtrl *_src_ctrl;
   QVBoxLayout *_layout;

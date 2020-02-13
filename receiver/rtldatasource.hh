@@ -90,6 +90,7 @@ class RTLCtrlView: public QWidget
 public:
   RTLCtrlView(RTLDataSource *source, QWidget *parent=0);
   virtual ~RTLCtrlView();
+  void update();
 
 protected slots:
   void onDeviceSelected(int idx);
