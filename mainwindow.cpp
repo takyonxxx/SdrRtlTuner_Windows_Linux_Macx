@@ -18,7 +18,6 @@ MainWindow::MainWindow(QWidget *parent) :
     fftSize         = DEFAULT_FFT_SIZE;
     fftrate         = DEFAULT_FFT_RATE;
     freqStep        = DEFAULT_FREQ_STEP;
-    demodGain       = DEFAULT_AUDIO_GAIN;
     tunerFrequency  = DEFAULT_FREQUENCY;
     currentDemod    = DemodulatorCtrl::DEMOD_WFM;
 
@@ -78,6 +77,21 @@ MainWindow::MainWindow(QWidget *parent) :
 
     setFftRate(fftrate);
     setFreqStep(freqStep);
+
+    auto deviceId   = m_Receiver->getDeviceID();
+    auto deviceName = rtlsdr_get_device_name(deviceId);
+    auto tunerFreq  = m_Receiver->tunerFrequency();
+    auto sampleRate = m_Receiver->sampleRate();
+
+    QString info;
+    info.append("-> Receiver: " + QString(deviceName) + "\n");
+    info.append("-> Tuner Frequency: " + QString::number(tunerFreq / 1000000.0, 'f', 2) + " MHz\n");
+    info.append("-> Sample Rate: " + QString::number(sampleRate / 1000000.0, 'f', 2) + " MS/s\n");
+    info.append("-> Fft Size: " + QString::number(fftSize) + "\n");
+    info.append("-> HiCutFreq: " + QString::number(m_HiCutFreq / 1000.0, 'f', 2) + " Khz\n");
+    info.append("-> LowCutFreq: " + QString::number(m_LowCutFreq / 1000.0, 'f', 2) + " Khz\n");
+    info.append("-> FFT Refresh Rate: " + QString::number(fftrate) + " Hz");
+    appentTextBrowser(info.toStdString().c_str());
 
     // meter timer
     meter_timer = new QTimer(this);
@@ -155,22 +169,6 @@ void MainWindow::onReceiverStarted() {
 
     meter_timer->start(100);
     ui->push_connect->setText("Stop"); ui->push_connect->setEnabled(true);
-
-    auto deviceId = m_Receiver->getDeviceID();
-    auto deviceName = rtlsdr_get_device_name(deviceId);
-    auto tunerFreq = m_Receiver->tunerFrequency();
-    auto sampleRate = m_Receiver->sampleRate();
-
-    QString info;
-    info.append(QString(deviceName) + " Receiver started.\n");
-    info.append("-> Tuner Frequency: " + QString::number(tunerFreq / 1000000.0, 'f', 2) + " MHz\n");
-    info.append("-> Sample Rate: " + QString::number(sampleRate / 1000000.0, 'f', 2) + " MS/s\n");
-    info.append("-> Fft Size: " + QString::number(fftSize) + "\n");
-    info.append("-> Gain: " + QString::number(demodGain, 'f', 2)  + " dB\n");
-    info.append("-> HiCutFreq: " + QString::number(m_HiCutFreq / 1000.0, 'f', 2) + " Khz\n");
-    info.append("-> LowCutFreq: " + QString::number(m_LowCutFreq / 1000.0, 'f', 2) + " Khz\n");
-    info.append("-> FFT Refresh Rate: " + QString::number(fftrate) + " Hz");
-    appentTextBrowser(info.toStdString().c_str());
 }
 
 void MainWindow::onReceiverStopped()
@@ -322,7 +320,6 @@ void MainWindow::tunerTimeout()
 {
     sampleRate      = static_cast<unsigned int>(m_Demodulator->sampleRate());
     fftSize         = static_cast<unsigned int>(m_Demodulator->fftSize());
-    demodGain       = m_Demodulator->gain();
     m_HiCutFreq     = m_Demodulator->filterUpper();
     m_LowCutFreq    = m_Demodulator->filterLower();
     tunerFrequency  = m_Receiver->tunerFrequency();
@@ -334,6 +331,24 @@ void MainWindow::tunerTimeout()
     ui->sMeter->setLevel(signal_level);
     ui->filterFreq->setFrequency(m_HiCutFreq);
     ui->plotter->setHiLowCutFrequencies(m_LowCutFreq, m_HiCutFreq);
+
+    auto deviceId = m_Receiver->getDeviceID();
+    auto deviceName = rtlsdr_get_device_name(deviceId);
+    auto tunerFreq = m_Receiver->tunerFrequency();
+    auto sampleRate = m_Receiver->sampleRate();
+
+    ui->text_terminal->clear();
+
+    QString info;
+    info.append("-> Receiver: " + QString(deviceName) + "\n");
+    info.append("-> Tuner Frequency: " + QString::number(tunerFreq / 1000000.0, 'f', 2) + " MHz\n");
+    info.append("-> Sample Rate: " + QString::number(sampleRate / 1000000.0, 'f', 2) + " MS/s\n");
+    info.append("-> Fft Size: " + QString::number(fftSize) + "\n");
+    info.append("-> HiCutFreq: " + QString::number(m_HiCutFreq / 1000.0, 'f', 2) + " Khz\n");
+    info.append("-> LowCutFreq: " + QString::number(m_LowCutFreq / 1000.0, 'f', 2) + " Khz\n");
+    info.append("-> FFT Refresh Rate: " + QString::number(fftrate) + " Hz");
+    appentTextBrowser(info.toStdString().c_str());
+
     saveSettings();
 }
 

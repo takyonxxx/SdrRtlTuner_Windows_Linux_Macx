@@ -36,7 +36,6 @@ private:
     std::map<QString, QVariant> devList;
 
     unsigned int sampleRate;
-    qreal        demodGain;
     unsigned int freqStep;
     unsigned int fftSize;
     unsigned int fftrate;
