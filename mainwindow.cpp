@@ -104,14 +104,9 @@ MainWindow::~MainWindow()
 
     if(m_Receiver)m_Receiver->stop();
 
-    if(sourceView)delete [] sourceView;
-    if(demodView)delete [] demodView;
-    if(audioView)delete [] audioView;
     if(d_realFftData)delete [] d_realFftData;
     if(d_iirFftData)delete [] d_iirFftData;
     if(d_pwrFftData)delete [] d_pwrFftData;
-    if(m_Demodulator)delete [] m_Demodulator;
-    if(m_Receiver)delete [] m_Receiver;
 
     delete ui;
 }
