@@ -1,5 +1,6 @@
 #include "spectrum.hh"
 #include "sdr/config.hh"
+#include <QDebug>
 
 using namespace sdr;
 using namespace sdr::gui;
@@ -96,7 +97,7 @@ Spectrum::spectrum() const {
 }
 
 void
-Spectrum::handleBuffer(const RawBuffer &buffer, bool allow_overwrite)
+Spectrum::handleBuffer(unsigned char *sdrbuffer, const RawBuffer &buffer, bool allow_overwrite)
 {
     double scale=1, offset=0;
     switch (_input_type) {
@@ -281,3 +282,7 @@ void Spectrum::setRrate(double rrate)
     // Signal spectrum reconfiguration
     emit spectrumConfigured();
 }
+
+/* ********************************************************************************************* *
+ * Spectrum
+ * ********************************************************************************************* */

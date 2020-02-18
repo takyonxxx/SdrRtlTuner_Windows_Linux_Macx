@@ -39,7 +39,7 @@ public:
   /** Configures the node. */
   virtual void config(const Config &src_cfg);
   /** Processes the bit-stream. */
-  virtual void process(const Buffer<uint8_t> &buffer, bool allow_overwrite);
+  virtual void process(unsigned char *sdrbuffer, const Buffer<uint8_t> &buffer, bool allow_overwrite);
 
 protected:
   /** Code table for letters. */

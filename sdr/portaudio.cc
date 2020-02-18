@@ -163,14 +163,11 @@ PortSink::config(const Config &src_cfg) {
 
 
 void
-PortSink::handleBuffer(const RawBuffer &buffer, bool allow_overwrite)
-{
+PortSink::handleBuffer(unsigned char *sdrbuffer, const RawBuffer &buffer, bool allow_overwrite)
+{       
    auto err = Pa_WriteStream(_stream, buffer.data(), buffer.bytesLen()/_frame_size);
    if( err != paNoError )
    {
        qDebug() << "Error: " << Pa_GetErrorText(err);
    }
-    /*Buffer<uint8_t> input(buffer);
-   QByteArray array((char*)input.data(), input.size());
-   qDebug() << QString(array.toHex()) + "\n";*/
 }

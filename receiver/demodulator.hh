@@ -374,7 +374,7 @@ public:
   virtual QWidget *createView();
 
   virtual void config(const sdr::Config &src_cfg);
-  virtual void process(const sdr::Buffer<uint8_t> &buffer, bool allow_overwrite);
+  virtual void process(unsigned char *sdrbuffer, const sdr::Buffer<uint8_t> &buffer, bool allow_overwrite);
 
   const QString & text() const;
   void clearText();

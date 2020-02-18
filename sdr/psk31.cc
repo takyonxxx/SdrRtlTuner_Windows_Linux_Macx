@@ -66,7 +66,7 @@ Varicode::config(const Config &src_cfg) {
 }
 
 void
-Varicode::process(const Buffer<uint8_t> &buffer, bool allow_overwrite) {
+Varicode::process(unsigned char *sdrbuffer, const Buffer<uint8_t> &buffer, bool allow_overwrite) {
   size_t oidx = 0;
   for (size_t i=0; i<buffer.size(); i++) {
     _value = (_value << 1) | (buffer[i]&0x01);
@@ -86,7 +86,7 @@ Varicode::process(const Buffer<uint8_t> &buffer, bool allow_overwrite) {
     }
   }
   if (oidx) {
-    this->send(_buffer.head(oidx));
+    this->send(sdrbuffer, _buffer.head(oidx));
   }
 }
 

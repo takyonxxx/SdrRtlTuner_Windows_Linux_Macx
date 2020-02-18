@@ -33,11 +33,11 @@ Queue::~Queue() {
 }
 
 void
-Queue::send(const RawBuffer &buffer, SinkBase *sink, bool allow_overwrite) {
+Queue::send(unsigned char *sdrbuffer, const RawBuffer &buffer, SinkBase *sink, bool allow_overwrite) {
   // Refrerence buffer
   pthread_mutex_lock(&_queue_lock);
   buffer.ref();
-  _queue.push_back(Message(buffer, sink, allow_overwrite));
+  _queue.push_back(Message(sdrbuffer, buffer, sink, allow_overwrite));
   pthread_cond_signal(&_queue_cond);
   pthread_mutex_unlock(&_queue_lock);
 }
@@ -101,7 +101,7 @@ Queue::_main()
       _queue.pop_front();
       pthread_mutex_unlock(&_queue_lock);     
       // Process message
-      msg.sink()->handleBuffer(msg.buffer(), msg.allowOverwrite());
+      msg.sink()->handleBuffer(msg.sdrbuffer(), msg.buffer(), msg.allowOverwrite());
       // Mark buffer unused
       msg.buffer().unref();
     }

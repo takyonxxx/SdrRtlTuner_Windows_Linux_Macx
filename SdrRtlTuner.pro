@@ -3,7 +3,7 @@
 # Project created by Türkay Biliyor 2019-08-06 T12:46:07
 #
 #-------------------------------------------------
-QT       += core gui
+QT       += core gui multimedia
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 

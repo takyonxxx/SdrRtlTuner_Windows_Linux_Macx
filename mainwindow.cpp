@@ -12,8 +12,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     setAttribute(Qt::WA_DeleteOnClose);
 
-    qRegisterMetaType<sdr::RawBuffer>("RawBuffer");
-
     sampleRate      = static_cast<qint64>(DEFAULT_SAMPLE_RATE);
     fftSize         = DEFAULT_FFT_SIZE;
     fftrate         = DEFAULT_FFT_RATE;
@@ -41,8 +39,9 @@ MainWindow::MainWindow(QWidget *parent) :
     m_Receiver = new Receiver();
     if (!m_Receiver) QApplication::quit();
 
-    QObject::connect(m_Receiver, SIGNAL(started()), SLOT(onReceiverStarted()));
-    QObject::connect(m_Receiver, SIGNAL(stopped()), SLOT(onReceiverStopped()));
+    QObject::connect(m_Receiver, &Receiver::started, this, &MainWindow::onReceiverStarted);
+    QObject::connect(m_Receiver, &Receiver::stopped, this, &MainWindow::onReceiverStopped);
+    QObject::connect(m_Receiver, &Receiver::dataReceived, this, &MainWindow::onDataReceived);
 
     m_Demodulator = m_Receiver->demod();
     if (!m_Demodulator) QApplication::quit();
@@ -96,6 +95,8 @@ MainWindow::MainWindow(QWidget *parent) :
     // meter timer
     meter_timer = new QTimer(this);
     connect(meter_timer, &QTimer::timeout, this, &MainWindow::tunerTimeout);
+
+    //initializeAudio();
 }
 
 MainWindow::~MainWindow()
@@ -132,6 +133,32 @@ void MainWindow::saveSettings()
     settings.setValue("tunerFrequency", QString::number(tunerFrequency));
     settings.setValue("fftrate", QString::number(fftrate));
     settings.setValue("freqStep", QString::number(freqStep));
+}
+
+//todo
+void MainWindow::initializeAudio()
+{
+    const QAudioDeviceInfo &defaultDeviceInfo = QAudioDeviceInfo::defaultOutputDevice();
+    qDebug() << defaultDeviceInfo.deviceName();
+    for (auto &deviceInfo: QAudioDeviceInfo::availableDevices(QAudio::AudioOutput)) {
+        if (deviceInfo != defaultDeviceInfo)
+            qDebug() << deviceInfo.deviceName();
+    }
+
+    QAudioFormat format;
+    format.setSampleRate(44100);
+    format.setChannelCount(1);
+    format.setSampleSize(16);
+    format.setCodec("audio/pcm");
+    format.setByteOrder(QAudioFormat::LittleEndian);
+    format.setSampleType(QAudioFormat::SignedInt);
+
+    if (!defaultDeviceInfo.isFormatSupported(format)) {
+        qWarning() << "Default format not supported - trying to use nearest";
+        format = defaultDeviceInfo.nearestFormat(format);
+    }
+
+    m_audioOutput.reset(new QAudioOutput(defaultDeviceInfo, format));
 }
 
 void MainWindow::on_push_exit_clicked()
@@ -183,6 +210,14 @@ void MainWindow::onReceiverStopped()
     appentTextBrowser(info.toStdString().c_str());
 
     ui->push_connect->setText("Start"); ui->push_connect->setEnabled(true);
+}
+
+void MainWindow::onDataReceived(unsigned char *buffer, quint32 len)
+{
+    /*char log_buffer[128];
+    QByteArray array((char*)buffer);
+    snprintf(log_buffer, sizeof(log_buffer), "(%d) %s\n", len, array.toHex().toStdString().c_str());
+    qDebug() << log_buffer;*/
 }
 
 void MainWindow::on_fftRateSelector_currentIndexChanged(const QString &arg1)

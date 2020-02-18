@@ -73,7 +73,7 @@ public:
   }
 
   /** Performs the sub-sampling on the given buffer. */
-  virtual void process(const Buffer<Scalar> &buffer, bool allow_overwrite) {
+  virtual void process(unsigned char *sdrbuffer, const Buffer<Scalar> &buffer, bool allow_overwrite) {
     if (allow_overwrite) {
       _process(buffer, buffer);
     } else if (_buffer.isUnused()) {
@@ -97,7 +97,7 @@ protected:
         out[j] = _last/SScalar(_n); j++; _last=0; _left=0;
       }
     }
-    this->send(out.head(j), true);
+    this->send(nullptr, out.head(j), true);
   }
 
 

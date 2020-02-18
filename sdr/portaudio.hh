@@ -49,7 +49,7 @@ public:
   /** Configures the PortAudio output. */
   virtual void config(const Config &src_cfg);
   /** Playback. */
-  virtual void handleBuffer(const RawBuffer &buffer, bool allow_overwrite);
+  virtual void handleBuffer(unsigned char *sdrbuffer, const RawBuffer &buffer, bool allow_overwrite);
 
 protected:
   /** The PortAudio stream. */

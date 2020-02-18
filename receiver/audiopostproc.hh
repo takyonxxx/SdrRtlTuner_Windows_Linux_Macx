@@ -24,7 +24,7 @@ public:
 
   /** Implements sdr::Sink<double> interface. */
   virtual void config(const sdr::Config &src_cfg);
-  virtual void process(const sdr::Buffer<int16_t> &buffer, bool allow_overwrite);
+  virtual void process(unsigned char *sdrbuffer, const sdr::Buffer<int16_t> &buffer, bool allow_overwrite);
 
   bool lowPassEnabled() const;
   void enableLowPass(bool enable);

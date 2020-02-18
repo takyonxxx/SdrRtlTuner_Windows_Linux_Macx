@@ -82,8 +82,8 @@ This is an offset from the hardware RF frequency.&lt;/p&gt;&lt;/body&gt;&lt;/htm
          </layout>
         </item>
         <item>
-         <layout class="QVBoxLayout" name="verticalLayout_Right">
-          <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+         <layout class="QGridLayout" name="gridLayout_3">
+          <item row="0" column="0">
            <widget class="CFreqCtrl" name="freqCtrl">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">

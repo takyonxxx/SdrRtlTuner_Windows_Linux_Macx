@@ -43,10 +43,12 @@ public:
 signals:
   void started();
   void stopped();
+  void dataReceived(unsigned char *buffer, uint32_t len);
 
 public slots:  
   void start();
   void stop();
+  void onDataReceived(unsigned char *buffer, quint32 len);
 
 protected:
   void _onQueueStarted();

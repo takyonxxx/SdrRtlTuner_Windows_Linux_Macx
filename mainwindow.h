@@ -13,6 +13,7 @@
 #include "receiver/receiver.hh"
 #include "receiver/rtldatasource.hh"
 #include "sdr/buffer.hh"
+#include <QAudioOutput>
 
 namespace Ui {
 class MainWindow;
@@ -30,7 +31,7 @@ public:
 
 private:
 
-    char log_buffer[250];
+    char log_buffer[256];
     QTimer   *meter_timer{};
 
     std::map<QString, QVariant> devList;
@@ -62,6 +63,8 @@ private:
     void setPlotterSettings();
     void loadSettings();
     void saveSettings();
+    void initializeAudio();
+    QScopedPointer<QAudioOutput> m_audioOutput;
 
     QString m_sSettingsFile;
 
@@ -78,6 +81,8 @@ private slots:
     void on_waterFallColor_currentIndexChanged(int );
     void onReceiverStarted();
     void onReceiverStopped();
+    void onDataReceived(unsigned char *buffer, quint32 len);
+
 
 protected:
     Receiver *m_Receiver{};

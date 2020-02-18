@@ -84,14 +84,15 @@ public:
     this->setConfig(Config(Config::typeId<Scalar>(), src_cfg.sampleRate(), src_cfg.bufferSize(), 1));
   }
 
-  virtual void handleBuffer(const RawBuffer &buffer, bool allow_overwrite) {
+  virtual void handleBuffer(unsigned char *sdrbuffer, const RawBuffer &buffer, bool allow_overwrite) {
+
     // If no conversion is selected
     if (0 == _cast) { return; }
     // If the identity conversion is selected -> forward buffer
-    if (_identity == _cast) { this->send(buffer, allow_overwrite); return; }
+    if (_identity == _cast) { this->send(sdrbuffer, buffer, allow_overwrite); return; }
     // Otherwise cast
     size_t bytes = _cast(buffer, _buffer);
-    this->send(RawBuffer(_buffer, 0, bytes), false);
+    this->send(sdrbuffer, RawBuffer(_buffer, 0, bytes), false);
   }
 
 

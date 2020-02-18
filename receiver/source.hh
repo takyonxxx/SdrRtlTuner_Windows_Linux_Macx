@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QWidget>
 #include <QVBoxLayout>
+#include <QDebug>
 
 #include "sdr/node.hh"
 
@@ -60,6 +61,15 @@ public:
   bool setTunerFrequency(qreal freq);
   double tunerSampleRate() const;
   size_t getDeviceId();
+
+  virtual void handleBuffer(unsigned char *sdrbuffer, const sdr::RawBuffer &buffer, bool allow_overwrite)
+  {
+      this->send(sdrbuffer, buffer);
+      emit dataReceived(sdrbuffer, (quint32)buffer.bytesLen()/2);
+  }
+
+signals:
+  void dataReceived(unsigned char *buffer, quint32 len);
 
 protected:
   void _onQueueIdle();

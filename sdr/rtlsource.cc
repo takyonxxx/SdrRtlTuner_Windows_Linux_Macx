@@ -6,7 +6,7 @@ using namespace sdr;
 
 RTLSource::RTLSource(double frequency, double sample_rate, size_t device_idx)
     : Source(), _frequency(frequency), _sample_rate(sample_rate), _agc_enabled(true), _gains(),
-      _buffer_size(131072), _device(nullptr)
+      _buffer_size(1024 * 128), _device(nullptr)
 {
     {
         LogMessage msg(LOG_DEBUG);
@@ -128,8 +128,7 @@ RTLSource::deviceName(size_t idx) {
 void *
 RTLSource::__rtl_sdr_parallel_main(void *ctx) {
     RTLSource *self = reinterpret_cast<RTLSource *>(ctx);
-    rtlsdr_read_async(self->_device, &RTLSource::__rtl_sdr_callback, self,
-                      15, self->_buffer_size*2);
+    rtlsdr_read_async(self->_device, &RTLSource::__rtl_sdr_callback, self, 15, self->_buffer_size*2);
     return 0;
 }
 
@@ -137,5 +136,10 @@ void
 RTLSource::__rtl_sdr_callback(unsigned char *buffer, uint32_t len, void *ctx) {    
 
     RTLSource *self = reinterpret_cast<RTLSource *>(ctx);
-    self->send(Buffer< std::complex<uint8_t> >((std::complex<uint8_t> *)buffer, len/2));    
+    self->send(buffer, Buffer< std::complex<uint8_t> >((std::complex<uint8_t> *)buffer, len/2));   
+
+    /*char log_buffer[128];
+    QByteArray array((char*)buffer, len);
+    snprintf(log_buffer, sizeof(log_buffer), "(%d) %s\n", len , array.toHex().toStdString().c_str());
+    qDebug() << log_buffer;*/
 }

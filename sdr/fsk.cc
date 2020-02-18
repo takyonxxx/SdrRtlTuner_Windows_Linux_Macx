@@ -87,11 +87,11 @@ FSKDetector::_process(int16_t sample) {
 }
 
 void
-FSKDetector::process(const Buffer<int16_t> &buffer, bool allow_overwrite) {
+FSKDetector::process(unsigned char *sdrbuffer, const Buffer<int16_t> &buffer, bool allow_overwrite) {
   for (size_t i=0; i<buffer.size(); i++) {
     _buffer[i] = _process(buffer[i]);
   }
-  this->send(_buffer.head(buffer.size()), false);
+  this->send(sdrbuffer, _buffer.head(buffer.size()), false);
 }
 
 
@@ -155,7 +155,7 @@ BitStream::config(const Config &src_cfg) {
 }
 
 void
-BitStream::process(const Buffer<uint8_t> &buffer, bool allow_overwrite)
+BitStream::process(unsigned char *sdrbuffer, const Buffer<uint8_t> &buffer, bool allow_overwrite)
 {
   size_t o=0;
   for (size_t i=0; i<buffer.size(); i++)
@@ -198,7 +198,7 @@ BitStream::process(const Buffer<uint8_t> &buffer, bool allow_overwrite)
     }
   }
 
-  if (o>0) { this->send(_buffer.head(o)); }
+  if (o>0) { this->send(sdrbuffer, _buffer.head(o)); }
 }
 
 

@@ -111,7 +111,7 @@ public:
   }
 
 
-  virtual void process(const Buffer< std::complex<Scalar> > &buffer, bool allow_overwrite) {
+  virtual void process(unsigned char *sdrbuffer, const Buffer< std::complex<Scalar> > &buffer, bool allow_overwrite) {
     size_t i=0, o=0;
     while (i<buffer.size()) {
       // First, fill sampler...
@@ -155,7 +155,7 @@ public:
       }
     }
     // If at least 1 bit was decoded -> send result
-    if (o>0) { this->send(_buffer.head(o)); }
+    if (o>0) { this->send(sdrbuffer, _buffer.head(o)); }
   }
 
 
@@ -306,7 +306,7 @@ public:
   /** Configures the node. */
   virtual void config(const Config &src_cfg);
   /** Converts the input bit stream to ASCII chars. */
-  virtual void process(const Buffer<uint8_t> &buffer, bool allow_overwrite);
+  virtual void process(unsigned char *sdrbuffer, const Buffer<uint8_t> &buffer, bool allow_overwrite);
 
 protected:
   /** The shift register of the last received bits. */
