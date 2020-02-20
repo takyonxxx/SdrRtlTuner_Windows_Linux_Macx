@@ -1,7 +1,5 @@
 #include "portaudio.hh"
-#include<QDebug>
 using namespace sdr;
-
 
 /* ******************************************************************************************* *
  * PortAudio interface
@@ -63,13 +61,12 @@ PortAudio::deviceName(int idx) {
 PortSink::PortSink()
     : SinkBase(), _stream(0), _frame_size(0)
 {
-
 }
 
 PortSink::~PortSink() {
     if (0 != _stream) {
         Pa_CloseStream(_stream);
-    }
+    }    
 }
 
 void
@@ -145,22 +142,7 @@ PortSink::config(const Config &src_cfg) {
 
     // start
     Pa_StartStream(_stream);
-
-    LogMessage msg(LOG_INFO);
-    msg << "Configure PortAudio sink: " << std::endl;
-    for(int i=0; i<Pa_GetDeviceCount(); i++ )
-    {
-        const PaDeviceInfo *info = Pa_GetDeviceInfo(i);
-        msg << "Device: " <<  info->name << std::endl;
-    }
-    msg  << " sample rate " << (int)src_cfg.sampleRate()  << std::endl
-         << " buffer size " << src_cfg.bufferSize() << std::endl
-         << " format " << src_cfg.type() << std::endl
-         << " # chanels " << nChanels;
-
-    Logger::get().log(msg);
 }
-
 
 void
 PortSink::handleBuffer(unsigned char *sdrbuffer, const RawBuffer &buffer, bool allow_overwrite)

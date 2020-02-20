@@ -99,6 +99,48 @@ MainWindow::MainWindow(QWidget *parent) :
     //initializeAudio();
 }
 
+//todo
+/*void MainWindow::initializeAudio()
+{
+    defaultDeviceInfo = QAudioDeviceInfo::defaultOutputDevice();
+
+    for (auto &deviceInfo: QAudioDeviceInfo::availableDevices(QAudio::AudioOutput)) {
+        if (deviceInfo != defaultDeviceInfo)
+            qDebug() << deviceInfo.deviceName();
+    }
+
+    format.setSampleRate(44100);
+    format.setChannelCount(1);
+    format.setSampleSize(16);
+    format.setCodec("audio/pcm");
+    format.setByteOrder(QAudioFormat::LittleEndian);
+    format.setSampleType(QAudioFormat::SignedInt);
+
+    if (!defaultDeviceInfo.isFormatSupported(format)) {
+        qWarning() << "Default format not supported - trying to use nearest";
+        format = defaultDeviceInfo.nearestFormat(format);
+    }
+
+    const int durationSeconds = 1;
+    const int toneSampleRateHz = 600;
+    m_generator.reset(new Generator(format, durationSeconds * 1000000, toneSampleRateHz));
+
+    m_generator->start();
+
+    auto Buffer = new QBuffer;
+    Buffer->open(QIODevice::ReadWrite);
+
+    Buffer->seek(0);
+    Buffer->write(buffer.data(), buffer.bytesLen()/_frame_size);
+    Buffer->seek(0);
+
+    m_audioOutput.reset(new QAudioOutput(defaultDeviceInfo, format));
+    m_audioOutput->start(Buffer);
+
+    qDebug() << "Default Sound Device: " << defaultDeviceInfo.deviceName();
+}*/
+
+
 MainWindow::~MainWindow()
 {
     qDebug() << "exiting...";
@@ -128,32 +170,6 @@ void MainWindow::saveSettings()
     settings.setValue("tunerFrequency", QString::number(tunerFrequency));
     settings.setValue("fftrate", QString::number(fftrate));
     settings.setValue("freqStep", QString::number(freqStep));
-}
-
-//todo
-void MainWindow::initializeAudio()
-{
-    const QAudioDeviceInfo &defaultDeviceInfo = QAudioDeviceInfo::defaultOutputDevice();
-    qDebug() << defaultDeviceInfo.deviceName();
-    for (auto &deviceInfo: QAudioDeviceInfo::availableDevices(QAudio::AudioOutput)) {
-        if (deviceInfo != defaultDeviceInfo)
-            qDebug() << deviceInfo.deviceName();
-    }
-
-    QAudioFormat format;
-    format.setSampleRate(44100);
-    format.setChannelCount(1);
-    format.setSampleSize(16);
-    format.setCodec("audio/pcm");
-    format.setByteOrder(QAudioFormat::LittleEndian);
-    format.setSampleType(QAudioFormat::SignedInt);
-
-    if (!defaultDeviceInfo.isFormatSupported(format)) {
-        qWarning() << "Default format not supported - trying to use nearest";
-        format = defaultDeviceInfo.nearestFormat(format);
-    }
-
-    m_audioOutput.reset(new QAudioOutput(defaultDeviceInfo, format));
 }
 
 void MainWindow::on_push_exit_clicked()

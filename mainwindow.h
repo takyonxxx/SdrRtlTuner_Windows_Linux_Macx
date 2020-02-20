@@ -13,7 +13,6 @@
 #include "receiver/receiver.hh"
 #include "receiver/rtldatasource.hh"
 #include "sdr/buffer.hh"
-#include <QAudioOutput>
 
 namespace Ui {
 class MainWindow;
@@ -63,8 +62,6 @@ private:
     void setPlotterSettings();
     void loadSettings();
     void saveSettings();
-    void initializeAudio();
-    QScopedPointer<QAudioOutput> m_audioOutput;
 
     QString m_sSettingsFile;
 
