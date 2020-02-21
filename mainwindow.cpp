@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "sdr/logger.hh"
+
 #include <QSplitter>
 
 using namespace  std;
@@ -96,13 +97,14 @@ MainWindow::MainWindow(QWidget *parent) :
     meter_timer = new QTimer(this);
     connect(meter_timer, &QTimer::timeout, this, &MainWindow::tunerTimeout);
 
-    //initializeAudio();
+    initializeAudio();
 }
 
-//todo
-/*void MainWindow::initializeAudio()
+void MainWindow::initializeAudio()
 {
-    defaultDeviceInfo = QAudioDeviceInfo::defaultOutputDevice();
+    //sample rate 16433
+    QAudioFormat format;
+    QAudioDeviceInfo defaultDeviceInfo = QAudioDeviceInfo::defaultOutputDevice();
 
     for (auto &deviceInfo: QAudioDeviceInfo::availableDevices(QAudio::AudioOutput)) {
         if (deviceInfo != defaultDeviceInfo)
@@ -121,24 +123,23 @@ MainWindow::MainWindow(QWidget *parent) :
         format = defaultDeviceInfo.nearestFormat(format);
     }
 
-    const int durationSeconds = 1;
-    const int toneSampleRateHz = 600;
-    m_generator.reset(new Generator(format, durationSeconds * 1000000, toneSampleRateHz));
-
-    m_generator->start();
-
-    auto Buffer = new QBuffer;
-    Buffer->open(QIODevice::ReadWrite);
-
-    Buffer->seek(0);
-    Buffer->write(buffer.data(), buffer.bytesLen()/_frame_size);
-    Buffer->seek(0);
-
-    m_audioOutput.reset(new QAudioOutput(defaultDeviceInfo, format));
-    m_audioOutput->start(Buffer);
-
+    m_audioOutput = new QAudioOutput( format, this );//.reset(new QAudioOutput(defaultDeviceInfo, format));
+    ioDevice = m_audioOutput->start();
     qDebug() << "Default Sound Device: " << defaultDeviceInfo.deviceName();
-}*/
+}
+
+void MainWindow::onDataReceived(const sdr::RawBuffer &buffer)
+{
+    QByteArray soundBuffer(buffer.data(), buffer.bytesLen());
+
+    auto qBuffer = new QBuffer;
+    qBuffer->open(QIODevice::ReadWrite);
+
+    qBuffer->write(soundBuffer);
+    qBuffer->close();
+
+    ioDevice->write(qBuffer->buffer());
+}
 
 
 MainWindow::~MainWindow()
@@ -221,14 +222,6 @@ void MainWindow::onReceiverStopped()
     appentTextBrowser(info.toStdString().c_str());
 
     ui->push_connect->setText("Start"); ui->push_connect->setEnabled(true);
-}
-
-void MainWindow::onDataReceived(unsigned char *buffer, quint32 len)
-{
-    /*char log_buffer[128];
-    QByteArray array((char*)buffer);
-    snprintf(log_buffer, sizeof(log_buffer), "(%d) %s\n", len, array.toHex().toStdString().c_str());
-    qDebug() << log_buffer;*/
 }
 
 void MainWindow::on_fftRateSelector_currentIndexChanged(const QString &arg1)

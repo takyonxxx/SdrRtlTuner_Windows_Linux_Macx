@@ -175,13 +175,13 @@ public:
   }
 
   /** Processes a buffer. */
-  virtual void process(unsigned char *sdrbuffer, const Buffer<std::complex<Scalar> > &buffer, bool allow_overwrite) {
+  virtual void process(const Buffer<std::complex<Scalar> > &buffer, bool allow_overwrite) {
     if (allow_overwrite) {
       _process(buffer, buffer);
-      this->send(sdrbuffer, buffer);
+      this->send(buffer);
     } else {
       _process(buffer, _buffer);
-      this->send(sdrbuffer, _buffer.head(buffer.size()));
+      this->send(_buffer.head(buffer.size()));
     }
   }
 
@@ -349,7 +349,7 @@ protected:
         out[i] = in[i]+_shift;
       }
     }
-    this->send(nullptr, out.head(in.size()));
+    this->send(out.head(in.size()));
   }
 
 protected:
@@ -494,13 +494,13 @@ public:
   }
 
   /** Performs the frequency shift. */
-  virtual void process(unsigned char *sdrbuffer, const Buffer<std::complex<Scalar> > &buffer, bool allow_overwrite) {
+  virtual void process(const Buffer<std::complex<Scalar> > &buffer, bool allow_overwrite) {
     // Shift freq:
     for (size_t i=0; i<buffer.size(); i++) {
       _buffer[i] = (double(_scale)*_factor)*buffer[i]; _factor *= _delta;
     }
     // Send buffer
-    this->send(sdrbuffer, _buffer);
+    this->send(_buffer);
   }
 
 protected:
@@ -758,10 +758,10 @@ public:
 
 
   /** Performs the amplification and adjusts the gain. */
-  virtual void process(unsigned char *sdrbuffer, const Buffer<Scalar> &buffer, bool allow_overwrite) {
+  virtual void process(const Buffer<Scalar> &buffer, bool allow_overwrite) {
     // Simply forward buffer if disabled
     if ((! _enabled) && (0 == _gain) ) {
-      this->send(sdrbuffer, buffer, allow_overwrite); return;
+      this->send(buffer, allow_overwrite); return;
     }
     // Update signal ampl
     for (size_t i=0; i<buffer.size(); i++) {
@@ -769,7 +769,7 @@ public:
       if (_enabled) { _gain = _target/(4*_sd); }
       _buffer[i] = _gain*buffer[i];
     }
-    this->send(sdrbuffer, _buffer);
+    this->send(_buffer);
   }
 
 

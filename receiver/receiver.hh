@@ -43,12 +43,12 @@ public:
 signals:
   void started();
   void stopped();
-  void dataReceived(unsigned char *buffer, uint32_t len);
+  void dataReceived(const sdr::RawBuffer &buffer);
 
 public slots:  
   void start();
   void stop();
-  void onDataReceived(unsigned char *buffer, quint32 len);
+  void onDataReceived(const sdr::RawBuffer &buffer);
 
 protected:
   void _onQueueStarted();

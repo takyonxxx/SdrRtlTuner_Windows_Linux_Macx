@@ -97,7 +97,7 @@ Spectrum::spectrum() const {
 }
 
 void
-Spectrum::handleBuffer(unsigned char *sdrbuffer, const RawBuffer &buffer, bool allow_overwrite)
+Spectrum::handleBuffer(const RawBuffer &buffer, bool allow_overwrite)
 {
     double scale=1, offset=0;
     switch (_input_type) {

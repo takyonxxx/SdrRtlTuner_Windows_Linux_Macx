@@ -72,6 +72,8 @@ PortSink::~PortSink() {
 void
 PortSink::config(const Config &src_cfg) {
 
+    return;
+
     // Skip if config is incomplete
     if (!src_cfg.hasType() || !src_cfg.hasSampleRate() || !src_cfg.bufferSize()) {
         return;
@@ -141,15 +143,15 @@ PortSink::config(const Config &src_cfg) {
     }
 
     // start
-    Pa_StartStream(_stream);
+    Pa_StartStream(_stream);   
 }
 
 void
-PortSink::handleBuffer(unsigned char *sdrbuffer, const RawBuffer &buffer, bool allow_overwrite)
-{       
-   auto err = Pa_WriteStream(_stream, buffer.data(), buffer.bytesLen()/_frame_size);
+PortSink::handleBuffer(const RawBuffer &buffer, bool allow_overwrite)
+{   
+   /*auto err = Pa_WriteStream(_stream, buffer.data(), buffer.bytesLen()/_frame_size);
    if( err != paNoError )
    {
        qDebug() << "Error: " << Pa_GetErrorText(err);
-   }
+   }*/
 }

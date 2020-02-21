@@ -64,7 +64,7 @@ Source::~Source() {
 }
 
 void
-Source::send(unsigned char *sdrbuffer, const RawBuffer &buffer, bool allow_overwrite) {
+Source::send(const RawBuffer &buffer, bool allow_overwrite) {
 
     std::map<SinkBase *, bool>::iterator item = _sinks.begin();
     for (; item != _sinks.end(); item++) {
@@ -75,11 +75,11 @@ Source::send(unsigned char *sdrbuffer, const RawBuffer &buffer, bool allow_overw
             // connection is direct.
             allow_overwrite = allow_overwrite && (1 == _sinks.size());
             // Call sink directly
-            item->first->handleBuffer(sdrbuffer, buffer, allow_overwrite);
+            item->first->handleBuffer(buffer, allow_overwrite);            
         } else {
             // otherwise, queue buffer
             allow_overwrite = allow_overwrite && (1 == _sinks.size());
-            Queue::get().send(sdrbuffer, buffer, item->first, allow_overwrite);
+            Queue::get().send(buffer, item->first, allow_overwrite);
         }
     }
 }
@@ -211,7 +211,7 @@ Proxy::config(const Config &src_cfg) {
 }
 
 void
-Proxy::handleBuffer(unsigned char *sdrbuffer, const RawBuffer &buffer, bool allow_overwrite) {
-    this->send(sdrbuffer, buffer);
+Proxy::handleBuffer(const RawBuffer &buffer, bool allow_overwrite) {
+    this->send(buffer);
 }
 

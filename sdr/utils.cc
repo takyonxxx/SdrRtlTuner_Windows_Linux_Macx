@@ -84,7 +84,7 @@ UnsignedToSigned::_process_int8(const RawBuffer &in, const RawBuffer &out) {
     *out_ptr = int16_t(*in_ptr) - 128;
   }
   //std::cerr << " -> " << Buffer<int8_t>(RawBuffer(out, 0, num)) << std::endl;
-  this->send(nullptr, RawBuffer(out, 0, num), true);
+  this->send(RawBuffer(out, 0, num), true);
 }
 
 void
@@ -95,7 +95,7 @@ UnsignedToSigned::_process_int16(const RawBuffer &in, const RawBuffer &out) {
   for (size_t i=0; i<num; i++, in_ptr++, out_ptr++) {
     *out_ptr = int32_t(*in_ptr) - 32768;
   }
-  this->send(nullptr, RawBuffer(out, 0, num), true);
+  this->send(RawBuffer(out, 0, num), true);
 }
 
 
@@ -174,7 +174,7 @@ SignedToUnsigned::_process_int8(const RawBuffer &in, const RawBuffer &out) {
   for (size_t i=0; i<num; i++) {
     ((uint8_t *)out.data())[i] = int(((int8_t *)in.data())[i]) + 128;
   }
-  this->send(nullptr, RawBuffer(out, 0, num), true);
+  this->send(RawBuffer(out, 0, num), true);
 }
 
 void
@@ -183,7 +183,7 @@ SignedToUnsigned::_process_int16(const RawBuffer &in, const RawBuffer &out) {
   for (size_t i=0; i<num; i++) {
     ((uint16_t *)out.data())[i] = int32_t( ((int16_t *)in.data())[i] ) + 32768;
   }
-  this->send(nullptr, RawBuffer(out, 0, num), true);
+  this->send(RawBuffer(out, 0, num), true);
 }
 
 

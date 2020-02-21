@@ -12,7 +12,7 @@ Receiver::Receiver(QObject *parent)
     _demod = new DemodulatorCtrl(this);
     _audio = new AudioPostProc(this);
 
-    connect(_src, &DataSourceCtrl::dataReceived, this, &Receiver::onDataReceived);
+    connect(_audio, &AudioPostProc::dataReceived, this, &Receiver::onDataReceived);
 
     // Connect data source to demodulator
     _src->Source::connect(_demod, true); // spectrum
@@ -85,11 +85,10 @@ Receiver::stop() {
     _queue.wait();
 }
 
-void Receiver::onDataReceived(unsigned char* buffer, quint32 len)
+void Receiver::onDataReceived(const sdr::RawBuffer &buffer)
 {
-    emit dataReceived(buffer, len);
+    emit dataReceived(buffer);
 }
-
 
 void
 Receiver::_onQueueStarted() {

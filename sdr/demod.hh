@@ -56,7 +56,7 @@ public:
                                src_cfg.bufferSize(), src_cfg.numBuffers()));
     }
 
-    virtual void process(unsigned char *sdrbuffer, const Buffer<std::complex<Scalar> > &buffer, bool allow_overwrite)
+    virtual void process(const Buffer<std::complex<Scalar> > &buffer, bool allow_overwrite)
     {
         Buffer<Scalar> out_buffer;
         // If source allow to overwrite the buffer, use it otherwise rely on own buffer
@@ -71,7 +71,7 @@ public:
 
         // If the source allowed to overwrite the buffer, this source will allow it too.
         // If this source used the internal buffer (_buffer), it allows to overwrite it anyway.
-        this->send(sdrbuffer, out_buffer.head(buffer.size()), true);
+        this->send(out_buffer.head(buffer.size()), true);
     }
 
 protected:
@@ -127,7 +127,7 @@ public:
                                src_cfg.bufferSize(), 1));
     }
 
-    virtual void process(unsigned char *sdrbuffer, const Buffer<CScalar> &buffer, bool allow_overwrite) {
+    virtual void process(const Buffer<CScalar> &buffer, bool allow_overwrite) {
         if (allow_overwrite) {
             // Process in-place
             _process(buffer, Buffer<Scalar>(buffer));
@@ -142,7 +142,7 @@ protected:
         for (size_t i=0; i<in.size(); i++) {
             out[i] = (SScalar(std::real(in[i])) + SScalar(std::imag(in[i])))/2;
         }
-        this->send(nullptr, out.head(in.size()));
+        this->send(out.head(in.size()));
     }
 
 protected:
@@ -201,7 +201,7 @@ public:
                                src_cfg.bufferSize(), 1));
     }
 
-    virtual void process(unsigned char *sdrbuffer, const Buffer<std::complex<iScalar> > &buffer, bool allow_overwrite)
+    virtual void process(const Buffer<std::complex<iScalar> > &buffer, bool allow_overwrite)
     {
         if (0 == buffer.size()) { return; }
 
@@ -243,8 +243,8 @@ protected:
 
         // Store last value
         _last_value = last_value;
-        // propergate result
-        this->send(nullptr, out.head(in.size()));
+        // propergate result        
+        this->send(out.head(in.size()));
     }
 
 
@@ -305,18 +305,18 @@ public:
         this->setConfig(Config(src_cfg.type(), src_cfg.sampleRate(), src_cfg.bufferSize(), 1));
     }
 
-    virtual void process(unsigned char *sdrbuffer, const Buffer<Scalar> &buffer, bool allow_overwrite)
+    virtual void process(const Buffer<Scalar> &buffer, bool allow_overwrite)
     {
         // Skip if disabled:
-        if (!_enabled) { this->send(sdrbuffer, buffer, allow_overwrite); return; }
+        if (!_enabled) { this->send(buffer, allow_overwrite); return; }
 
         // Process in-place or not
         if (allow_overwrite) {
             _process(buffer, buffer);
-            this->send(sdrbuffer, buffer, allow_overwrite);
+            this->send(buffer, allow_overwrite);
         } else {
             _process(buffer, _buffer);
-            this->send(sdrbuffer, _buffer.head(buffer.size()), false);
+            this->send(_buffer.head(buffer.size()), false);
         }
     }
 

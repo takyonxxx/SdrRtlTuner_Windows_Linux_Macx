@@ -62,7 +62,7 @@ public:
     virtual void config(const Config &src_cfg);
 
     /** Receives the data stream and updates the _fft_buffer. */
-    virtual void handleBuffer(unsigned char *sdrbuffer, const RawBuffer &buffer, bool allow_overwrite);
+    virtual void handleBuffer(const RawBuffer &buffer, bool allow_overwrite);
 
     /** Returns true if the input is real. */
     bool isInputReal() const;

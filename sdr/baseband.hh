@@ -133,7 +133,7 @@ public:
 
 
   /** Processes the given buffer. */
-  virtual void process(unsigned char *sdrbuffer, const Buffer< std::complex<Scalar> > &buffer, bool allow_overwrite)
+  virtual void process(const Buffer< std::complex<Scalar> > &buffer, bool allow_overwrite)
   {
     if (allow_overwrite) {
       // Perform in-place if @c allow_overwrite
@@ -219,7 +219,7 @@ protected:
         out[j] = _last; _last = 0; _sample_count = 0; j++;
       }
     }
-    this->send(nullptr, out.head(j), true);
+    this->send(out.head(j), true);
   }
 
   /** Applies the filter on the data stored in the ring buffer. */
@@ -443,7 +443,7 @@ protected:
         _last = 0; _sample_count=0; j++;
       }
     }
-    this->send(nullptr, out.head(j), true);
+    this->send(out.head(j), true);
   }
 
   /** Applies the filter on the data stored in the ring buffer. */

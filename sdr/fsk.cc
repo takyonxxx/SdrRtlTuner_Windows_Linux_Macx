@@ -91,7 +91,7 @@ FSKDetector::process(unsigned char *sdrbuffer, const Buffer<int16_t> &buffer, bo
   for (size_t i=0; i<buffer.size(); i++) {
     _buffer[i] = _process(buffer[i]);
   }
-  this->send(sdrbuffer, _buffer.head(buffer.size()), false);
+  this->send(_buffer.head(buffer.size()), false);
 }
 
 
@@ -198,7 +198,7 @@ BitStream::process(unsigned char *sdrbuffer, const Buffer<uint8_t> &buffer, bool
     }
   }
 
-  if (o>0) { this->send(sdrbuffer, _buffer.head(o)); }
+  if (o>0) { this->send(_buffer.head(o)); }
 }
 
 

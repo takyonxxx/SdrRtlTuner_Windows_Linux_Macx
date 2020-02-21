@@ -214,22 +214,22 @@ WavSource::next()
   case Config::Type_u8:
     _file.read(_buffer.ptr(), n_frames*sizeof(uint8_t));
     _frames_left -= n_frames;
-    this->send(nullptr, RawBuffer(_buffer, 0, n_frames*sizeof(uint8_t)), true);
+    this->send(RawBuffer(_buffer, 0, n_frames*sizeof(uint8_t)), true);
     break;
   case Config::Type_s16:
     _file.read(_buffer.ptr(), n_frames*sizeof(int16_t));
     _frames_left -= n_frames;
-    this->send(nullptr, RawBuffer(_buffer, 0, n_frames*sizeof(int16_t)), true);
+    this->send(RawBuffer(_buffer, 0, n_frames*sizeof(int16_t)), true);
     break;
   case Config::Type_cu8:
     _file.read(_buffer.ptr(), 2*n_frames*sizeof(uint8_t));
     _frames_left -= n_frames;
-    this->send(nullptr, RawBuffer(_buffer, 0, 2*n_frames*sizeof(uint8_t)), true);
+    this->send(RawBuffer(_buffer, 0, 2*n_frames*sizeof(uint8_t)), true);
     break;
   case Config::Type_cs16:
     _file.read(_buffer.ptr(), 2*n_frames*sizeof(int16_t));
     _frames_left -= n_frames;
-    this->send(nullptr, RawBuffer(_buffer, 0, 2*n_frames*sizeof(int16_t)), true);
+    this->send(RawBuffer(_buffer, 0, 2*n_frames*sizeof(int16_t)), true);
     break;
   default:
     break;

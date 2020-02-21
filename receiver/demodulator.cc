@@ -743,7 +743,7 @@ BPSK31Demodulator::config(const Config &src_cfg) {
 }
 
 void
-BPSK31Demodulator::process(unsigned char *sdrbuffer, const sdr::Buffer<uint8_t> &buffer, bool allow_overwrite) {
+BPSK31Demodulator::process(const sdr::Buffer<uint8_t> &buffer, bool allow_overwrite) {
   for (size_t i=0; i<buffer.size(); i++) {
     _text_buffer.append(char(buffer[i]));
   }

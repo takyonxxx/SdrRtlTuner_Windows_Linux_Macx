@@ -57,8 +57,8 @@ public:
   class Message {
   public:
     /** Constructor. */
-    Message(unsigned char *sdrbuffer, const RawBuffer &buffer, SinkBase *sink, bool allow_overwrite)
-      : _buffer(buffer), _sink(sink), _allow_overwrite(allow_overwrite) {  _sdrbuffer = sdrbuffer;}
+    Message(const RawBuffer &buffer, SinkBase *sink, bool allow_overwrite)
+      : _buffer(buffer), _sink(sink), _allow_overwrite(allow_overwrite) {}
     /** Copy constructor. */
     Message(const Message &other)
       : _buffer(other._buffer), _sink(other._sink), _allow_overwrite(other._allow_overwrite) { }
@@ -72,8 +72,7 @@ public:
     /** Returns the buffer of the message. **/
     inline const RawBuffer &buffer() const { return _buffer; }
     /** Returns the buffer of the message. **/
-    inline RawBuffer &buffer() { return _buffer; }
-    inline unsigned char *sdrbuffer() { return _sdrbuffer; }
+    inline RawBuffer &buffer() { return _buffer; }   
     /** Returns the destination of the message. **/
     inline SinkBase *sink() const { return _sink; }
     /** If true, the sender allows to overwrite the content of the buffer. **/
@@ -82,7 +81,6 @@ public:
   protected:
     /** The buffer being send. */
     RawBuffer _buffer;
-    unsigned char* _sdrbuffer;
     /** The destination. */
     SinkBase *_sink;
     /** If true, the sender allows to overwrite the buffer. */
@@ -105,7 +103,7 @@ public:
 
   /** Adds a buffer and its receiver to the queue. If @c allow_overwrite is @c true, the
    * the receiver is allowed to overwrite the content of the buffer. */
-  void send(unsigned char *sdrbuffer, const RawBuffer &buffer, SinkBase *sink, bool allow_overwrite=false);
+  void send(const RawBuffer &buffer, SinkBase *sink, bool allow_overwrite=false);
 
   /** Enters the queue loop, if @c parallel=true was passed to @c get, @c exec will execute the
    * queue loop in a separate thread and returns immediately. Otherwise, @c exec will block until

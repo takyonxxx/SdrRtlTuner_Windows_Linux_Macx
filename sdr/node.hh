@@ -182,7 +182,7 @@ public:
   virtual ~SinkBase();
 
   /** Needs to be implemented by any sub-type to process the received data. */
-  virtual void handleBuffer(unsigned char *sdrbuffer, const RawBuffer &buffer, bool allow_overwrite) = 0;
+  virtual void handleBuffer(const RawBuffer &buffer, bool allow_overwrite) = 0;
   /** Needs to be implemented by any sub-type to check and perform the configuration of the node. */
   virtual void config(const Config &src_cfg) = 0;
 };
@@ -200,12 +200,12 @@ public:
   virtual ~Sink() { }
 
   /** Needs to be implemented by any sub-type to process the received data. */
-  virtual void process(unsigned char *sdrbuffer, const Buffer<Scalar> &buffer, bool allow_overwrite) = 0;
+  virtual void process(const Buffer<Scalar> &buffer, bool allow_overwrite) = 0;
 
   /** Re-implemented from @c SinkBase. Casts the buffer into the requested type
    * and forwards the call to @c process. */
-  virtual void handleBuffer(unsigned char *sdrbuffer, const RawBuffer &buffer, bool allow_overwrite) {
-    this->process(sdrbuffer, Buffer<Scalar>(buffer), allow_overwrite);
+  virtual void handleBuffer(const RawBuffer &buffer, bool allow_overwrite) {
+    this->process(Buffer<Scalar>(buffer), allow_overwrite);
   }  
 };
 
@@ -221,7 +221,7 @@ public:
   virtual ~Source();
 
   /** Sends the given buffer to all connected sinks. */
-  virtual void send(unsigned char *sdrbuffer, const RawBuffer &buffer, bool allow_overwrite=false);
+  virtual void send(const RawBuffer &buffer, bool allow_overwrite=false);
 
   /** Connect this source to a sink. */
   void connect(SinkBase *sink, bool direct=false);
@@ -325,7 +325,7 @@ public:
   /** Configures the node. */
   virtual void config(const Config &src_cfg);
   /** Forwards the buffer. */
-  virtual void handleBuffer(unsigned char *sdrbuffer, const RawBuffer &buffer, bool allow_overwrite);
+  virtual void handleBuffer(const RawBuffer &buffer, bool allow_overwrite);
 };
 
 

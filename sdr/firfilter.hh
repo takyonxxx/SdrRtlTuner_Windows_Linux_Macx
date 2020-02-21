@@ -208,11 +208,11 @@ public:
 
 
   /** Performs the filtering. */
-  virtual void process(unsigned char *sdrbuffer, const Buffer<Scalar> &buffer, bool allow_overwrite) {
+  virtual void process(const Buffer<Scalar> &buffer, bool allow_overwrite) {
     // If emtpy
     if (0 == buffer.size()) { /* drop buffer */ }
     // If disabled -> pass
-    if (!_enabled) { this->send(sdrbuffer, buffer, allow_overwrite); return; }
+    if (!_enabled) { this->send(buffer, allow_overwrite); return; }
 
     // Perform filtering in-place or out-of-place filtering
     if (allow_overwrite) { _process(buffer, buffer); }
@@ -244,7 +244,7 @@ protected:
     }
 
     // Done.
-    this->send(nullptr, out.head(in.size()), true);
+    this->send(out.head(in.size()), true);
   }
 
 

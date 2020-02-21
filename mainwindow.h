@@ -14,6 +14,9 @@
 #include "receiver/rtldatasource.hh"
 #include "sdr/buffer.hh"
 
+#include <QAudioDeviceInfo>
+#include <QAudioOutput>
+
 namespace Ui {
 class MainWindow;
 }
@@ -64,8 +67,11 @@ private:
     void saveSettings();
 
     QString m_sSettingsFile;
+    QAudioOutput *m_audioOutput{};
+    QIODevice* ioDevice{};
+    void initializeAudio();
 
-private slots:
+private slots:   
     void fftTimeout();
     void onFilterChanged();
     void tunerTimeout();
@@ -78,7 +84,7 @@ private slots:
     void on_waterFallColor_currentIndexChanged(int );
     void onReceiverStarted();
     void onReceiverStopped();
-    void onDataReceived(unsigned char *buffer, quint32 len);
+    void onDataReceived(const sdr::RawBuffer &buffer);
 
 
 protected:

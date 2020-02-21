@@ -83,7 +83,7 @@ Baudot::config(const Config &src_cfg) {
 
 
 void
-Baudot::process(unsigned char *sdrbuffer, const Buffer<uint8_t> &buffer, bool allow_overwrite)
+Baudot::process(const Buffer<uint8_t> &buffer, bool allow_overwrite)
 {
   size_t o=0;
   for (size_t i=0; i<buffer.size(); i++) {
@@ -107,5 +107,5 @@ Baudot::process(unsigned char *sdrbuffer, const Buffer<uint8_t> &buffer, bool al
       }
     }
   }
-  if (0 < o) { this->send(sdrbuffer, _buffer.head(o)); }
+  if (0 < o) { this->send(_buffer.head(o)); }
 }
