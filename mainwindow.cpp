@@ -111,7 +111,7 @@ void MainWindow::initializeAudio()
             qDebug() << deviceInfo.deviceName();
     }
 
-    format.setSampleRate(44100);
+    format.setSampleRate(16433);
     format.setChannelCount(1);
     format.setSampleSize(16);
     format.setCodec("audio/pcm");

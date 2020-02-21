@@ -54,7 +54,6 @@ PortAudio::deviceName(int idx) {
 }
 
 
-
 /* ******************************************************************************************* *
  * PortSink implementation
  * ******************************************************************************************* */
@@ -71,8 +70,6 @@ PortSink::~PortSink() {
 
 void
 PortSink::config(const Config &src_cfg) {
-
-    return;
 
     // Skip if config is incomplete
     if (!src_cfg.hasType() || !src_cfg.hasSampleRate() || !src_cfg.bufferSize()) {

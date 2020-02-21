@@ -10,7 +10,7 @@ AudioPostProc::AudioPostProc(QObject *parent)
     : QObject(parent), Sink<int16_t>()
 {
     // Assemble processing chain
-    _sub_sample = new SubSample<int16_t>(44100.0);
+    _sub_sample = new SubSample<int16_t>(16000.0);
     _low_pass   = new FIRLowPass<int16_t>(31, 3e3);
     _low_pass->enable(false);
     _sink       = new PortSink();
