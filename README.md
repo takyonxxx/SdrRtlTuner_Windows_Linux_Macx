@@ -16,8 +16,12 @@
  sudo apt install libfftw3-dev </br>
  sudo apt install libportaudio2 </br>
  sudo apt install portaudio19-dev</br>
- sudo apt install rtl-sdr
- sudo apt install librtlsdr-dev
+ sudo apt install rtl-sdr</br>
+ sudo apt install librtlsdr-dev</br>
+ sudo apt install sox</br>
+
+ rtl_fm -M wbfm -f 104.6M  | play -r 32k -t raw -e s -b 16 -c 2 -V1 -</br>
+
   	
  <b>For macx: </b></br>
  <b>Used libraries are:</b></br>
