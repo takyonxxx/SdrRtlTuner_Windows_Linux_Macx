@@ -31,6 +31,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += \
+        audiootputthread.cpp \
         gui/spectrum.cc \
         gui/spectrumview.cc \
         main.cpp \
@@ -66,6 +67,7 @@ SOURCES += \
 
 
 HEADERS += \
+        audiootputthread.h \
         gui/gui.hh \
         gui/spectrum.hh \
         gui/spectrumview.hh \

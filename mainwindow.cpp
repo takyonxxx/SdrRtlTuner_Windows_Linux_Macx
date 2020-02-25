@@ -93,59 +93,26 @@ MainWindow::MainWindow(QWidget *parent) :
     info.append("-> FFT Refresh Rate: " + QString::number(fftrate) + " Hz");
     appentTextBrowser(info.toStdString().c_str());
 
+    audioOutputThread = new AudioOutputThread(this);
+    audioOutputThread->start();
+
     // meter timer
     meter_timer = new QTimer(this);
-    connect(meter_timer, &QTimer::timeout, this, &MainWindow::tunerTimeout);
-
-    initializeAudio();
+    connect(meter_timer, &QTimer::timeout, this, &MainWindow::tunerTimeout);   
 }
 
-void MainWindow::initializeAudio()
-{
-    //sample rate 16433
-    QAudioFormat format;
-    QAudioDeviceInfo defaultDeviceInfo = QAudioDeviceInfo::defaultOutputDevice();
-
-    for (auto &deviceInfo: QAudioDeviceInfo::availableDevices(QAudio::AudioOutput)) {
-        if (deviceInfo != defaultDeviceInfo)
-            qDebug() << deviceInfo.deviceName();
-    }
-
-    format.setSampleRate(16433);
-    format.setChannelCount(1);
-    format.setSampleSize(16);
-    format.setCodec("audio/pcm");
-    format.setByteOrder(QAudioFormat::LittleEndian);
-    format.setSampleType(QAudioFormat::SignedInt);
-
-    if (!defaultDeviceInfo.isFormatSupported(format)) {
-        qWarning() << "Default format not supported - trying to use nearest";
-        format = defaultDeviceInfo.nearestFormat(format);
-    }
-
-    m_audioOutput = new QAudioOutput( format, this );//.reset(new QAudioOutput(defaultDeviceInfo, format));
-    ioDevice = m_audioOutput->start();
-    qDebug() << "Default Sound Device: " << defaultDeviceInfo.deviceName();
-}
 
 void MainWindow::onDataReceived(const sdr::RawBuffer &buffer)
 {
-    QByteArray soundBuffer(buffer.data(), buffer.bytesLen());
-
-    auto qBuffer = new QBuffer;
-    qBuffer->open(QIODevice::ReadWrite);
-
-    qBuffer->write(soundBuffer);
-    qBuffer->close();
-
-    ioDevice->write(qBuffer->buffer());
+    if(audioOutputThread)
+        audioOutputThread->writeBuffer(buffer);
 }
-
 
 MainWindow::~MainWindow()
 {
     qDebug() << "exiting...";
 
+    if(audioOutputThread)audioOutputThread->stop();
     if(m_Receiver)m_Receiver->stop();
 
     if(d_realFftData)delete [] d_realFftData;

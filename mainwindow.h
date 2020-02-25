@@ -12,10 +12,7 @@
 #include "gui/gui.hh"
 #include "receiver/receiver.hh"
 #include "receiver/rtldatasource.hh"
-#include "sdr/buffer.hh"
-
-#include <QAudioDeviceInfo>
-#include <QAudioOutput>
+#include "audiootputthread.h"
 
 namespace Ui {
 class MainWindow;
@@ -50,6 +47,7 @@ private:
     DataSourceCtrlView* sourceView {};
     DemodulatorCtrlView* demodView {};
     AudioPostProcView* audioView = {};
+    AudioOutputThread *audioOutputThread{};
 
     float               *d_realFftData;
     float               *d_iirFftData;
@@ -67,9 +65,6 @@ private:
     void saveSettings();
 
     QString m_sSettingsFile;
-    QAudioOutput *m_audioOutput{};
-    QIODevice* ioDevice{};
-    void initializeAudio();
 
 private slots:   
     void fftTimeout();
