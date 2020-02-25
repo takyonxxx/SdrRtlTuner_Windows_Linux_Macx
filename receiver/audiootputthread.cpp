@@ -14,7 +14,7 @@ AudioOutputThread::AudioOutputThread(QObject *parent):
             qDebug() << deviceInfo.deviceName();
     }
 
-    format.setSampleRate(16433);
+    format.setSampleRate(22050 + 433);
     format.setChannelCount(1);
     format.setSampleSize(16);
     format.setCodec("audio/pcm");

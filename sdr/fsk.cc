@@ -87,7 +87,7 @@ FSKDetector::_process(int16_t sample) {
 }
 
 void
-FSKDetector::process(unsigned char *sdrbuffer, const Buffer<int16_t> &buffer, bool allow_overwrite) {
+FSKDetector::process(const Buffer<int16_t> &buffer, bool allow_overwrite) {
   for (size_t i=0; i<buffer.size(); i++) {
     _buffer[i] = _process(buffer[i]);
   }

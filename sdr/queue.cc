@@ -107,7 +107,7 @@ Queue::_main()
             }
             catch (std::exception& e)
             {
-                qDebug() << "error queue" << e.what();
+                qDebug() << "Error: Queue::_main()" << e.what();
             }
 
             // Mark buffer unused

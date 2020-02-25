@@ -135,11 +135,17 @@ RTLSource::__rtl_sdr_parallel_main(void *ctx) {
 void
 RTLSource::__rtl_sdr_callback(unsigned char *buffer, uint32_t len, void *ctx) {    
 
-    RTLSource *self = reinterpret_cast<RTLSource *>(ctx);
-    self->send(Buffer< std::complex<uint8_t> >((std::complex<uint8_t> *)buffer, len/2));
-
-    /*char log_buffer[64];
+   /* char log_buffer[64];
     QByteArray array((char*)buffer, len);
-    snprintf(log_buffer, sizeof(log_buffer), "__rtl_sdr_callback (%d) %s\n", len , array.toHex().toStdString().c_str());
+    snprintf(log_buffer, sizeof(log_buffer), "o:(%d) %s\n", len , array.toHex().toStdString().c_str());
+    qDebug() << log_buffer;
+
+
+    char log_buffer[64];
+    QByteArray array(buffer.data(), buffer.bytesLen());
+    snprintf(log_buffer, sizeof(log_buffer), "s:(%d) %s\n", buffer.bytesLen() , array.toHex().toStdString().c_str());
     qDebug() << log_buffer;*/
+
+    RTLSource *self = reinterpret_cast<RTLSource *>(ctx);
+    self->send(Buffer< std::complex<uint8_t> >((std::complex<uint8_t> *)buffer, len/2));    
 }

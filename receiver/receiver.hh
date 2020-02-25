@@ -43,12 +43,10 @@ public:
 signals:
   void started();
   void stopped();
-  void dataReceived(const sdr::RawBuffer &buffer);
 
 public slots:  
   void start();
   void stop();
-  void onDataReceived(const sdr::RawBuffer &buffer);
 
 protected:
   void _onQueueStarted();

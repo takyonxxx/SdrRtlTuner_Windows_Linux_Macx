@@ -306,7 +306,7 @@ public:
     }
 
     virtual void process(const Buffer<Scalar> &buffer, bool allow_overwrite)
-    {
+    {        
         // Skip if disabled:
         if (!_enabled) { this->send(buffer, allow_overwrite); return; }
 

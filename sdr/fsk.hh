@@ -25,7 +25,7 @@ public:
   FSKDetector(float baud, float Fmark, float Fspace);
 
   void config(const Config &src_cfg);
-  void process(unsigned char *sdrbuffer, const Buffer<int16_t> &buffer, bool allow_overwrite);
+  void process(const Buffer<int16_t> &buffer, bool allow_overwrite);
 
 protected:
   /** Updates the mark/space FIR filter and returns the sampled symbol. */

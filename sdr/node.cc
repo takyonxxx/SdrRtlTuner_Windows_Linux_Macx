@@ -64,7 +64,7 @@ Source::~Source() {
 }
 
 void
-Source::send(const RawBuffer &buffer, bool allow_overwrite) {
+Source::send(const RawBuffer &buffer, bool allow_overwrite) {   
 
     std::map<SinkBase *, bool>::iterator item = _sinks.begin();
     for (; item != _sinks.end(); item++) {
@@ -76,6 +76,7 @@ Source::send(const RawBuffer &buffer, bool allow_overwrite) {
             allow_overwrite = allow_overwrite && (1 == _sinks.size());
             // Call sink directly
             item->first->handleBuffer(buffer, allow_overwrite);            
+
         } else {
             // otherwise, queue buffer
             allow_overwrite = allow_overwrite && (1 == _sinks.size());
@@ -212,6 +213,6 @@ Proxy::config(const Config &src_cfg) {
 
 void
 Proxy::handleBuffer(const RawBuffer &buffer, bool allow_overwrite) {
-    this->send(buffer);
+    this->send(buffer);   
 }
 

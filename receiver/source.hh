@@ -62,10 +62,7 @@ public:
   double tunerSampleRate() const;
   size_t getDeviceId();
 
-  virtual void handleBuffer(const sdr::RawBuffer &buffer, bool allow_overwrite)
-  {
-      this->send(buffer);     
-  }
+  virtual void handleBuffer(const sdr::RawBuffer &buffer, bool allow_overwrite);
 
 protected:
   void _onQueueIdle();

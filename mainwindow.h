@@ -12,7 +12,6 @@
 #include "gui/gui.hh"
 #include "receiver/receiver.hh"
 #include "receiver/rtldatasource.hh"
-#include "audiootputthread.h"
 
 namespace Ui {
 class MainWindow;
@@ -79,8 +78,6 @@ private slots:
     void on_waterFallColor_currentIndexChanged(int );
     void onReceiverStarted();
     void onReceiverStopped();
-    void onDataReceived(const sdr::RawBuffer &buffer);
-
 
 protected:
     Receiver *m_Receiver{};

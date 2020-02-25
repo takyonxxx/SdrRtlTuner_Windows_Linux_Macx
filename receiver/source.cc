@@ -12,46 +12,46 @@
  * Implementation of DataSource
  * ********************************************************************************************* */
 DataSource::DataSource(QObject *parent)
-  : QObject(parent)
+    : QObject(parent)
 {
-  // pass...
+    // pass...
 }
 
 DataSource::~DataSource() {
-  // pass...
+    // pass...
 }
 
 QWidget *
 DataSource::createCtrlView() {
-  return new QWidget();
+    return new QWidget();
 }
 
 void
 DataSource::triggerNext() {
-  // pass...
+    // pass...
 }
 
 void DataSource::queueStarted() {
-  // pass...
+    // pass...
 }
 
 void DataSource::queueStopped() {
-  // pass...
+    // pass...
 }
 
 double
 DataSource::tunerFrequency() const {
-  return 0;
+    return 0;
 }
 
 double
 DataSource::sampleRate() const {
-  return 0;
+    return 0;
 }
 
 bool
 DataSource::setTunerFrequency(qreal freq){
-  // pass...
+    // pass...
 }
 
 size_t DataSource::getDeviceID() const
@@ -64,17 +64,14 @@ size_t DataSource::getDeviceID() const
  * Implementation of DataSourceCtrl
  * ********************************************************************************************* */
 DataSourceCtrl::DataSourceCtrl(Receiver *receiver)
-  : QObject(receiver), Proxy(), _receiver(receiver), _source(SOURCE_RTL), _src_obj(nullptr)
+    : QObject(receiver), Proxy(), _receiver(receiver), _source(SOURCE_RTL), _src_obj(nullptr)
 {
-  // Initialize PortAudio
-  sdr::PortAudio::init();
+    // Instantiate data source
+    setSource(SOURCE_RTL);
 
-  // Instantiate data source
-  setSource(SOURCE_RTL);
-
-  sdr::Queue::get().addIdle(this, &DataSourceCtrl::_onQueueIdle);
-  sdr::Queue::get().addStart(this, &DataSourceCtrl::_onQueueStart);
-  sdr::Queue::get().addStop(this, &DataSourceCtrl::_onQueueStop);
+    sdr::Queue::get().addIdle(this, &DataSourceCtrl::_onQueueIdle);
+    sdr::Queue::get().addStart(this, &DataSourceCtrl::_onQueueStart);
+    sdr::Queue::get().addStop(this, &DataSourceCtrl::_onQueueStop);
 }
 
 
@@ -85,26 +82,26 @@ DataSourceCtrl::~DataSourceCtrl() {
 
 void
 DataSourceCtrl::setSource(Src source) {
-  bool was_running = _receiver->isRunning();
-  if (was_running) { _receiver->stop(); }
+    bool was_running = _receiver->isRunning();
+    if (was_running) { _receiver->stop(); }
 
-  // Unlink current source
-  _src_obj->disconnect(this);
-  // Free current source late
-  _src_obj->deleteLater();
+    // Unlink current source
+    _src_obj->disconnect(this);
+    // Free current source late
+    _src_obj->deleteLater();
 
-  // Create and link new data source
-  _source = source;
-  _src_obj = new RTLDataSource(this);
-  _src_obj->source()->connect(this, true);
+    // Create and link new data source
+    _source = source;
+    _src_obj = new RTLDataSource(this);
+    _src_obj->source()->connect(this, true);
 
-  if (was_running) { _receiver->start(); }
+    if (was_running) { _receiver->start(); }
 }
 
 
 QWidget *
 DataSourceCtrl::createCtrlView() {
-  return _src_obj->createCtrlView();
+    return _src_obj->createCtrlView();
 }
 
 double
@@ -128,19 +125,24 @@ size_t DataSourceCtrl::getDeviceId()
     return _src_obj->getDeviceID();
 }
 
+void DataSourceCtrl::handleBuffer(const sdr::RawBuffer &buffer, bool allow_overwrite)
+{
+    this->send(buffer);
+}
+
 void
 DataSourceCtrl::_onQueueIdle() {
-  _src_obj->triggerNext();
+    _src_obj->triggerNext();
 }
 
 void
 DataSourceCtrl::_onQueueStart() {
-  _src_obj->queueStarted();
+    _src_obj->queueStarted();
 }
 
 void
 DataSourceCtrl::_onQueueStop() {
-  _src_obj->queueStopped();
+    _src_obj->queueStopped();
 }
 
 
@@ -148,17 +150,17 @@ DataSourceCtrl::_onQueueStop() {
  * Implementation of DataSourceCtrlView
  * ********************************************************************************************* */
 DataSourceCtrlView::DataSourceCtrlView(DataSourceCtrl *src_ctrl, QWidget *parent)
-  : QWidget(parent), _src_ctrl(src_ctrl)
+    : QWidget(parent), _src_ctrl(src_ctrl)
 {
-  QLabel *src_sel = new QLabel();
-  src_sel->setText("RTL2832");
+    QLabel *src_sel = new QLabel();
+    src_sel->setText("RTL2832");
 
-  _currentSrcCtrl = _src_ctrl->createCtrlView();
+    _currentSrcCtrl = _src_ctrl->createCtrlView();
 
-  _layout = new QVBoxLayout();
-  _layout->addWidget(src_sel, 0);
-  _layout->addWidget(_currentSrcCtrl, 1);
-  setLayout(_layout);
+    _layout = new QVBoxLayout();
+    _layout->addWidget(src_sel, 0);
+    _layout->addWidget(_currentSrcCtrl, 1);
+    setLayout(_layout);
 }
 
 DataSourceCtrlView::~DataSourceCtrlView() {

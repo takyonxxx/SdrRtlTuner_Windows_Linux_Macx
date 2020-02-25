@@ -30,8 +30,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 
-SOURCES += \
-        audiootputthread.cpp \
+SOURCES += \        
         gui/spectrum.cc \
         gui/spectrumview.cc \
         main.cpp \
@@ -39,6 +38,7 @@ SOURCES += \
         freqctrl.cpp \
         plotter.cpp \
         meter.cpp \
+        receiver/audiootputthread.cpp \
         receiver/audiopostproc.cc \
         receiver/configuration.cc \
         receiver/demodulator.cc \
@@ -56,7 +56,6 @@ SOURCES += \
         sdr/node.cc \
         sdr/options.cc \
         sdr/pocsag.cc \
-        sdr/portaudio.cc \
         sdr/psk31.cc \
         sdr/queue.cc \
         sdr/rtlsource.cc \
@@ -66,8 +65,7 @@ SOURCES += \
         sdr/wavfile.cc
 
 
-HEADERS += \
-        audiootputthread.h \
+HEADERS += \        
         gui/gui.hh \
         gui/spectrum.hh \
         gui/spectrumview.hh \
@@ -75,6 +73,7 @@ HEADERS += \
         freqctrl.h \
         plotter.h \
         meter.h \
+        receiver/audiootputthread.h \
         receiver/audiopostproc.hh \
         receiver/configuration.hh \
         receiver/demodulator.hh \
@@ -107,7 +106,6 @@ HEADERS += \
         sdr/operators.hh \
         sdr/options.hh \
         sdr/pocsag.hh \
-        sdr/portaudio.hh \
         sdr/psk31.hh \
         sdr/queue.hh \
         sdr/rtlsource.hh \

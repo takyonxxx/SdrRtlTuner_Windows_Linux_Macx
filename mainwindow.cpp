@@ -42,7 +42,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QObject::connect(m_Receiver, &Receiver::started, this, &MainWindow::onReceiverStarted);
     QObject::connect(m_Receiver, &Receiver::stopped, this, &MainWindow::onReceiverStopped);
-    QObject::connect(m_Receiver, &Receiver::dataReceived, this, &MainWindow::onDataReceived);
 
     m_Demodulator = m_Receiver->demod();
     if (!m_Demodulator) QApplication::quit();
@@ -93,19 +92,11 @@ MainWindow::MainWindow(QWidget *parent) :
     info.append("-> FFT Refresh Rate: " + QString::number(fftrate) + " Hz");
     appentTextBrowser(info.toStdString().c_str());
 
-    audioOutputThread = new AudioOutputThread(this);
-    audioOutputThread->start();
+
 
     // meter timer
     meter_timer = new QTimer(this);
     connect(meter_timer, &QTimer::timeout, this, &MainWindow::tunerTimeout);   
-}
-
-
-void MainWindow::onDataReceived(const sdr::RawBuffer &buffer)
-{
-    if(audioOutputThread)
-        audioOutputThread->writeBuffer(buffer);
 }
 
 MainWindow::~MainWindow()

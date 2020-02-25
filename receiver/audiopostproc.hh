@@ -2,7 +2,6 @@
 #define __SDR_RX_AUDIOPOSTPROC_HH__
 
 #include "sdr/subsample.hh"
-#include "sdr/portaudio.hh"
 #include "sdr/firfilter.hh"
 #include "gui/gui.hh"
 
@@ -12,6 +11,8 @@
 #include <QLabel>
 #include <QSpinBox>
 #include <QDoubleSpinBox>
+#include "audiootputthread.h"
+
 
 
 class AudioPostProc : public QObject, public sdr::Sink<int16_t>
@@ -36,14 +37,11 @@ public:
   void setLowPassOrder(size_t order);
 
   sdr::gui::Spectrum *spectrum() const;
-
-signals:
-  void dataReceived(const sdr::RawBuffer &buffer);
+  AudioOutputThread *audioOutputThread{};
 
 protected:
   sdr::FIRLowPass<int16_t> *_low_pass;
   sdr::SubSample<int16_t>  *_sub_sample;
-  sdr::PortSink            *_sink;
   sdr::gui::Spectrum       *_audio_spectrum;
 };
 

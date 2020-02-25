@@ -301,10 +301,6 @@
 #include "filternode.hh"
 #endif
 
-#ifdef SDR_WITH_PORTAUDIO
-#include "portaudio.hh"
-#endif
-
 #ifdef SDR_WITH_RTLSDR
 #include "rtlsource.hh"
 #endif
