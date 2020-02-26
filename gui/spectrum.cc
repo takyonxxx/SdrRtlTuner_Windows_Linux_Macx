@@ -112,133 +112,142 @@ Spectrum::handleBuffer(const RawBuffer &buffer, bool allow_overwrite)
     default: break;
     }
 
-    // Dispatch by input type:
-    if (Config::Type_u8 == _input_type) {
-        Buffer<uint8_t> input(buffer);
-        for (size_t i=0; i<input.size(); i++, _sample_count++) {
-            // Skip until _N_samples is reached
-            if (_sample_count < _N_samples) { continue; }
-            // Copy value into buffer
-            _fft_buffer[_samples_left] = (double(input[i])+offset)/scale; _samples_left++;
-            // Once a FFT buffer is completed -> transform
-            if (_samples_left == _fft_size) { _updateFFT(); _samples_left=0; _sample_count=0; }
+    try
+    {
+        // Dispatch by input type:
+        if (Config::Type_u8 == _input_type) {
+            Buffer<uint8_t> input(buffer);
+            for (size_t i=0; i<input.size(); i++, _sample_count++) {
+                // Skip until _N_samples is reached
+                if (_sample_count < _N_samples) { continue; }
+                // Copy value into buffer
+                _fft_buffer[_samples_left] = (double(input[i])+offset)/scale; _samples_left++;
+                // Once a FFT buffer is completed -> transform
+                if (_samples_left == _fft_size) { _updateFFT(); _samples_left=0; _sample_count=0; }
+            }
+        } else if (Config::Type_s8 == _input_type) {
+            Buffer<int8_t> input(buffer);
+            for (size_t i=0; i<input.size(); i++, _sample_count++) {
+                // Skip until _N_samples is reached
+                if (_sample_count < _N_samples) { continue; }
+                // Copy value into buffer
+                _fft_buffer[_samples_left] = (double(input[i])+offset)/scale; _samples_left++;
+                // Once a FFT buffer is completed -> transform
+                if (_samples_left == _fft_size) { _updateFFT(); _samples_left=0; _sample_count=0; }
+            }
+        } else if (Config::Type_u16 == _input_type) {
+            Buffer<uint16_t> input(buffer);
+            for (size_t i=0; i<input.size(); i++, _sample_count++) {
+                // Skip until _N_samples is reached
+                if (_sample_count < _N_samples) { continue; }
+                // Copy value into buffer
+                _fft_buffer[_samples_left] = (double(input[i])+offset)/scale; _samples_left++;
+                if (_samples_left == _fft_size) { _updateFFT(); _samples_left=0; _sample_count=0; }
+            }
+        } else if (Config::Type_s16 == _input_type) {
+            Buffer<int16_t> input(buffer);
+            for (size_t i=0; i<input.size(); i++, _sample_count++) {
+                // Skip until _N_samples is reached
+                if (_sample_count < _N_samples) { continue; }
+                // Copy value into buffer
+                _fft_buffer[_samples_left] = (double(input[i])+offset)/scale; _samples_left++;
+                if (_samples_left == _fft_size) { _updateFFT(); _samples_left=0; _sample_count=0; }
+            }
+        } else if (Config::Type_f32 == _input_type) {
+            Buffer<float> input(buffer);
+            for (size_t i=0; i<input.size(); i++, _sample_count++) {
+                // Skip until _N_samples is reached
+                if (_sample_count < _N_samples) { continue; }
+                // Copy value into buffer
+                _fft_buffer[_samples_left] = input[i]; _samples_left++;
+                if (_samples_left == _fft_size) { _updateFFT(); _samples_left=0; _sample_count=0; }
+            }
+        } else if (Config::Type_f64 == _input_type) {
+            Buffer<double> input(buffer);
+            for (size_t i=0; i<input.size(); i++, _sample_count++) {
+                // Skip until _N_samples is reached
+                if (_sample_count < _N_samples) { continue; }
+                // Copy value into buffer
+                _fft_buffer[_samples_left] = input[i]; _samples_left++;
+                if (_samples_left == _fft_size) { _updateFFT(); _samples_left=0; _sample_count=0;}
+            }
+        } else if (Config::Type_cu8 == _input_type) {
+            Buffer< std::complex<uint8_t> > input(buffer);
+            for (size_t i=0; i<input.size(); i++, _sample_count++) {
+                // Skip until _N_samples is reached
+                if (_sample_count < _N_samples) { continue; }
+                // Copy value into buffer
+                _fft_buffer[_samples_left] = std::complex<double>(
+                            double(input[i].real())+offset,
+                            double(input[i].imag())+offset)/scale;
+                _samples_left++;
+                if (_samples_left == _fft_size) { _updateFFT(); _samples_left=0; _sample_count=0; }
+            }
+        } else if (Config::Type_cs8 == _input_type) {
+            Buffer< std::complex<int8_t> > input(buffer);
+            for (size_t i=0; i<input.size(); i++, _sample_count++) {
+                // Skip until _N_samples is reached
+                if (_sample_count < _N_samples) { continue; }
+                // Copy value into buffer
+                _fft_buffer[_samples_left] = std::complex<double>(
+                            double(input[i].real())+offset,
+                            double(input[i].imag())+offset)/scale;
+                _samples_left++;
+                if (_samples_left == _fft_size) { _updateFFT(); _samples_left=0; _sample_count=0; }
+            }
+        } else if (Config::Type_cu16 == _input_type) {
+            Buffer< std::complex<uint16_t> > input(buffer);
+            for (size_t i=0; i<input.size(); i++, _sample_count++) {
+                // Skip until _N_samples is reached
+                if (_sample_count < _N_samples) { continue; }
+                // Copy value into buffer
+                _fft_buffer[_samples_left] = std::complex<double>(
+                            double(input[i].real())+offset,double(input[i].imag())+offset)/scale;
+                _samples_left++;
+                if (_samples_left == _fft_size) { _updateFFT(); _samples_left=0; _sample_count=0; }
+            }
+        } else if (Config::Type_cs16 == _input_type) {
+            Buffer< std::complex<int16_t> > input(buffer);
+            for (size_t i=0; i<input.size(); i++, _sample_count++) {
+                // Skip until _N_samples is reached
+                if (_sample_count < _N_samples) { continue; }
+                // Copy value into buffer
+                _fft_buffer[_samples_left] = std::complex<double>(
+                            double(input[i].real())+offset,double(input[i].imag())+offset)/scale;
+                _samples_left++;
+                if (_samples_left == _fft_size) { _updateFFT(); _samples_left=0; _sample_count=0; }
+            }
+
+        } else if (Config::Type_cf32 == _input_type) {
+            Buffer< std::complex<float> > input(buffer);
+            for (size_t i=0; i<input.size(); i++, _sample_count++) {
+                // Skip until _N_samples is reached
+                if (_sample_count < _N_samples) { continue; }
+                // Copy value into buffer
+                _fft_buffer[_samples_left] = input[i]; _samples_left++;
+                if (_samples_left == _fft_size) { _updateFFT(); _samples_left=0; _sample_count=0; }
+            }
+        } else if (Config::Type_cf64 == _input_type) {
+            Buffer< std::complex<double> > input(buffer);
+            for (size_t i=0; i<input.size(); i++, _sample_count++) {
+                // Skip until _N_samples is reached
+                if (_sample_count < _N_samples) { continue; }
+                // Copy value into buffer
+                _fft_buffer[_samples_left] = input[i]; _samples_left++;
+                if (_samples_left == _fft_size) { _updateFFT(); _samples_left=0; _sample_count=0; }
+            }
+        } else {
+            RuntimeError err;
+            err << "SpectrumView: Can not process buffer of type " << _input_type
+                << ", unsupported type.";
+            throw err;
         }
-    } else if (Config::Type_s8 == _input_type) {
-        Buffer<int8_t> input(buffer);
-        for (size_t i=0; i<input.size(); i++, _sample_count++) {
-            // Skip until _N_samples is reached
-            if (_sample_count < _N_samples) { continue; }
-            // Copy value into buffer
-            _fft_buffer[_samples_left] = (double(input[i])+offset)/scale; _samples_left++;
-            // Once a FFT buffer is completed -> transform
-            if (_samples_left == _fft_size) { _updateFFT(); _samples_left=0; _sample_count=0; }
-        }
-    } else if (Config::Type_u16 == _input_type) {
-        Buffer<uint16_t> input(buffer);
-        for (size_t i=0; i<input.size(); i++, _sample_count++) {
-            // Skip until _N_samples is reached
-            if (_sample_count < _N_samples) { continue; }
-            // Copy value into buffer
-            _fft_buffer[_samples_left] = (double(input[i])+offset)/scale; _samples_left++;
-            if (_samples_left == _fft_size) { _updateFFT(); _samples_left=0; _sample_count=0; }
-        }
-    } else if (Config::Type_s16 == _input_type) {
-        Buffer<int16_t> input(buffer);
-        for (size_t i=0; i<input.size(); i++, _sample_count++) {
-            // Skip until _N_samples is reached
-            if (_sample_count < _N_samples) { continue; }
-            // Copy value into buffer
-            _fft_buffer[_samples_left] = (double(input[i])+offset)/scale; _samples_left++;
-            if (_samples_left == _fft_size) { _updateFFT(); _samples_left=0; _sample_count=0; }
-        }
-    } else if (Config::Type_f32 == _input_type) {
-        Buffer<float> input(buffer);
-        for (size_t i=0; i<input.size(); i++, _sample_count++) {
-            // Skip until _N_samples is reached
-            if (_sample_count < _N_samples) { continue; }
-            // Copy value into buffer
-            _fft_buffer[_samples_left] = input[i]; _samples_left++;
-            if (_samples_left == _fft_size) { _updateFFT(); _samples_left=0; _sample_count=0; }
-        }
-    } else if (Config::Type_f64 == _input_type) {
-        Buffer<double> input(buffer);
-        for (size_t i=0; i<input.size(); i++, _sample_count++) {
-            // Skip until _N_samples is reached
-            if (_sample_count < _N_samples) { continue; }
-            // Copy value into buffer
-            _fft_buffer[_samples_left] = input[i]; _samples_left++;
-            if (_samples_left == _fft_size) { _updateFFT(); _samples_left=0; _sample_count=0;}
-        }
-    } else if (Config::Type_cu8 == _input_type) {
-        Buffer< std::complex<uint8_t> > input(buffer);
-        for (size_t i=0; i<input.size(); i++, _sample_count++) {
-            // Skip until _N_samples is reached
-            if (_sample_count < _N_samples) { continue; }
-            // Copy value into buffer
-            _fft_buffer[_samples_left] = std::complex<double>(
-                        double(input[i].real())+offset,
-                        double(input[i].imag())+offset)/scale;
-            _samples_left++;
-            if (_samples_left == _fft_size) { _updateFFT(); _samples_left=0; _sample_count=0; }
-        }
-    } else if (Config::Type_cs8 == _input_type) {
-        Buffer< std::complex<int8_t> > input(buffer);
-        for (size_t i=0; i<input.size(); i++, _sample_count++) {
-            // Skip until _N_samples is reached
-            if (_sample_count < _N_samples) { continue; }
-            // Copy value into buffer
-            _fft_buffer[_samples_left] = std::complex<double>(
-                        double(input[i].real())+offset,
-                        double(input[i].imag())+offset)/scale;
-            _samples_left++;
-            if (_samples_left == _fft_size) { _updateFFT(); _samples_left=0; _sample_count=0; }
-        }
-    } else if (Config::Type_cu16 == _input_type) {
-        Buffer< std::complex<uint16_t> > input(buffer);
-        for (size_t i=0; i<input.size(); i++, _sample_count++) {
-            // Skip until _N_samples is reached
-            if (_sample_count < _N_samples) { continue; }
-            // Copy value into buffer
-            _fft_buffer[_samples_left] = std::complex<double>(
-                        double(input[i].real())+offset,double(input[i].imag())+offset)/scale;
-            _samples_left++;
-            if (_samples_left == _fft_size) { _updateFFT(); _samples_left=0; _sample_count=0; }
-        }
-    } else if (Config::Type_cs16 == _input_type) {
-        Buffer< std::complex<int16_t> > input(buffer);
-        for (size_t i=0; i<input.size(); i++, _sample_count++) {
-            // Skip until _N_samples is reached
-            if (_sample_count < _N_samples) { continue; }
-            // Copy value into buffer
-            _fft_buffer[_samples_left] = std::complex<double>(
-                        double(input[i].real())+offset,double(input[i].imag())+offset)/scale;
-            _samples_left++;
-            if (_samples_left == _fft_size) { _updateFFT(); _samples_left=0; _sample_count=0; }
-        }
-    } else if (Config::Type_cf32 == _input_type) {
-        Buffer< std::complex<float> > input(buffer);
-        for (size_t i=0; i<input.size(); i++, _sample_count++) {
-            // Skip until _N_samples is reached
-            if (_sample_count < _N_samples) { continue; }
-            // Copy value into buffer
-            _fft_buffer[_samples_left] = input[i]; _samples_left++;
-            if (_samples_left == _fft_size) { _updateFFT(); _samples_left=0; _sample_count=0; }
-        }
-    } else if (Config::Type_cf64 == _input_type) {
-        Buffer< std::complex<double> > input(buffer);
-        for (size_t i=0; i<input.size(); i++, _sample_count++) {
-            // Skip until _N_samples is reached
-            if (_sample_count < _N_samples) { continue; }
-            // Copy value into buffer
-            _fft_buffer[_samples_left] = input[i]; _samples_left++;
-            if (_samples_left == _fft_size) { _updateFFT(); _samples_left=0; _sample_count=0; }
-        }
-    } else {
-        RuntimeError err;
-        err << "SpectrumView: Can not process buffer of type " << _input_type
-            << ", unsupported type.";
-        throw err;
     }
+    catch (std::exception& e)
+    {
+        //qDebug() << "Error: Spectrum::handleBuffer" << e.what();
+    }
+
 }
 
 

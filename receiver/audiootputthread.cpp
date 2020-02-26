@@ -46,7 +46,10 @@ void AudioOutputThread::writeBuffer(const sdr::RawBuffer &buffer)
     qBuffer->write(soundBuffer);
     qBuffer->close();
     if (ioDevice && !m_abort)
+    {
         ioDevice->write(qBuffer->buffer());
+        ioDevice->waitForBytesWritten(-1);
+    }
 }
 
 void AudioOutputThread::run()

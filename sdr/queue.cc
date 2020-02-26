@@ -103,7 +103,8 @@ Queue::_main()
             // Process message
             try
             {
-                msg.sink()->handleBuffer(msg.buffer(), msg.allowOverwrite());
+                if(msg.buffer().bytesLen() > 0)
+                    msg.sink()->handleBuffer(msg.buffer(), msg.allowOverwrite());
             }
             catch (std::exception& e)
             {
