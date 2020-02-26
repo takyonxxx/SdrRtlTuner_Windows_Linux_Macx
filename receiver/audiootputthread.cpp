@@ -8,6 +8,8 @@ AudioOutputThread::AudioOutputThread(QObject *parent):
     //sample rate 16433
     QAudioFormat format;
     QAudioDeviceInfo defaultDeviceInfo = QAudioDeviceInfo::defaultOutputDevice();
+    mutex = new QMutex();
+    queue = new QQueue<QByteArray>();
 
     for (auto &deviceInfo: QAudioDeviceInfo::availableDevices(QAudio::AudioOutput)) {
         if (deviceInfo != defaultDeviceInfo)
@@ -31,27 +33,47 @@ AudioOutputThread::AudioOutputThread(QObject *parent):
     qDebug() << "Default Sound Device: " << defaultDeviceInfo.deviceName();
 }
 
+AudioOutputThread::~AudioOutputThread()
+{
+    delete queue;
+    delete mutex;
+}
+
 void AudioOutputThread::stop()
 {
     m_abort = true;
 }
 
 void AudioOutputThread::writeBuffer(const sdr::RawBuffer &buffer)
-{
-    QByteArray soundBuffer(buffer.data(), buffer.bytesLen());
-
-    auto qBuffer = new QBuffer;
-    qBuffer->open(QIODevice::ReadWrite);
-
-    qBuffer->write(soundBuffer);
-    qBuffer->close();
+{   
+    QMutexLocker locker(mutex);
     if (ioDevice && !m_abort)
     {
-        ioDevice->write(qBuffer->buffer());
-        ioDevice->waitForBytesWritten(-1);
+        QByteArray soundBuffer(buffer.data(), buffer.bytesLen());
+
+        auto qBuffer = new QBuffer;
+        qBuffer->open(QIODevice::ReadWrite);
+
+        qBuffer->write(soundBuffer);
+        qBuffer->close();
+
+        queue->enqueue(qBuffer->buffer());
     }
 }
 
 void AudioOutputThread::run()
 {
+    while (true)
+    {
+        if(m_abort)
+            break;
+
+        QMutexLocker locker(mutex);
+        if(queue->size() > 0)
+        {
+            auto buff = queue->dequeue();
+            ioDevice->write(buff);
+            ioDevice->waitForBytesWritten(-1);
+        }
+    }
 }
