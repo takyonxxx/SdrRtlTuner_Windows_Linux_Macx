@@ -25,8 +25,6 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    void setFrequency(qint64 freq);
-
 private:
 
     char log_buffer[256];
@@ -78,8 +76,10 @@ private slots:
     void on_waterFallColor_currentIndexChanged(int );
     void onReceiverStarted();
     void onReceiverStopped();
+    void setFrequency(qint64 freq);
 
 protected:
+    void changeEvent( QEvent* e );
     Receiver *m_Receiver{};
     DemodulatorCtrl *m_Demodulator{};
 

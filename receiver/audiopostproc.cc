@@ -27,7 +27,6 @@ AudioPostProc::~AudioPostProc() {
     delete _low_pass;
 }
 
-
 void
 AudioPostProc::config(const Config &src_cfg) {
     // Forward to low pass
@@ -108,6 +107,7 @@ AudioPostProcView::AudioPostProcView(AudioPostProc *proc, QWidget *parent)
     // Create spectrum view:
     _spectrum = new gui::SpectrumView(_proc->spectrum());
     _spectrum->setNumXTicks(5);
+    _spectrum->setMinimumHeight(100);
 
     QObject::connect(_lp_freq, SIGNAL(textEdited(QString)), this, SLOT(onSetLowPassFreq(QString)));
     QObject::connect(_lp_order, SIGNAL(valueChanged(int)), this, SLOT(onSetLowPassOrder(int)));

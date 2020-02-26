@@ -175,7 +175,7 @@ void MainWindow::initSpectrumGraph()
     ui->plotter->setFftPlotColor(QColor("#CEECF5"));
     ui->plotter->setWheelConstant(KHZ(5));
 
-    ui->plotter->setPeakDetection(true ,2);
+    //ui->plotter->setPeakDetection(true ,2);
     ui->plotter->setFftFill(true);
 }
 
