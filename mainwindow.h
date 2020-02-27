@@ -46,6 +46,7 @@ private:
     AudioPostProcView* audioView = {};
     AudioOutputThread *audioOutputThread{};
     RTLCtrlView* rTLCtrlView{};
+    QTabWidget *ctrls{};
 
     float               *d_realFftData;
     float               *d_iirFftData;

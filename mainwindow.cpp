@@ -64,7 +64,6 @@ MainWindow::MainWindow(QWidget *parent) :
     audioView = (AudioPostProcView*)m_Receiver->createAudioCtrlView();
 
     rTLCtrlView =(RTLCtrlView*) sourceView->currentSrcCtrl();
-
     QObject::connect(rTLCtrlView, &RTLCtrlView::source_setFrequency, this, &MainWindow::onSource_setFrequency);
 
     demodView->setDemodIndex(currentDemod);
@@ -72,13 +71,14 @@ MainWindow::MainWindow(QWidget *parent) :
     m_Demodulator->setRrate(fftrate);
     setFrequency(tunerFrequency);
 
-    QTabWidget *ctrls = new QTabWidget();
+    ctrls = new QTabWidget();
     ctrls->addTab(sourceView, "Source");
     ctrls->addTab(demodView, "Demodulator");
     ctrls->addTab(audioView, "Audio");
     ctrls->addTab(ui->frame_controls, "Settings");
     ctrls->setMinimumWidth(400);
     ui->gridLayoutSource->addWidget(ctrls);
+    ctrls->setEnabled(false);
 
     setFftRate(fftrate);
     setFreqStep(freqStep);
@@ -97,8 +97,6 @@ MainWindow::MainWindow(QWidget *parent) :
     info.append("-> LowCutFreq: " + QString::number(m_LowCutFreq / 1000.0, 'f', 2) + " Khz\n");
     info.append("-> FFT Refresh Rate: " + QString::number(fftrate) + " Hz");
     appentTextBrowser(info.toStdString().c_str());
-
-
 
     // meter timer
     meter_timer = new QTimer(this);
@@ -218,11 +216,13 @@ void MainWindow::on_push_connect_clicked()
     {
         if (m_Receiver->isRunning()) { return; }
         m_Receiver->start();
+        ctrls->setEnabled(true);
     }
     else
     {
         if (!m_Receiver->isRunning()) { return; }
         m_Receiver->stop();
+        ctrls->setEnabled(false);
     }
 }
 
@@ -265,11 +265,13 @@ void MainWindow::onFreqCtrl_setFrequency(qint64 freq)
     {
         rTLCtrlView->update();
     }
+    saveSettings();
 }
 
 void MainWindow::onSource_setFrequency(qint64 freq)
 {    
     ui->freqCtrl->SetFrequency(freq, false);
+    saveSettings();
 }
 
 void MainWindow::on_fftRateSelector_currentIndexChanged(const QString &arg1)
@@ -296,6 +298,7 @@ void MainWindow::on_plotter_newDemodFreq(qint64 freq, qint64 delta)
     {
         rTLCtrlView->update();
     }
+    saveSettings();
 }
 
 void MainWindow::setFrequency(qint64 freq)
@@ -307,6 +310,7 @@ void MainWindow::setFrequency(qint64 freq)
 
         appentTextBrowser(log_buffer);
     }
+    saveSettings();
 }
 
 
