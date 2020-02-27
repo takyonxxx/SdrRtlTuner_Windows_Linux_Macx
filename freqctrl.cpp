@@ -27,6 +27,7 @@ CFreqCtrl::CFreqCtrl(QWidget *parent) :
     m_freq = 146123456;
     Setup( 10, 1, 4000000000U, 1, UNITS_MHZ);
     m_Oldfreq = 0;
+    g_constant = 0;
     m_LastLeadZeroPos = 0;
     m_LRMouseFreqSel = FALSE;
     m_ActiveEditDigit = -1;
@@ -62,6 +63,11 @@ bool CFreqCtrl::InRect(QRect &rect, QPoint &point)
         return TRUE;
     else
         return FALSE;
+}
+
+void CFreqCtrl::setG_constant(const qreal &value)
+{
+    g_constant = value;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -535,7 +541,7 @@ void CFreqCtrl::DrawBkGround(QPainter &Painter)
 {
 QRect rect(0, 0, width(), height());
 //qDebug() <<rect;
-qreal g_constant = 2.5;
+
 int cellwidth = 100*rect.width()/(100*(m_NumDigits+g_constant)+(m_NumSeps*SEPRATIO_N)/SEPRATIO_D);
 int sepwidth = (SEPRATIO_N*cellwidth)/(100*SEPRATIO_D);
 //qDebug() <<cellwidth <<sepwidth;

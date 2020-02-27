@@ -10,13 +10,6 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = SdrRtlTuner
 TEMPLATE = app
 
-win32:RC_ICONS += $$PWD\icons\app.ico
-
-macx {
-    ICON = $$PWD\icons\app.icns
-    DEFINES += GQRX_OS_MACX
-}
-
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked as deprecated (the exact warnings
 # depend on your compiler). Please consult the documentation of the
@@ -120,6 +113,8 @@ HEADERS += \
 
 macx{
     message("macx enabled")
+    ICON = $$PWD\icons\app.icns
+    DEFINES += GQRX_OS_MACX
 
     INCLUDEPATH += /usr/local/include
     LIBS += /usr/local/lib/librtlsdr.dylib /usr/local/lib/libfftw3.dylib /usr/local/lib/libportaudio.dylib
@@ -137,6 +132,7 @@ unix:!macx{
 
 win32{
     message("Win32 enabled")
+    RC_ICONS += $$PWD\icons\app.ico
 
     LIBS += -L$$PWD\libs\rtl-sdr-lib\x64 \
              -lrtlsdr

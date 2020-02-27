@@ -43,7 +43,7 @@ int gettimeofday(struct timeval * tp, struct timezone * tzp)
 #define CUR_CUT_DELTA 5		//cursor capture delta in pixels
 
 #define FFT_MIN_DB     -160.f
-#define FFT_MAX_DB      0.f
+#define FFT_MAX_DB      20.f
 
 // Colors of type QRgb in 0xAARRGGBB format (unsigned int)
 #define PLOTTER_BGD_COLOR           0xFF1F1D1D
@@ -125,8 +125,8 @@ CPlotter::CPlotter(QWidget *parent) : QFrame(parent)
 
     m_HorDivs = 12;
     m_VerDivs = 6;
-    m_PandMaxdB = m_WfMaxdB = 0.f;
-    m_PandMindB = m_WfMindB = -150.f;
+    m_PandMaxdB = m_WfMaxdB = 20.f;
+    m_PandMindB = m_WfMindB = -160.f;
 
     m_FreqUnits = 1000000;
     m_CursorCaptured = NOCAP;
@@ -1307,8 +1307,8 @@ void CPlotter::drawOverlay()
     painter.setBrush(Qt::SolidPattern);
     painter.fillRect(0, 0, w, h, QColor(PLOTTER_BGD_COLOR));
 
-#define HOR_MARGIN 5
-#define VER_MARGIN 5
+#define HOR_MARGIN 1
+#define VER_MARGIN 1
 
     // X and Y axis areas
     m_YAxisWidth = metrics.width("XXXX") + 2 * HOR_MARGIN;

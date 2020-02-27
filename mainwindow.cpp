@@ -34,8 +34,6 @@ MainWindow::MainWindow(QWidget *parent) :
     for (int i = 0; i < MAX_FFT_SIZE; i++)
         d_iirFftData[i] = RESET_FFT_FACTOR;  // dBFS
 
-    initObjects();
-
     // Install log message handler:
     sdr::Logger::get().addHandler(new sdr::StreamLogHandler(std::cerr, sdr::LOG_INFO));
 
@@ -51,10 +49,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_Demodulator->setFilterWidth(2*m_HiCutFreq, true);
 
     QObject::connect(m_Demodulator, &DemodulatorCtrl::spectrumUpdated, this, &MainWindow::fftTimeout);
-    QObject::connect(m_Demodulator, &DemodulatorCtrl::filterChanged, this, &MainWindow::onFilterChanged);
-
-    initSpectrumGraph();
-    setPlotterSettings();
+    QObject::connect(m_Demodulator, &DemodulatorCtrl::filterChanged, this, &MainWindow::onFilterChanged);    
 
     if (m_Receiver->isRunning()) { ui->push_connect->setChecked(true); ui->push_connect->setText("Stop"); }
     else { ui->push_connect->setChecked(false); ui->push_connect->setText("Start"); }
@@ -70,6 +65,9 @@ MainWindow::MainWindow(QWidget *parent) :
     m_Demodulator->setDemod(currentDemod);
     m_Demodulator->setRrate(fftrate);
     setFrequency(tunerFrequency);
+
+    initObjects();
+    setPlotterSettings();
 
     ctrls = new QTabWidget();
     ctrls->addTab(sourceView, "Source");
@@ -119,7 +117,10 @@ MainWindow::~MainWindow()
 
 void MainWindow::changeEvent( QEvent* e )
 {
-    initSpectrumGraph();
+    QRect rect = qApp->primaryScreen()->geometry();
+    int width = rect.width();
+
+    initObjects();
 
     if( e->type() == QEvent::WindowStateChange )
     {       
@@ -127,28 +128,28 @@ void MainWindow::changeEvent( QEvent* e )
 
         if( event->oldState() == Qt::WindowNoState && this->windowState() == Qt::WindowMaximized )
         {
-            ui->filterFreq->setMaximumWidth(450);
-            ui->sMeter->setMaximumWidth(450);
+            ui->filterFreq->setMaximumWidth(width/4);
+            ui->sMeter->setMaximumWidth(width/4);
         }
     }
+
+    ui->freqCtrl->update();
+    ui->filterFreq->update();
+
 }
 
 void MainWindow::initObjects()
 {
     ui->push_exit->setStyleSheet("font-size: 18pt; font-weight: bold; color: white;background-color: #8F3A3A; padding: 6px; spacing: 6px");
     ui->push_connect->setStyleSheet("font-size: 18pt; font-weight: bold; color: white;background-color:#154360; padding: 6px; spacing: 6px;");
-    ui->text_terminal->setStyleSheet("font: 10pt; color: #00cccc; background-color: #001a1a;");
-}
+    ui->text_terminal->setStyleSheet("font: 10pt; color: #00cccc; background-color: #001a1a;");    
 
-
-void MainWindow::initSpectrumGraph()
-{
-    /* set up FFT */
-
+    ui->filterFreq->setG_constant(1.5);
     ui->filterFreq->Setup(6, 0 ,1000e3, 1, UNITS_KHZ);
     ui->filterFreq->SetDigitColor(QColor("#FF5733"));
-    ui->filterFreq->SetFrequency(0);   
+    ui->filterFreq->SetFrequency(0);
 
+    ui->freqCtrl->setG_constant(2.5);
     ui->freqCtrl->Setup(11, 0, 2200e6, 1, UNITS_MHZ);
     ui->freqCtrl->SetDigitColor(QColor("#FFC300"));
     ui->freqCtrl->SetFrequency(tunerFrequency);
@@ -156,6 +157,10 @@ void MainWindow::initSpectrumGraph()
 
     ui->filterFreq->setMaximumWidth(250);
     ui->sMeter->setMaximumWidth(250);
+
+    ui->filterFreq->setMaximumHeight(60);
+    ui->sMeter->setMaximumHeight(60);
+    ui->freqCtrl->setMaximumHeight(125);
 
     ui->plotter->setTooltipsEnabled(true);
 

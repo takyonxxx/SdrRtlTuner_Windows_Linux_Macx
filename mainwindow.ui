@@ -291,6 +291,11 @@ This is an offset from the hardware RF frequency.&lt;/p&gt;&lt;/body&gt;&lt;/htm
            </property>
            <item>
             <property name="text">
+             <string>200</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
              <string>100</string>
             </property>
            </item>

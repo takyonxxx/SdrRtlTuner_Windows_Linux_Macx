@@ -86,9 +86,7 @@ AudioPostProc::spectrum() const {
 AudioPostProcView::AudioPostProcView(AudioPostProc *proc, QWidget *parent)
     : QWidget(parent), _proc(proc)
 {
-    _lb_info = new QLabel("PortAudio");
-
-    QCheckBox *lp_enable = new QCheckBox("enable");
+    QCheckBox *lp_enable = new QCheckBox("Enable");
     lp_enable->setChecked(proc->lowPassEnabled());
 
     _lp_freq = new QLineEdit(QString("%1").arg(proc->lowPassFreq()));
@@ -114,17 +112,24 @@ AudioPostProcView::AudioPostProcView(AudioPostProc *proc, QWidget *parent)
     QObject::connect(lp_enable, SIGNAL(toggled(bool)), this, SLOT(onLowPassToggled(bool)));
 
     // Layout
-    QVBoxLayout *layout = new QVBoxLayout();
+    QVBoxLayout *vlayout = new QVBoxLayout();
+    QHBoxLayout* hlayout = new QHBoxLayout();
+
+    QLabel *_lb_freq = new QLabel("Low Pass (Hz)");
+    QLabel *_lb_order = new QLabel("Order");
+
+    hlayout->addWidget(_lb_freq);
+    hlayout->addWidget(_lp_freq);
+    hlayout->addWidget(_lb_order);
+    hlayout->addWidget(_lp_order);
+    hlayout->addWidget(lp_enable);
+
     QFormLayout *table = new QFormLayout();
-    table->addRow("Device: ", _lb_info);
-    table->addRow("Low Pass (Hz)", _lp_freq);
-    table->addRow("order", _lp_order);
-    table->addWidget(lp_enable);
-    layout->addLayout(table, 0);
+    vlayout->addLayout(table, 0);
+    vlayout->addLayout(hlayout, 1);
 
-    layout->addWidget(_spectrum, 1);
-
-    this->setLayout(layout);
+    vlayout->addWidget(_spectrum, 1);
+    this->setLayout(vlayout);
 }
 
 AudioPostProcView::~AudioPostProcView() {

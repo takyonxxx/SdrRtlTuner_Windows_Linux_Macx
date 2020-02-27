@@ -247,7 +247,6 @@ Spectrum::handleBuffer(const RawBuffer &buffer, bool allow_overwrite)
     {
         //qDebug() << "Error: Spectrum::handleBuffer" << e.what();
     }
-
 }
 
 

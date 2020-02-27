@@ -55,8 +55,7 @@ private:
     float               signal_level;
 
     void initObjects();
-    void appentTextBrowser(const char* );
-    void initSpectrumGraph();
+    void appentTextBrowser(const char* );    
     int  setFreqStep(int );
     int  setFftRate(int );
     void setPlotterSettings();

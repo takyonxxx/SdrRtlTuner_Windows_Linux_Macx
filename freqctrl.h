@@ -32,6 +32,8 @@ public:
     void SetHighlightColor(QColor cr);
     qint64 GetFrequency(){return m_freq;}
 
+    void setG_constant(const qreal &value);
+
 signals:
     void NewFrequency(qint64 freq); //emitted when frequency has changed
 
@@ -82,6 +84,8 @@ private:
     qint64 m_Oldfreq;
     qint64 m_MinFreq;
     qint64 m_MaxFreq;
+
+    qreal g_constant;
 
     QColor m_DigitColor;
     QColor m_BkColor;

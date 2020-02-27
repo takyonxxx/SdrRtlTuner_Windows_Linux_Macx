@@ -61,7 +61,6 @@ protected slots:
 
 protected:
   AudioPostProc *_proc;
-  QLabel *_lb_info;
   QLineEdit *_lp_freq;
   QSpinBox  *_lp_order;
   sdr::gui::SpectrumView *_spectrum;
