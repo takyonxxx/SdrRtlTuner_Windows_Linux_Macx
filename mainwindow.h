@@ -45,6 +45,7 @@ private:
     DemodulatorCtrlView* demodView {};
     AudioPostProcView* audioView = {};
     AudioOutputThread *audioOutputThread{};
+    RTLCtrlView* rTLCtrlView{};
 
     float               *d_realFftData;
     float               *d_iirFftData;
@@ -76,6 +77,8 @@ private slots:
     void on_waterFallColor_currentIndexChanged(int );
     void onReceiverStarted();
     void onReceiverStopped();
+    void onFreqCtrl_setFrequency(qint64 freq);
+    void onSource_setFrequency(qint64 freq);
     void setFrequency(qint64 freq);
 
 protected:

@@ -11,10 +11,10 @@ AudioOutputThread::AudioOutputThread(QObject *parent):
     mutex = new QMutex();
     queue = new QQueue<QByteArray>();
 
-    for (auto &deviceInfo: QAudioDeviceInfo::availableDevices(QAudio::AudioOutput)) {
+    /*for (auto &deviceInfo: QAudioDeviceInfo::availableDevices(QAudio::AudioOutput)) {
         if (deviceInfo != defaultDeviceInfo)
             qDebug() << deviceInfo.deviceName();
-    }
+    }*/
 
     format.setSampleRate(22050 + 433);
     format.setChannelCount(1);

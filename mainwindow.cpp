@@ -63,6 +63,10 @@ MainWindow::MainWindow(QWidget *parent) :
     demodView = (DemodulatorCtrlView*)m_Receiver->createDemodCtrlView();
     audioView = (AudioPostProcView*)m_Receiver->createAudioCtrlView();
 
+    rTLCtrlView =(RTLCtrlView*) sourceView->currentSrcCtrl();
+
+    QObject::connect(rTLCtrlView, &RTLCtrlView::source_setFrequency, this, &MainWindow::onSource_setFrequency);
+
     demodView->setDemodIndex(currentDemod);
     m_Demodulator->setDemod(currentDemod);
     m_Demodulator->setRrate(fftrate);
@@ -150,7 +154,7 @@ void MainWindow::initSpectrumGraph()
     ui->freqCtrl->Setup(11, 0, 2200e6, 1, UNITS_MHZ);
     ui->freqCtrl->SetDigitColor(QColor("#FFC300"));
     ui->freqCtrl->SetFrequency(tunerFrequency);
-    connect(ui->freqCtrl, SIGNAL(NewFrequency(qint64)), this, SLOT(setFrequency(qint64)));
+    connect(ui->freqCtrl, SIGNAL(NewFrequency(qint64)), this, SLOT(onFreqCtrl_setFrequency(qint64)));
 
     ui->filterFreq->setMaximumWidth(250);
     ui->sMeter->setMaximumWidth(250);
@@ -254,6 +258,20 @@ void MainWindow::onReceiverStopped()
     ui->push_connect->setText("Start"); ui->push_connect->setEnabled(true);
 }
 
+void MainWindow::onFreqCtrl_setFrequency(qint64 freq)
+{
+    setFrequency(freq);
+    if(rTLCtrlView)
+    {
+        rTLCtrlView->update();
+    }
+}
+
+void MainWindow::onSource_setFrequency(qint64 freq)
+{    
+    ui->freqCtrl->SetFrequency(freq, false);
+}
+
 void MainWindow::on_fftRateSelector_currentIndexChanged(const QString &arg1)
 {
     fftrate = arg1.toInt();
@@ -274,6 +292,10 @@ void MainWindow::on_plotter_newDemodFreq(qint64 freq, qint64 delta)
 {
     setFrequency(freq);
     ui->freqCtrl->SetFrequency(freq, false);
+    if(rTLCtrlView)
+    {
+        rTLCtrlView->update();
+    }
 }
 
 void MainWindow::setFrequency(qint64 freq)
@@ -284,7 +306,7 @@ void MainWindow::setFrequency(qint64 freq)
                  "Could not Set Frequency-> %.1f MHz",(float)freq/1000000.0f);
 
         appentTextBrowser(log_buffer);
-    }    
+    }
 }
 
 
@@ -341,10 +363,7 @@ void MainWindow::tunerTimeout()
     ui->plotter->setSampleRate(sampleRate);
     ui->sMeter->setLevel(signal_level);
     ui->filterFreq->SetFrequency(m_HiCutFreq);
-    ui->plotter->setHiLowCutFrequencies(m_LowCutFreq, m_HiCutFreq);
-
-    auto rTLCtrlView =(RTLCtrlView*) sourceView->currentSrcCtrl();
-    rTLCtrlView->update();
+    ui->plotter->setHiLowCutFrequencies(m_LowCutFreq, m_HiCutFreq);   
 
     auto deviceId = m_Receiver->getDeviceID();
     auto deviceName = rtlsdr_get_device_name(deviceId);

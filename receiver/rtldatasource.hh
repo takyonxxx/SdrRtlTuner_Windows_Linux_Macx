@@ -99,6 +99,9 @@ protected slots:
   void onGainChanged(int idx);
   void onAGCToggled(bool enabled);
 
+signals:
+  void source_setFrequency(qint64 freq);
+
 private:
   QLabel *_infoMessage;
   RTLDataSource *_source;

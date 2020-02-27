@@ -371,6 +371,7 @@ RTLCtrlView::onSetFrequency() {
     double freq = _freq->text().toDouble();
     if (! _source->isActive()) { return; }
     _source->setFrequency(freq*1000000);
+    emit source_setFrequency(freq*1000000);
     std::cerr << "Set frequency " << _source->tunerFrequency() << std::endl;
 }
 
