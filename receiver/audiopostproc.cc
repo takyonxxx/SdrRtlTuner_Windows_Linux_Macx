@@ -35,12 +35,9 @@ AudioPostProc::config(const Config &src_cfg) {
 
 
 void
-AudioPostProc::process(const Buffer<int16_t> &buffer, bool allow_overwrite) {    
-
-    Buffer<int16_t> out;
-    _sub_sample->getSndBuffer(buffer, out);
+AudioPostProc::process(const Buffer<int16_t> &buffer, bool allow_overwrite) {
     if(audioOutputThread)
-        audioOutputThread->writeBuffer(out);
+        audioOutputThread->writeBuffer(_sub_sample->getSndBuffer(buffer));
 }
 
 bool

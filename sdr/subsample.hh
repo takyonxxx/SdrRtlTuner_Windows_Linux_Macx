@@ -73,12 +73,12 @@ public:
     }
 
     /** Performs the sub-sampling on the given buffer. */
-    virtual void getSndBuffer(const Buffer<Scalar> &in, Buffer<Scalar> &out)
+    Buffer<Scalar> getSndBuffer(const Buffer<Scalar> &in)
     {
         if (_buffer.isUnused())
         {
             _process(in, _buffer);
-            out = Buffer<Scalar>(_buffer);
+            return _buffer;
         }
     }
 

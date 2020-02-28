@@ -53,11 +53,11 @@ void AudioOutputThread::writeBuffer(const sdr::RawBuffer &buffer)
 
         auto qBuffer = new QBuffer;
         qBuffer->open(QIODevice::ReadWrite);
-
         qBuffer->write(soundBuffer);
         qBuffer->close();
 
         queue->enqueue(qBuffer->buffer());
+        delete qBuffer;
     }
 }
 
@@ -72,8 +72,11 @@ void AudioOutputThread::run()
         if(queue->size() > 0)
         {
             auto buff = queue->dequeue();
-            ioDevice->write(buff);
-            ioDevice->waitForBytesWritten(-1);
+            if(ioDevice->isWritable())
+            {
+                ioDevice->write(buff);
+                ioDevice->waitForBytesWritten(-1);
+            }
         }
     }
 }
