@@ -151,6 +151,7 @@ Spectrum::handleBuffer(const RawBuffer &buffer, bool allow_overwrite)
                 if (_sample_count < _N_samples) { continue; }
                 // Copy value into buffer
                 _fft_buffer[_samples_left] = (double(input[i])+offset)/scale; _samples_left++;
+
                 if (_samples_left == _fft_size) { _updateFFT(); _samples_left=0; _sample_count=0; }
             }
         } else if (Config::Type_f32 == _input_type) {
@@ -178,8 +179,7 @@ Spectrum::handleBuffer(const RawBuffer &buffer, bool allow_overwrite)
                 if (_sample_count < _N_samples) { continue; }
                 // Copy value into buffer
                 _fft_buffer[_samples_left] = std::complex<double>(
-                            double(input[i].real())+offset,
-                            double(input[i].imag())+offset)/scale;
+                            double(input[i].real())+offset,double(input[i].imag())+offset)/scale;
                 _samples_left++;
                 if (_samples_left == _fft_size) { _updateFFT(); _samples_left=0; _sample_count=0; }
             }
@@ -190,8 +190,7 @@ Spectrum::handleBuffer(const RawBuffer &buffer, bool allow_overwrite)
                 if (_sample_count < _N_samples) { continue; }
                 // Copy value into buffer
                 _fft_buffer[_samples_left] = std::complex<double>(
-                            double(input[i].real())+offset,
-                            double(input[i].imag())+offset)/scale;
+                            double(input[i].real())+offset,double(input[i].imag())+offset)/scale;
                 _samples_left++;
                 if (_samples_left == _fft_size) { _updateFFT(); _samples_left=0; _sample_count=0; }
             }
@@ -215,7 +214,8 @@ Spectrum::handleBuffer(const RawBuffer &buffer, bool allow_overwrite)
                 _fft_buffer[_samples_left] = std::complex<double>(
                             double(input[i].real())+offset,double(input[i].imag())+offset)/scale;
                 _samples_left++;
-                if (_samples_left == _fft_size) { _updateFFT(); _samples_left=0; _sample_count=0; }
+
+                if (_samples_left == _fft_size) {_updateFFT(); _samples_left=0; _sample_count=0; }
             }
 
         } else if (Config::Type_cf32 == _input_type) {
@@ -243,9 +243,9 @@ Spectrum::handleBuffer(const RawBuffer &buffer, bool allow_overwrite)
             throw err;
         }
     }
-    catch (std::exception& e)
+    catch (...)
     {
-        //qDebug() << "Error: Spectrum::handleBuffer" << e.what();
+
     }
 }
 

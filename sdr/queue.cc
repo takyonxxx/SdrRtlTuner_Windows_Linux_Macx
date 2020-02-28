@@ -100,16 +100,8 @@ Queue::_main()
             _queue.pop_front();
             pthread_mutex_unlock(&_queue_lock);
 
-            // Process message
-            try
-            {
-                if(msg.buffer().bytesLen() > 0)
-                    msg.sink()->handleBuffer(msg.buffer(), msg.allowOverwrite());
-            }
-            catch (std::exception& e)
-            {
-                qDebug() << "Error: Queue::_main()" << e.what();
-            }
+            if(msg.buffer().bytesLen() > 0)
+                msg.sink()->handleBuffer(msg.buffer(), msg.allowOverwrite());
 
             // Mark buffer unused
             msg.buffer().unref();
