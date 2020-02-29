@@ -13,18 +13,21 @@ AudioPostProc::AudioPostProc(QObject *parent)
     _sub_sample = new SubSample<int16_t>(22050.0);
     _low_pass   = new FIRLowPass<int16_t>(10, 5e3);
     _low_pass->enable(false);
+    _sink       = new PortSink();
     _audio_spectrum = new gui::Spectrum(50, 256, this);
 
     // Connect all
     _sub_sample->connect(_low_pass, true);
+    _low_pass->connect(_sink);
     _low_pass->connect(_audio_spectrum);
 
-    audioOutputThread = new AudioOutputThread(this);
-    audioOutputThread->start();
+    /*audioOutputThread = new AudioOutputThread(this);
+    audioOutputThread->start();*/
 }
 
 AudioPostProc::~AudioPostProc() {
     delete _low_pass;
+    delete _sink;
 }
 
 void
@@ -36,8 +39,9 @@ AudioPostProc::config(const Config &src_cfg) {
 
 void
 AudioPostProc::process(const Buffer<int16_t> &buffer, bool allow_overwrite) {
-    if(audioOutputThread)
-        audioOutputThread->writeBuffer(_sub_sample->getSndBuffer(buffer));
+    _sub_sample->process(buffer, allow_overwrite);
+    /*if(audioOutputThread)
+        audioOutputThread->writeBuffer(_sub_sample->getSndBuffer(buffer));*/
 }
 
 bool

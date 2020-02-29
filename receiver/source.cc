@@ -66,6 +66,9 @@ size_t DataSource::getDeviceID() const
 DataSourceCtrl::DataSourceCtrl(Receiver *receiver)
     : QObject(receiver), Proxy(), _receiver(receiver), _source(SOURCE_RTL), _src_obj(nullptr)
 {
+    // Initialize PortAudio
+    sdr::PortAudio::init();
+
     // Instantiate data source
     setSource(SOURCE_RTL);
 

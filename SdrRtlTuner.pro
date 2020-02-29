@@ -23,7 +23,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 
-SOURCES += \        
+SOURCES += \
         gui/spectrum.cc \
         gui/spectrumview.cc \
         main.cpp \
@@ -38,6 +38,7 @@ SOURCES += \
         receiver/receiver.cc \
         receiver/rtldatasource.cc \
         receiver/source.cc \
+        sdr/portaudio.cc \
         sdr/aprs.cc \
         sdr/ax25.cc \
         sdr/baudot.cc \
@@ -58,7 +59,7 @@ SOURCES += \
         sdr/wavfile.cc
 
 
-HEADERS += \        
+HEADERS += \
         gui/gui.hh \
         gui/spectrum.hh \
         gui/spectrumview.hh \
@@ -73,6 +74,7 @@ HEADERS += \
         receiver/receiver.hh \
         receiver/rtldatasource.hh \
         receiver/source.hh \
+        sdr/portaudio.hh \
         sdr/aprs.hh \
         sdr/autocast.hh \
         sdr/ax25.hh \

@@ -85,7 +85,7 @@ public:
     /** Performs the sub-sampling on the given buffer. */
     virtual void process(const Buffer<Scalar> &buffer, bool allow_overwrite)
     {
-        /*if (allow_overwrite) {
+        if (allow_overwrite) {
             _process(buffer, buffer);
         } else if (_buffer.isUnused()) {
             _process(buffer, _buffer);
@@ -96,7 +96,7 @@ public:
             msg << "SubSample: Drop buffer, output buffer still in use.";
             Logger::get().log(msg);
 #endif
-        }*/
+        }
     }
 
     Buffer<Scalar> buffer() const;

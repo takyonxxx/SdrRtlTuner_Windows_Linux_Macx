@@ -2,6 +2,7 @@
 #define __SDR_RX_AUDIOPOSTPROC_HH__
 
 #include "sdr/subsample.hh"
+#include "sdr/portaudio.hh"
 #include "sdr/firfilter.hh"
 #include "gui/gui.hh"
 
@@ -41,6 +42,7 @@ public:
 
 protected:
   sdr::FIRLowPass<int16_t> *_low_pass;
+  sdr::PortSink            *_sink;
   sdr::SubSample<int16_t>  *_sub_sample;
   sdr::gui::Spectrum       *_audio_spectrum;
 };
