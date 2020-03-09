@@ -77,7 +77,7 @@ public:
     {
         if (_buffer.isUnused())
         {
-            _process(in, _buffer);
+            _process(in, _buffer, false);
             return _buffer;
         }
     }
@@ -103,7 +103,7 @@ public:
 
 protected:
     /** Performs the sub-sampling from @c in into @c out. */
-    void _process(const Buffer<Scalar> &in, const Buffer<Scalar> &out) {
+    void _process(const Buffer<Scalar> &in, const Buffer<Scalar> &out, bool send = true) {
         size_t j=0;
         for (size_t i=0; i<in.size(); i++) {
             _last += in[i]; _left++;
@@ -111,7 +111,8 @@ protected:
                 out[j] = _last/SScalar(_n); j++; _last=0; _left=0;
             }
         }
-        this->send(out.head(j), true);
+        if(send)
+            this->send(out.head(j), true);
     }
 
 
@@ -264,7 +265,7 @@ public:
 
     /** Performs the sub-sampling. */
     virtual void process(const Buffer<iScalar> &buffer, bool allow_overwrite)
-    {        
+    {
         // Short cut
         if (1 == _frac) {
             this->send(buffer, allow_overwrite);
