@@ -245,7 +245,7 @@ Spectrum::handleBuffer(const RawBuffer &buffer, bool allow_overwrite)
     }
     catch (...)
     {
-         qDebug() << "Error: Spectrum write buffer";
+         //qDebug() << "Error: Spectrum write buffer";
     }
 }
 

@@ -21,8 +21,8 @@ AudioPostProc::AudioPostProc(QObject *parent)
     _low_pass->connect(_sink);
     _low_pass->connect(_audio_spectrum);
 
-    audioOutputThread = new AudioOutputThread(this);
-    audioOutputThread->start();
+    /*audioOutputThread = new AudioOutputThread(this);
+    audioOutputThread->start();*/
 }
 
 AudioPostProc::~AudioPostProc() {
