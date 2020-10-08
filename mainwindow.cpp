@@ -396,6 +396,7 @@ void MainWindow::tunerTimeout()
 
 void MainWindow::onFilterChanged()
 {
+    qDebug() << "onFilterChanged";
     m_HiCutFreq     = m_Demodulator->filterUpper();
     m_LowCutFreq    = m_Demodulator->filterLower();
     ui->plotter->setHiLowCutFrequencies(m_LowCutFreq, m_HiCutFreq);
@@ -455,5 +456,6 @@ void MainWindow::fftTimeout()
 
 void MainWindow::on_waterFallColor_currentIndexChanged(int index)
 {
+    qDebug() << "on_waterFallColor_currentIndexChanged";
     ui->plotter->setWaterfallPalette(index);
 }

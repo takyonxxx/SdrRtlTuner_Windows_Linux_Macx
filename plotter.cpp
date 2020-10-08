@@ -250,10 +250,13 @@ void CPlotter::mouseMoveEvent(QMouseEvent* event)
                 m_CursorCaptured = BOOKMARK;
             }
             else if (isPointCloseTo(pt.x(), m_DemodFreqX, m_CursorCaptureDelta))
-            {
+            {                
                 // in move demod box center frequency region
                 if (CENTER != m_CursorCaptured)
+                {
                     setCursor(QCursor(Qt::SizeHorCursor));
+                }
+
                 m_CursorCaptured = CENTER;
                 if (m_TooltipsEnabled)
                     QToolTip::showText(event->globalPos(),
@@ -636,12 +639,12 @@ void CPlotter::setFftRate(int rate_hz)
 // Called when a mouse button is pressed
 void CPlotter::mousePressEvent(QMouseEvent * event)
 {
-    QPoint pt = event->pos();
+    QPoint pt = event->pos();   
 
     if (NOCAP == m_CursorCaptured)
     {
         if (isPointCloseTo(pt.x(), m_DemodFreqX, m_CursorCaptureDelta))
-        {
+        {            
             // move demod box center frequency region
             m_CursorCaptured = CENTER;
             m_GrabPosition = pt.x() - m_DemodFreqX;
@@ -659,7 +662,7 @@ void CPlotter::mousePressEvent(QMouseEvent * event)
             m_GrabPosition = pt.x() - m_DemodHiCutFreqX;
         }
         else
-        {
+        {          
             if (event->buttons() == Qt::LeftButton)
             {
                 int     best = -1;
@@ -672,13 +675,14 @@ void CPlotter::mousePressEvent(QMouseEvent * event)
                     m_DemodCenterFreq = roundFreq(freqFromX(pt.x()), m_ClickResolution);
 
                 // if cursor not captured set demod frequency and start demod box capture
-                //emit newDemodFreq(m_DemodCenterFreq, m_DemodCenterFreq - m_CenterFreq);
+                emit newDemodFreq(m_DemodCenterFreq, m_DemodCenterFreq - m_CenterFreq);
 
                 // save initial grab postion from m_DemodFreqX
-                // setCursor(QCursor(Qt::CrossCursor));
+                setCursor(QCursor(Qt::CrossCursor));
                 m_CursorCaptured = CENTER;
                 m_GrabPosition = 1;
                 drawOverlay();
+
             }
             else if (event->buttons() == Qt::MidButton)
             {
