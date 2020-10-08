@@ -124,6 +124,13 @@ macx{
 
 unix:!macx{
     message("linux enabled")
+    #sudo apt install libusb-1.0-0-dev
+    #sudo apt-get install -y fftw3-dev
+    #sudo apt install librtlsdr-dev
+    #sudo apt install libportaudio2
+    #sudo apt install portaudio19-dev
+    #sudo apt install sox
+    #sudo apt-get install libgl-dev
 
     LIBPATH += /usr/lib
     LIBPATH += /usr/local/lib

@@ -19,8 +19,10 @@
  sudo apt install rtl-sdr</br>
  sudo apt install librtlsdr-dev</br>
  sudo apt install sox</br>
+ sudo apt-get install libgl-dev</br>
 
- rtl_fm -M wbfm -f 104.6M  | play -r 32k -t raw -e s -b 16 -c 2 -V1 -</br>
+ sudo rtl_fm -M wbfm -f 104.6M  | play -r 32k -t raw -e s -b 16 -c 2 -V1 -</br>
+ run your exc with sudo</br>
 
   	
  <b>For macx: </b></br>
