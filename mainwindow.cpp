@@ -297,6 +297,7 @@ void MainWindow::on_freqStepSelector_currentIndexChanged(const QString &arg1)
 /* CPlotter::NewDemodFreq() is emitted */
 void MainWindow::on_plotter_newDemodFreq(qint64 freq, qint64 delta)
 {
+    Q_UNUSED(delta)
     setFrequency(freq);
     ui->freqCtrl->SetFrequency(freq, false);
     if(rTLCtrlView)

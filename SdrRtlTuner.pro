@@ -3,7 +3,7 @@
 # Project created by Türkay Biliyor 2019-08-06 T12:46:07
 #
 #-------------------------------------------------
-QT       += core gui multimedia
+QT+= core gui multimedia
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -131,10 +131,11 @@ unix:!macx{
     #sudo apt install portaudio19-dev
     #sudo apt install sox
     #sudo apt-get install libgl-dev
+    #sudo apt-get install qtmultimedia5-dev
 
-    LIBPATH += /usr/lib
-    LIBPATH += /usr/local/lib
-    LIBPATH += /usr/lib/x86_64-linux-gnu
+    INCLUDEPATH += /usr/lib
+    INCLUDEPATH += /usr/local/lib
+    INCLUDEPATH += /usr/lib/x86_64-linux-gnu
 
     LIBS += -lrt -lportaudio -lrtlsdr -lfftw3
 }
