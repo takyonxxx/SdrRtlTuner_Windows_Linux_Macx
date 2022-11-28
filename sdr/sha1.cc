@@ -18,6 +18,7 @@ using namespace sdr;
 # define SHA_BIG_ENDIAN
 # endif
 #else // ! defined __LITTLE_ENDIAN__
+#include <limits>
 # include <qendian.h> // machine/endian.h
 # if __BYTE_ORDER__ ==  __ORDER_BIG_ENDIAN__
 #  define SHA_BIG_ENDIAN

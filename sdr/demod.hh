@@ -214,8 +214,7 @@ public:
 
 protected:
     void _process(const Buffer< std::complex<iScalar> > &in, const Buffer<oScalar> &out)
-    {
-        qDebug() << "----------";
+    {       
         // The last input value
         std::complex<iScalar> last_value = _last_value;
         // calc first value
@@ -228,7 +227,7 @@ protected:
         last_value = in[0];
         // calc output (prob. overwriting the last value)
         out[0] = _gain_const*fast_atan2<iScalar, oScalar>(a, b);
-        //out[0] = (1<<12)*(std::atan2(float(a),float(b))/M_PI);
+        //out[0] = _gain_const*(1<<12)*(std::atan2(float(a),float(b))/M_PI);
 
         // Calc remaining values
         for (size_t i=1; i<in.size(); i++) {
@@ -239,7 +238,7 @@ protected:
             a >>= Traits<iScalar>::shift; b >>= Traits<iScalar>::shift;
             last_value = in[i];
             out[i] = _gain_const*fast_atan2<iScalar,oScalar>(a, b);
-            //out[i] = (1<<12)*(std::atan2(float(a),float(b))/M_PI);
+            //out[i] = _gain_const*(1<<12)*(std::atan2(float(a),float(b))/M_PI);
         }
 
         // Store last value

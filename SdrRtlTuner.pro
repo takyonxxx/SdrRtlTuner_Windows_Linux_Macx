@@ -134,6 +134,7 @@ unix:!macx{
     #sudo apt-get install qtmultimedia5-dev
 
     INCLUDEPATH += /usr/lib
+    INCLUDEPATH += /usr/include
     INCLUDEPATH += /usr/local/lib
     INCLUDEPATH += /usr/lib/x86_64-linux-gnu
 

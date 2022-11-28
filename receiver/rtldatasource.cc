@@ -35,7 +35,7 @@ RTLDataSourceConfig::storeFrequency(double f) {
 
 double
 RTLDataSourceConfig::sampleRate() const {
-    return _config.value("RTLDataSource/sampleRate", 2.35e6).toDouble();
+    return _config.value("RTLDataSource/sampleRate", 2.00e6).toDouble();
 }
 
 void
@@ -256,8 +256,8 @@ RTLCtrlView::RTLCtrlView(RTLDataSource *source, QWidget *parent)
     // Sample rate:
     _sampleRates = new QComboBox();
     _sampleRates->addItem("2 MS/s", 2e6);
+    _sampleRates->addItem("1.5 MS/s", 1.5e6);
     _sampleRates->addItem("1 MS/s", 1e6);
-    _sampleRates->addItem("0.5 MS/s", 0.5e6);
 
     _gain = new QComboBox();
     _agc = new QCheckBox();
