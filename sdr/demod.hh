@@ -215,6 +215,7 @@ public:
 protected:
     void _process(const Buffer< std::complex<iScalar> > &in, const Buffer<oScalar> &out)
     {
+        qDebug() << "----------";
         // The last input value
         std::complex<iScalar> last_value = _last_value;
         // calc first value
@@ -243,7 +244,7 @@ protected:
 
         // Store last value
         _last_value = last_value;
-        // propergate result        
+        // propergate result
         this->send(out.head(in.size()));
     }
 

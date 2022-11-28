@@ -49,7 +49,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_Demodulator->setFilterWidth(2*m_HiCutFreq, true);
 
     QObject::connect(m_Demodulator, &DemodulatorCtrl::spectrumUpdated, this, &MainWindow::fftTimeout);
-    QObject::connect(m_Demodulator, &DemodulatorCtrl::filterChanged, this, &MainWindow::onFilterChanged);    
+    QObject::connect(m_Demodulator, &DemodulatorCtrl::filterChanged, this, &MainWindow::onFilterChanged);
 
     if (m_Receiver->isRunning()) { ui->push_connect->setChecked(true); ui->push_connect->setText("Stop"); }
     else { ui->push_connect->setChecked(false); ui->push_connect->setText("Start"); }
@@ -76,7 +76,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ctrls->addTab(ui->frame_controls, "Settings");
     ctrls->setMinimumWidth(400);
     ui->gridLayoutSource->addWidget(ctrls);
-    ctrls->setEnabled(false);
+    ctrls->setEnabled(true);
 
     setFftRate(fftrate);
     setFreqStep(freqStep);
@@ -98,7 +98,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // meter timer
     meter_timer = new QTimer(this);
-    connect(meter_timer, &QTimer::timeout, this, &MainWindow::tunerTimeout);   
+    connect(meter_timer, &QTimer::timeout, this, &MainWindow::tunerTimeout);
 }
 
 MainWindow::~MainWindow()

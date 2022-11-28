@@ -255,9 +255,9 @@ RTLCtrlView::RTLCtrlView(RTLDataSource *source, QWidget *parent)
 
     // Sample rate:
     _sampleRates = new QComboBox();
-    _sampleRates->addItem("2.35 MS/s", 2.35e6);
     _sampleRates->addItem("2 MS/s", 2e6);
     _sampleRates->addItem("1 MS/s", 1e6);
+    _sampleRates->addItem("0.5 MS/s", 0.5e6);
 
     _gain = new QComboBox();
     _agc = new QCheckBox();
@@ -330,8 +330,8 @@ RTLCtrlView::RTLCtrlView(RTLDataSource *source, QWidget *parent)
         _agc->setChecked(_source->agcEnabled());
         if (_source->agcEnabled()) { _gain->setEnabled(false); }
 
-        /*double rate = _sampleRates->itemData(0).toDouble();
-        _source->setSampleRate(rate);*/
+        double rate = _sampleRates->itemData(0).toDouble();
+        _source->setSampleRate(rate);
     }
     else if (! _source->isActive())
     {
