@@ -47,6 +47,8 @@ public:
 
   virtual double tunerFrequency() const;
   virtual bool setTunerFrequency(qreal freq);
+  virtual bool setFreqCorrection(qreal ppm);
+  double frequencyCorrection() const;
 
   bool isActive() const;
 
@@ -95,12 +97,14 @@ public:
 protected slots:
   void onDeviceSelected(int idx);
   void onSetFrequency();
+  void onSetFrequencyCorrection();
   void onSampleRateSelected(int idx);
   void onGainChanged(int idx);
   void onAGCToggled(bool enabled);
 
 signals:
   void source_setFrequency(qint64 freq);
+  void source_setFrequencyCorrection(qint64 ppm);
 
 private:
   QLabel *_infoMessage;
@@ -108,6 +112,7 @@ private:
 
   QComboBox *_devices;
   QLineEdit *_freq;
+  QLineEdit *_freqCorrection;
   QMenu     *_freqMenu;
   QAction   *_saveFreqAction;
   QComboBox *_sampleRates;

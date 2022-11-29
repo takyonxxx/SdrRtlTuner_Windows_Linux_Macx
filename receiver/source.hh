@@ -33,6 +33,7 @@ public:
   virtual double tunerFrequency() const;
   virtual double sampleRate() const;
   virtual bool setTunerFrequency(qreal freq);
+  virtual bool setFreqCorrection(qreal ppm);
   virtual size_t getDeviceID() const;
 };
 
@@ -59,6 +60,7 @@ public:
   /** Returns the tuner frequency of the current source or 0 if the source does not have a tuner. */
   double tunerFrequency() const;
   bool setTunerFrequency(qreal freq);
+  bool setFreqCorrection(qreal ppm);
   double tunerSampleRate() const;
   size_t getDeviceId();
 

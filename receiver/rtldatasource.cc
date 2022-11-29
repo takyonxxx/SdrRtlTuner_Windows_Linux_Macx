@@ -227,6 +227,22 @@ RTLDataSource::setTunerFrequency(qreal freq)
     return false;
 }
 
+bool
+RTLDataSource::setFreqCorrection(qreal ppm)
+{
+    if (_device)
+    {
+        _device->setFreqCorrection(ppm);
+        return true;
+    }
+    return false;
+}
+
+double RTLDataSource::frequencyCorrection() const
+{
+    return _device->freqCorrection();
+}
+
 /* ******************************************************************************************** *
  * Implementation of RTLDataSource
  * ******************************************************************************************** */
@@ -248,6 +264,8 @@ RTLCtrlView::RTLCtrlView(RTLDataSource *source, QWidget *parent)
 
     // Frequency
     _freq = new QLineEdit();
+    // Frequency Correction
+    _freqCorrection = new QLineEdit();
     /*QDoubleValidator *freq_val = new QDoubleValidator();
     freq_val->setBottom(0);
     _freq->setValidator(freq_val);*/
@@ -257,6 +275,14 @@ RTLCtrlView::RTLCtrlView(RTLDataSource *source, QWidget *parent)
     QObject::connect(setFreqAction, SIGNAL(triggered()), this, SLOT(onSetFrequency()));
     QToolButton *setFreqButton = new QToolButton();
     setFreqButton->setDefaultAction(setFreqAction);
+    setFreqButton->setStyleSheet("font-size: 12pt; font-weight: bold; color: white;background-color: orange; padding: 1px; spacing: 1px");
+
+    // set frequency correction
+    QAction *setFreqCorrectionAction = new QAction(QIcon::fromTheme("document-save"), "Set Correction",this);
+    QObject::connect(setFreqCorrectionAction, SIGNAL(triggered()), this, SLOT(onSetFrequencyCorrection()));
+    QToolButton *setFreqCorrectionButton = new QToolButton();
+    setFreqCorrectionButton->setDefaultAction(setFreqCorrectionAction);
+    setFreqCorrectionButton->setStyleSheet("font-size: 12pt; font-weight: bold; color: white;background-color: orange; padding: 1px; spacing: 1px");
 
     // Sample rate:
     _sampleRates = new QComboBox();
@@ -277,6 +303,11 @@ RTLCtrlView::RTLCtrlView(RTLDataSource *source, QWidget *parent)
     QHBoxLayout *freqLayout = new QHBoxLayout();
     freqLayout->addWidget(_freq, 1); freqLayout->addWidget(setFreqButton, 0);
     layout->addRow("Frequency (MHz)", freqLayout);
+
+    QHBoxLayout *freqCorrectionLayout = new QHBoxLayout();
+    freqCorrectionLayout->addWidget(_freqCorrection, 1);
+    freqCorrectionLayout->addWidget(setFreqCorrectionButton, 0);
+    layout->addRow("Correction (ppm)", freqCorrectionLayout);
 
     layout->addRow("Sample rate", _sampleRates);
     layout->addRow("Gain", _gain);
@@ -356,6 +387,7 @@ void RTLCtrlView::update()
 {
     double f = _source->frequency();
     _freq->setText(QString::number(f/1000000, 'f', 2));
+    _freqCorrection->setText(QString::number(60));
 }
 
 void
@@ -378,6 +410,16 @@ RTLCtrlView::onSetFrequency() {
     _source->setFrequency(freq*1000000);
     emit source_setFrequency(freq*1000000);
     std::cerr << "Set frequency " << _source->tunerFrequency() << std::endl;
+}
+
+
+void
+RTLCtrlView::onSetFrequencyCorrection() {
+    double correction = _freqCorrection->text().toDouble();
+    if (! _source->isActive()) { return; }
+    _source->setFreqCorrection(correction);
+    emit source_setFrequencyCorrection(correction);
+    std::cerr << "Set frequency correction " << _source->frequencyCorrection() << std::endl;
 }
 
 void

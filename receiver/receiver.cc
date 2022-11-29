@@ -62,6 +62,11 @@ Receiver::setTunerFrequency(qreal freq)
     return _src->setTunerFrequency(freq);
 }
 
+bool Receiver::setFreqCorrection(qreal ppm)
+{
+    return _src->setFreqCorrection(ppm);
+}
+
 double Receiver::sampleRate() const
 {
     return _src->sampleRate();

@@ -37,6 +37,7 @@ private:
     unsigned int fftSize;
     unsigned int fftrate;
     qint64       tunerFrequency;
+    qint64       tunerFrequencyCorrection;
     int         m_HiCutFreq;
     int         m_LowCutFreq;
 
@@ -79,6 +80,7 @@ private slots:
     void onReceiverStopped();
     void onFreqCtrl_setFrequency(qint64 freq);
     void onSource_setFrequency(qint64 freq);
+    void onSource_setFrequencyCorrection(qint64 ppm);
     void setFrequency(qint64 freq);
 
 protected:

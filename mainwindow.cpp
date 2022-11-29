@@ -20,6 +20,7 @@ MainWindow::MainWindow(QWidget *parent) :
     fftrate         = DEFAULT_FFT_RATE;
     freqStep        = DEFAULT_FREQ_STEP;
     tunerFrequency  = DEFAULT_FREQUENCY;
+    tunerFrequencyCorrection = DEFAULT_FREQUENCY_CORRECTION;
     currentDemod    = DemodulatorCtrl::DEMOD_WFM;
 
     m_sSettingsFile = QCoreApplication::applicationDirPath() + "/settings.ini";
@@ -60,11 +61,13 @@ MainWindow::MainWindow(QWidget *parent) :
 
     rTLCtrlView =(RTLCtrlView*) sourceView->currentSrcCtrl();
     QObject::connect(rTLCtrlView, &RTLCtrlView::source_setFrequency, this, &MainWindow::onSource_setFrequency);
+    QObject::connect(rTLCtrlView, &RTLCtrlView::source_setFrequencyCorrection, this, &MainWindow::onSource_setFrequencyCorrection);
 
     demodView->setDemodIndex(currentDemod);
     m_Demodulator->setDemod(currentDemod);
     m_Demodulator->setRrate(fftrate);
     setFrequency(tunerFrequency);
+    m_Receiver->setFreqCorrection(tunerFrequencyCorrection);
 
     initObjects();
     setPlotterSettings();
@@ -90,6 +93,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QString info;
     info.append("-> Receiver: " + QString(deviceName) + "\n");
     info.append("-> Tuner Frequency: " + QString::number(tunerFreq / 1000000.0, 'f', 2) + " MHz\n");
+    info.append("-> Frequency Correction: " + QString::number(tunerFrequencyCorrection) + " PPM\n");
     info.append("-> Sample Rate: " + QString::number(sampleRate / 1000000.0, 'f', 2) + " MS/s\n");
     info.append("-> Fft Size: " + QString::number(fftSize) + "\n");
     info.append("-> HiCutFreq: " + QString::number(m_HiCutFreq / 1000.0, 'f', 2) + " Khz\n");
@@ -100,6 +104,7 @@ MainWindow::MainWindow(QWidget *parent) :
     // meter timer
     meter_timer = new QTimer(this);
     connect(meter_timer, &QTimer::timeout, this, &MainWindow::tunerTimeout);
+
 }
 
 MainWindow::~MainWindow()
@@ -284,6 +289,11 @@ void MainWindow::onSource_setFrequency(qint64 freq)
     saveSettings();
 }
 
+void MainWindow::onSource_setFrequencyCorrection(qint64 ppm)
+{
+    tunerFrequencyCorrection = ppm;
+}
+
 void MainWindow::on_fftRateSelector_currentIndexChanged(const QString &arg1)
 {
     fftrate = arg1.toInt();
@@ -376,7 +386,7 @@ void MainWindow::tunerTimeout()
 
     ui->plotter->setCenterFreq(tunerFrequency);
     ui->plotter->setSampleRate(sampleRate);
-    ui->sMeter->setLevel(signal_level);
+    ui->sMeter->setLevel(0.5 * signal_level);
     ui->filterFreq->SetFrequency(m_HiCutFreq);
     ui->plotter->setHiLowCutFrequencies(m_LowCutFreq, m_HiCutFreq);   
 
@@ -390,6 +400,7 @@ void MainWindow::tunerTimeout()
     QString info;
     info.append("-> Receiver: " + QString(deviceName) + "\n");
     info.append("-> Tuner Frequency: " + QString::number(tunerFreq / 1000000.0, 'f', 2) + " MHz\n");
+    info.append("-> Frequency Correction: " + QString::number(tunerFrequencyCorrection) + " PPM\n");
     info.append("-> Sample Rate: " + QString::number(sampleRate / 1000000.0, 'f', 2) + " MS/s\n");
     info.append("-> Fft Size: " + QString::number(fftSize) + "\n");
     info.append("-> HiCutFreq: " + QString::number(m_HiCutFreq / 1000.0, 'f', 2) + " Khz\n");
@@ -450,7 +461,7 @@ void MainWindow::fftTimeout()
         pwr = pwr_scale * (pt.imag() * pt.imag() + pt.real() * pt.real());
 
         /* calculate signal level in dBFS */
-        signal_level = 15.f * log10(pwr + 1.0e-20f);
+        signal_level = 15.f * log10(pwr + 1.0e-15f);
         d_realFftData[i] = signal_level;
 
         /* FFT averaging */

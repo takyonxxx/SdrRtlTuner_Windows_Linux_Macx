@@ -53,7 +53,10 @@ bool
 DataSource::setTunerFrequency(qreal freq){
     // pass...
 }
-
+bool
+DataSource::setFreqCorrection(qreal ppm){
+    // pass...
+}
 size_t DataSource::getDeviceID() const
 {
     return 0;
@@ -118,6 +121,12 @@ DataSourceCtrl::setTunerFrequency(qreal freq)
     return _src_obj->setTunerFrequency(freq);
 }
 
+bool
+DataSourceCtrl::setFreqCorrection(qreal ppm)
+{
+    return _src_obj->setFreqCorrection(ppm);
+}
+
 double DataSourceCtrl::tunerSampleRate() const
 {
     return _src_obj->sampleRate();
@@ -156,8 +165,8 @@ DataSourceCtrlView::DataSourceCtrlView(DataSourceCtrl *src_ctrl, QWidget *parent
     : QWidget(parent), _src_ctrl(src_ctrl)
 {
     QLabel *src_sel = new QLabel();
-    src_sel->setText("RTL2832");
-
+    auto deviceName = rtlsdr_get_device_name(src_ctrl->getDeviceId());
+    src_sel->setText(deviceName);
     _currentSrcCtrl = _src_ctrl->createCtrlView();
 
     _layout = new QVBoxLayout();

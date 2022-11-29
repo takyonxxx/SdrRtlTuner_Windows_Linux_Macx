@@ -7,16 +7,17 @@
 #include "demodulator.hh"
 #include "audiopostproc.hh"
 
-#define MHZ(x)                      ((x)*1000*1000)
-#define KHZ(x)                      ((x)*1*1000)
-#define DEFAULT_SAMPLE_RATE         MHZ(2.0)
-#define DEFAULT_FREQUENCY		    MHZ(100)
-#define DEFAULT_FFT_SIZE		    8192 * 4
-#define DEFAULT_FFT_RATE		    25 //Hz
-#define DEFAULT_FREQ_STEP           5 //kHz
-#define DEFAULT_AUDIO_GAIN          50
-#define MAX_FFT_SIZE                DEFAULT_FFT_SIZE
-#define RESET_FFT_FACTOR            -72
+#define MHZ(x)                          ((x)*1000*1000)
+#define KHZ(x)                          ((x)*1*1000)
+#define DEFAULT_SAMPLE_RATE             MHZ(2.0)
+#define DEFAULT_FREQUENCY               MHZ(100)
+#define DEFAULT_FREQUENCY_CORRECTION	60 //ppm
+#define DEFAULT_FFT_SIZE                8192 * 4
+#define DEFAULT_FFT_RATE                25 //Hz
+#define DEFAULT_FREQ_STEP               5 //kHz
+#define DEFAULT_AUDIO_GAIN              50
+#define MAX_FFT_SIZE                 DEFAULT_FFT_SIZE
+#define RESET_FFT_FACTOR             -72
 
 class Receiver: public QObject
 {
@@ -35,6 +36,7 @@ public:
   /** Returns the tuner frequency of the source or 0 if the source does not have a tuner. */
   double tunerFrequency() const;
   bool setTunerFrequency(qreal);
+  bool setFreqCorrection(qreal);
   double sampleRate() const;
   size_t getDeviceID() const;
 
