@@ -74,9 +74,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ctrls->addTab(demodView, "Demodulator");
     ctrls->addTab(audioView, "Audio");
     ctrls->addTab(ui->frame_controls, "Settings");
-    ctrls->setMinimumWidth(400);
+    ctrls->setMinimumWidth(300);
     ui->gridLayoutSource->addWidget(ctrls);
     ctrls->setEnabled(true);
+    ctrls->setCurrentIndex(0);
 
     setFftRate(fftrate);
     setFreqStep(freqStep);
@@ -142,7 +143,11 @@ void MainWindow::initObjects()
 {
     ui->push_exit->setStyleSheet("font-size: 18pt; font-weight: bold; color: white;background-color: #8F3A3A; padding: 6px; spacing: 6px");
     ui->push_connect->setStyleSheet("font-size: 18pt; font-weight: bold; color: white;background-color:#154360; padding: 6px; spacing: 6px;");
-    ui->text_terminal->setStyleSheet("font: 10pt; color: #00cccc; background-color: #001a1a;");    
+    ui->text_terminal->setStyleSheet("font: 14pt; color: #00cccc; background-color: #001a1a;");
+
+    ui->text_terminal->setMinimumWidth(400);
+    ui->push_connect->setMaximumWidth(200);
+    ui->push_exit->setMaximumWidth(200);
 
     ui->filterFreq->setG_constant(1.5);
     ui->filterFreq->Setup(6, 0 ,1000e3, 1, UNITS_KHZ);
