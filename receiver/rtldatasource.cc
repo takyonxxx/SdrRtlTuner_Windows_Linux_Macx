@@ -107,9 +107,14 @@ RTLDataSource::sampleRate() const {
 void
 RTLDataSource::setSampleRate(double rate) {    
     bool is_running = sdr::Queue::get().isRunning();
-    if (is_running) { sdr::Queue::get().stop(); }
-    _device->setSampleRate(rate);
-    if (is_running) { sdr::Queue::get().start(); }
+    //if (is_running) { sdr::Queue::get().stop(); }
+    if (is_running)
+    {
+        _device->stop();
+        _device->setSampleRate(rate);
+        _device->start();
+    }
+    //if (is_running) { sdr::Queue::get().start(); }
 }
 
 bool
