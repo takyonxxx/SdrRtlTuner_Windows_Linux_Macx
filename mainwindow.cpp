@@ -386,7 +386,7 @@ void MainWindow::tunerTimeout()
 
     ui->plotter->setCenterFreq(tunerFrequency);
     ui->plotter->setSampleRate(sampleRate);
-    ui->sMeter->setLevel(0.5 * signal_level);
+    ui->sMeter->setLevel(signal_level);
     ui->filterFreq->SetFrequency(m_HiCutFreq);
     ui->plotter->setHiLowCutFrequencies(m_LowCutFreq, m_HiCutFreq);   
 
@@ -422,17 +422,18 @@ void MainWindow::onFilterChanged()
 
 void MainWindow::fftTimeout()
 {
-    unsigned int            fftsize;
-    unsigned int            i;
-    float                   pwr;
-    float                   pwr_scale;
-    std::complex<float>     pt;
+    unsigned int fftsize;
+    unsigned int i;
+    float pwr;
+    float pwr_scale;
+    double fullScalePower = 1.0;
+    std::complex<float> pt;
 
-    //75 is default
+    // 75 is default
     d_fftAvg = static_cast<float>(1.0 - 1.0e-2 * 90);
 
     fftsize = static_cast<unsigned int>(m_Demodulator->fftSize());
-    if(fftsize > MAX_FFT_SIZE)
+    if (fftsize > MAX_FFT_SIZE)
         fftsize = MAX_FFT_SIZE;
 
     auto d_fftData = m_Demodulator->spectrum();
@@ -448,28 +449,32 @@ void MainWindow::fftTimeout()
 
     for (i = 0; i < fftsize; i++)
     {
-        if (i < fftsize/2)
+        if (i < fftsize / 2)
         {
-            pt = d_fftData[fftsize/2+i];
+            pt = d_fftData[fftsize / 2 + i];
         }
         else
         {
-            pt = d_fftData[i-fftsize/2];
+            pt = d_fftData[i - fftsize / 2];
         }
 
         /* calculate power in dBFS */
         pwr = pwr_scale * (pt.imag() * pt.imag() + pt.real() * pt.real());
 
         /* calculate signal level in dBFS */
-        signal_level = 15.f * log10(pwr + 1.0e-15f);
-        d_realFftData[i] = signal_level;
+        signal_level = 10 * std::log10(pwr / fullScalePower);
+        /* Output power in watts directly */
 
-        /* FFT averaging */
+        // double signalPower = fullScalePower * std::pow(10, signal_level / 10);
+
+        d_realFftData[i] = signal_level;
+     /* FFT averaging */
         d_iirFftData[i] += d_fftAvg * (d_realFftData[i] - d_iirFftData[i]);
     }
 
     ui->plotter->setNewFttData(d_iirFftData, d_realFftData, static_cast<int>(fftsize));
 }
+
 
 void MainWindow::on_waterFallColor_currentIndexChanged(int index)
 {

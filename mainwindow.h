@@ -8,6 +8,7 @@
 #include <iostream>
 #include <stdint.h>
 #include <string.h>
+#include <iomanip>
 #include "freqctrl.h"
 #include "gui/gui.hh"
 #include "receiver/receiver.hh"
@@ -26,6 +27,11 @@ public:
     ~MainWindow();
 
 private:
+
+    float calculatePower(float signalLevel) {
+        float powerWatts = pow(10, signalLevel / 20.0f);
+        return powerWatts;
+    }
 
     char log_buffer[256];
     QTimer   *meter_timer{};
