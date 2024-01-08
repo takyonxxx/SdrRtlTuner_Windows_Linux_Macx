@@ -12,7 +12,9 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     setGeometry(0, 0, 1280, 720);
+
     initReceiver();
+    initObjects();
 }
 
 MainWindow::~MainWindow()
@@ -81,7 +83,6 @@ void MainWindow::initReceiver()
     m_Receiver->setFreqCorrection(tunerFrequencyCorrection);
     demodView->setDemodIndex(currentDemod);
 
-    initObjects();
     setPlotterSettings();
 
     ctrls = new QTabWidget();
@@ -174,6 +175,8 @@ void MainWindow::initObjects()
 {
     ui->push_exit->setStyleSheet("font-size: 18pt; font-weight: bold; color: white;background-color: #8F3A3A; padding: 6px; spacing: 6px");
     ui->push_connect->setStyleSheet("font-size: 18pt; font-weight: bold; color: white;background-color:#154360; padding: 6px; spacing: 6px;");
+    ui->pushIncreaseFreq->setStyleSheet("font-size: 36pt; font-weight: bold; color: white;background-color:#FFA233; padding: 6px; spacing: 6px;");
+    ui->pushDecreaseFreq->setStyleSheet("font-size: 36pt; font-weight: bold; color: white;background-color:#FFA233; padding: 6px; spacing: 6px;");
     ui->text_terminal->setStyleSheet("font: 14pt; color: #00cccc; background-color: #001a1a;");
 
     ui->text_terminal->setMinimumWidth(400);
@@ -509,3 +512,20 @@ void MainWindow::on_waterFallColor_currentIndexChanged(int index)
     qDebug() << "on_waterFallColor_currentIndexChanged";
     ui->plotter->setWaterfallPalette(index);
 }
+
+void MainWindow::on_pushIncreaseFreq_clicked()
+{
+    setFrequency(tunerFrequency + freqStep * 1000);
+    tunerFrequency  = m_Receiver->tunerFrequency();
+    tunerTimeout();
+    ui->freqCtrl->SetFrequency(tunerFrequency);
+}
+
+void MainWindow::on_pushDecreaseFreq_clicked()
+{
+    setFrequency(tunerFrequency - freqStep * 1000);
+    tunerFrequency  = m_Receiver->tunerFrequency();
+    tunerTimeout();
+    ui->freqCtrl->SetFrequency(tunerFrequency);
+}
+

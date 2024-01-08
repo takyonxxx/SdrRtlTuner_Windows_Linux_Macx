@@ -91,6 +91,10 @@ private slots:
     void onSource_setFrequencyCorrection(qint64 ppm);
     void setFrequency(qint64 freq);
 
+    void on_pushIncreaseFreq_clicked();
+
+    void on_pushDecreaseFreq_clicked();
+
 protected:
     void changeEvent( QEvent* e );
     Receiver *m_Receiver{};
