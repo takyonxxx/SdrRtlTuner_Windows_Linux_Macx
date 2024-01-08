@@ -8,8 +8,8 @@ RTLSource::RTLSource(double frequency, double sample_rate, size_t device_idx)
     : Source(), _frequency(frequency), _sample_rate(sample_rate), _agc_enabled(true), _gains(),
       _buffer_size(1024 * 128), _device(nullptr)
 {
-    {
-        LogMessage msg(LOG_DEBUG);
+    LogMessage msg(LOG_DEBUG);
+    {       
         msg << "Found " << rtlsdr_get_device_count()
             << " RTL2832 devices, using No. " << device_idx << ".";
         Logger::get().log(msg);
@@ -25,12 +25,6 @@ RTLSource::RTLSource(double frequency, double sample_rate, size_t device_idx)
         ConfigError err; err << "Can not open RTL2832 USB device: No device with index "
                              << device_idx << " found.";
         throw err;
-    }
-
-    {
-        LogMessage msg(LOG_DEBUG);
-        msg << "Using device: " << rtlsdr_get_device_name(device_idx);
-        Logger::get().log(msg);
     }
 
     // Try to set center frequency
@@ -79,7 +73,7 @@ RTLSource::setSampleRate(double sample_rate) {
     uint32_t sr = static_cast<uint32_t>(sample_rate);
     rtlsdr_set_sample_rate(_device, sr);
     rtlsdr_reset_buffer(_device);
-    _sample_rate = rtlsdr_get_sample_rate(_device);
+    _sample_rate = rtlsdr_get_sample_rate(_device);    
 
     this->setConfig(Config(Config::Type_cu8, _sample_rate, _buffer_size, 15));
 }

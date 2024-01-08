@@ -35,7 +35,7 @@ RTLDataSourceConfig::storeFrequency(double f) {
 
 double
 RTLDataSourceConfig::sampleRate() const {
-    return _config.value("RTLDataSource/sampleRate", 2.5e6).toDouble();
+    return _config.value("RTLDataSource/sampleRate", static_cast<qint64>(DEFAULT_SAMPLE_RATE)).toDouble();
 }
 
 void
@@ -50,7 +50,7 @@ RTLDataSourceConfig::storeSampleRate(double f) {
  * ******************************************************************************************** */
 RTLDataSource::RTLDataSource(QObject *parent)
     : DataSource(parent), deviceID(0), _device(nullptr), _balance(),  _config()
-{
+{    
     try {
         _device = new RTLSource(_config.frequency(), _config.sampleRate());
     } catch (sdr::SDRError &err) {
@@ -109,11 +109,11 @@ RTLDataSource::setSampleRate(double rate) {
     bool is_running = sdr::Queue::get().isRunning();
     //if (is_running) { sdr::Queue::get().stop(); }
     if (is_running)
-    {
+    {       
         _device->stop();
         _device->setSampleRate(rate);
         _device->start();
-    }
+    }   
     //if (is_running) { sdr::Queue::get().start(); }
 }
 
@@ -286,6 +286,7 @@ RTLCtrlView::RTLCtrlView(RTLDataSource *source, QWidget *parent)
 
     // Sample rate:
     _sampleRates = new QComboBox();
+//    _sampleRates->addItem("3.0 MS/s", 3.0e6);
     _sampleRates->addItem("2.5 MS/s", 2.5e6);
     _sampleRates->addItem("2 MS/s", 2e6);
     _sampleRates->addItem("1.5 MS/s", 1.5e6);
@@ -364,9 +365,9 @@ RTLCtrlView::RTLCtrlView(RTLDataSource *source, QWidget *parent)
         }
 
         _agc->setChecked(_source->agcEnabled());
-        if (_source->agcEnabled()) { _gain->setEnabled(false); }
+        if (_source->agcEnabled()) { _gain->setEnabled(false); }       
 
-        double rate = _sampleRates->itemData(0).toDouble();
+        double rate = _sampleRates->itemData(0).toDouble();        
         _source->setSampleRate(rate);
     }
     else if (! _source->isActive())
