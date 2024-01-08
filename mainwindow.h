@@ -60,6 +60,9 @@ private:
     float               d_fftAvg;
     float               signal_level;
 
+    void initReceiver();
+    void stopReceiver();
+
     void initObjects();
     void appentTextBrowser(const char* );    
     int  setFreqStep(int );

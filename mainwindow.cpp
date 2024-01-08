@@ -11,10 +11,22 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    setAttribute(Qt::WA_DeleteOnClose);
+    setGeometry(0, 0, 1280, 720);
+    initReceiver();
+}
 
-    setGeometry(0, 0, 800, 600);
+MainWindow::~MainWindow()
+{
 
+    stopReceiver();
+
+    qDebug() << "exiting...";
+
+    delete ui;
+}
+
+void MainWindow::initReceiver()
+{   
     sampleRate      = static_cast<qint64>(DEFAULT_SAMPLE_RATE);
     fftSize         = DEFAULT_FFT_SIZE;
     fftrate         = DEFAULT_FFT_RATE;
@@ -63,11 +75,11 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(rTLCtrlView, &RTLCtrlView::source_setFrequency, this, &MainWindow::onSource_setFrequency);
     QObject::connect(rTLCtrlView, &RTLCtrlView::source_setFrequencyCorrection, this, &MainWindow::onSource_setFrequencyCorrection);
 
-    demodView->setDemodIndex(currentDemod);
     m_Demodulator->setDemod(currentDemod);
     m_Demodulator->setRrate(fftrate);
     setFrequency(tunerFrequency);
     m_Receiver->setFreqCorrection(tunerFrequencyCorrection);
+    demodView->setDemodIndex(currentDemod);
 
     initObjects();
     setPlotterSettings();
@@ -104,19 +116,28 @@ MainWindow::MainWindow(QWidget *parent) :
     // meter timer
     meter_timer = new QTimer(this);
     connect(meter_timer, &QTimer::timeout, this, &MainWindow::tunerTimeout);
-
+    meter_timer->start(100);
 }
 
-MainWindow::~MainWindow()
+void MainWindow::stopReceiver()
 {
+    if(meter_timer)
+    {
+        if(meter_timer->isActive())
+            meter_timer->stop();
+        delete meter_timer;
+    }
 
     if(m_Receiver)
     {
-        m_Receiver->stop();
+        if(m_Receiver->isRunning())
+            m_Receiver->stop();
         delete m_Receiver;
     }
+
     if(m_Demodulator)delete m_Demodulator;
     if(sourceView)delete sourceView;
+    if(demodView)delete demodView;
     if(audioView)delete audioView;
     if(rTLCtrlView)delete rTLCtrlView;
     if(ctrls)delete ctrls;
@@ -124,10 +145,6 @@ MainWindow::~MainWindow()
     if(d_realFftData)delete d_realFftData;
     if(d_iirFftData)delete d_iirFftData;
     if(d_pwrFftData)delete d_pwrFftData;
-
-    qDebug() << "exiting...";
-
-    delete ui;
 }
 
 void MainWindow::changeEvent( QEvent* e )
@@ -237,13 +254,13 @@ void MainWindow::on_push_exit_clicked()
 void MainWindow::on_push_connect_clicked()
 {
     if(ui->push_connect->text() == "Start")
-    {
+    {        
         if (m_Receiver->isRunning()) { return; }
         m_Receiver->start();
         ctrls->setEnabled(true);
     }
     else
-    {
+    {        
         if (!m_Receiver->isRunning()) { return; }
         m_Receiver->stop();
         ctrls->setEnabled(false);
@@ -257,29 +274,32 @@ void MainWindow::setPlotterSettings()
     ui->waterFallColor->setCurrentIndex(COLPAL_MIX);
 }
 
-void MainWindow::onReceiverStarted() {
-
-    sdr::Logger::get().log(sdr::LogMessage(sdr::LOG_INFO, "Receiver started."));
+void MainWindow::onReceiverStarted() {    
     ui->text_terminal->clear();
 
-    setPlotterSettings();
+    QString info;
+    info.append("Receiver started.\n");
+    appentTextBrowser(info.toStdString().c_str());
 
-    meter_timer->start(100);
-    ui->push_connect->setText("Stop"); ui->push_connect->setEnabled(true);
+    if(!meter_timer->isActive())
+        meter_timer->start(100);
+
+    ui->push_connect->setText("Stop");    
+    sdr::Logger::get().log(sdr::LogMessage(sdr::LOG_INFO, "Receiver started."));
 }
 
 void MainWindow::onReceiverStopped()
-{
-    sdr::Logger::get().log(sdr::LogMessage(sdr::LOG_INFO, "Receiver stopped."));
-    ui->text_terminal->clear();
-
-    meter_timer->stop();
+{    
+    ui->text_terminal->clear();    
 
     QString info;
     info.append("Receiver stopped.\n");
     appentTextBrowser(info.toStdString().c_str());
 
-    ui->push_connect->setText("Start"); ui->push_connect->setEnabled(true);
+    if(meter_timer->isActive())
+        meter_timer->stop();
+    ui->push_connect->setText("Start");    
+    sdr::Logger::get().log(sdr::LogMessage(sdr::LOG_INFO, "Receiver stopped."));
 }
 
 void MainWindow::onFreqCtrl_setFrequency(qint64 freq)
@@ -422,7 +442,6 @@ void MainWindow::tunerTimeout()
 
 void MainWindow::onFilterChanged()
 {
-    qDebug() << "onFilterChanged";
     m_HiCutFreq     = m_Demodulator->filterUpper();
     m_LowCutFreq    = m_Demodulator->filterLower();
     ui->plotter->setHiLowCutFrequencies(m_LowCutFreq, m_HiCutFreq);

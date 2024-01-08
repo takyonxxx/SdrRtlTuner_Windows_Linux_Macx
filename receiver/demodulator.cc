@@ -87,7 +87,7 @@ DemodulatorCtrl::DemodulatorCtrl(Receiver *receiver) :
 {
   // Assemble processing chain
   _agc = new AGC< std::complex<int16_t> >();
-  _filter_node = new IQBaseBand<int16_t>(_config.centerFrequency(), 3000,
+  _filter_node = new IQBaseBand<int16_t>(_config.centerFrequency(), 200000.0,
                                          _config.filterOrder(), 1, 16000.0);
   _audio_source = new sdr::Proxy();
 
@@ -288,8 +288,9 @@ DemodulatorCtrlView::DemodulatorCtrlView(DemodulatorCtrl *demodulator, QWidget *
 }
 
 void DemodulatorCtrlView::setDemodIndex(DemodulatorCtrl::Demod demod)
-{
+{    
     _demodList->setCurrentIndex(demod);
+    onDemodSelected(demod);
 }
 
 
@@ -523,7 +524,7 @@ FMDemodulatorView::FMDemodulatorView(FMDemodulator *demod, QWidget *parent)
   QDoubleValidator *validator = new QDoubleValidator();
   validator->setBottom(0);
   _filterWidth->setValidator(validator);
-  _demod->enableDeemph(false);
+  _demod->enableDeemph(true);
 
   QCheckBox *deemph = new QCheckBox();
   deemph->setChecked(_demod->deemphEnabled());
