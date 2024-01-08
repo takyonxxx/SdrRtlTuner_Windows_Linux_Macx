@@ -14,8 +14,8 @@ TEMPLATE = app
 # any feature of Qt which as been marked as deprecated (the exact warnings
 # depend on your compiler). Please consult the documentation of the
 # deprecated API in order to know how to port your code away from it.
-DEFINES += QT_DEPRECATED_WARNINGS
-#DEFINES += BOOST_ALL_NO_LIB
+# DEFINES += QT_DEPRECATED_WARNINGS
+# DEFINES += BOOST_ALL_NO_LIB
 
 # You can also make your code fail to compile if you use deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -31,7 +31,6 @@ SOURCES += \
         freqctrl.cpp \
         plotter.cpp \
         meter.cpp \
-        receiver/audiootputthread.cpp \
         receiver/audiopostproc.cc \
         receiver/configuration.cc \
         receiver/demodulator.cc \
@@ -67,7 +66,6 @@ HEADERS += \
         freqctrl.h \
         plotter.h \
         meter.h \
-        receiver/audiootputthread.h \
         receiver/audiopostproc.hh \
         receiver/configuration.hh \
         receiver/demodulator.hh \
@@ -118,8 +116,13 @@ macx{
     ICON = $$PWD\icons\app.icns
     DEFINES += GQRX_OS_MACX
 
-    INCLUDEPATH += /usr/local/include
-    LIBS += /usr/local/lib/librtlsdr.dylib /usr/local/lib/libfftw3.dylib /usr/local/lib/libportaudio.dylib
+    INCLUDEPATH += /opt/homebrew/opt/rtl-sdr/include
+    INCLUDEPATH += /opt/homebrew/opt/fftw/include
+    INCLUDEPATH += /opt/homebrew/opt/portaudio/include
+    LIBS += /opt/homebrew/opt/rtl-sdr/lib/librtlsdr.dylib /opt/homebrew/opt/fftw/lib/libfftw3.dylib /opt/homebrew/opt/portaudio/lib/libportaudio.dylib
+
+#    INCLUDEPATH += /usr/local/include
+#    LIBS += /usr/local/lib/librtlsdr.dylib /usr/local/lib/libfftw3.dylib /usr/local/lib/libportaudio.dylib
 }
 
 unix:!macx{

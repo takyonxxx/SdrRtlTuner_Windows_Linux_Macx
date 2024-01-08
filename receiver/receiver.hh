@@ -9,7 +9,7 @@
 
 #define MHZ(x)                          ((x)*1000*1000)
 #define KHZ(x)                          ((x)*1*1000)
-#define DEFAULT_SAMPLE_RATE             MHZ(2.0)
+#define DEFAULT_SAMPLE_RATE             MHZ(2.5)
 #define DEFAULT_FREQUENCY               MHZ(100)
 #define DEFAULT_FREQUENCY_CORRECTION	60 //ppm
 #define DEFAULT_FFT_SIZE                8192 * 4

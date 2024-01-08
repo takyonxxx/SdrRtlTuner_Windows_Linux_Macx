@@ -51,7 +51,6 @@ private:
     DataSourceCtrlView* sourceView {};
     DemodulatorCtrlView* demodView {};
     AudioPostProcView* audioView = {};
-    AudioOutputThread *audioOutputThread{};
     RTLCtrlView* rTLCtrlView{};
     QTabWidget *ctrls{};
 

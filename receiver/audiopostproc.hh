@@ -12,8 +12,6 @@
 #include <QLabel>
 #include <QSpinBox>
 #include <QDoubleSpinBox>
-#include "audiootputthread.h"
-
 
 
 class AudioPostProc : public QObject, public sdr::Sink<int16_t>
@@ -38,7 +36,6 @@ public:
   void setLowPassOrder(size_t order);
 
   sdr::gui::Spectrum *spectrum() const;
-  AudioOutputThread *audioOutputThread{};
 
 protected:
   sdr::FIRLowPass<int16_t> *_low_pass;

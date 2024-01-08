@@ -25,7 +25,7 @@ public:
    * @param sample_rate Specifies the sample rate in Hz.
    * @param device_idx Specifies the device to be used. The @c numDevices
    *        and @c deviceName static method can be used to select the desired device index. */
-  RTLSource(double frequency, double sample_rate=1e6, size_t device_idx=0);
+  RTLSource(double frequency, double sample_rate=2.5e6, size_t device_idx=0);
 
   /** Destructor. */
   virtual ~RTLSource();

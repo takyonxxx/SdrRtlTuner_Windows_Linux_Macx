@@ -53,6 +53,7 @@ SpectrumView::mouseReleaseEvent(QMouseEvent *evt) {
 }
 
 
+
 void
 SpectrumView::resizeEvent(QResizeEvent *evt) {
   // First, forward to default impl.
@@ -60,13 +61,13 @@ SpectrumView::resizeEvent(QResizeEvent *evt) {
 
   // If resize event was accepted, recalc plot area
   if (evt->isAccepted()) {
-    QSize ws = evt->size();
-    QFontMetrics fm(_axisFont);
-    int leftMargin = 15 + 6*fm.width("x");
-    int topMargin = 10;
-    int rightMargin = 3*fm.width("x");
-    int bottomMargin = 15 + 2*fm.xHeight();
-    _plotArea = QRect(
+      QSize ws = evt->size();
+      QFontMetrics fm(_axisFont);
+      int leftMargin = 15 + 6*fm.horizontalAdvance("x");
+      int topMargin = 10;
+      int rightMargin = 3*fm.horizontalAdvance("x");
+      int bottomMargin = 15 + 2*fm.xHeight();
+      _plotArea = QRect(
           leftMargin, topMargin,
           ws.width()-leftMargin-rightMargin,
           ws.height()-bottomMargin-topMargin);

@@ -378,13 +378,13 @@ void CPlotter::mouseMoveEvent(QMouseEvent* event)
     }
     else if (XAXIS == m_CursorCaptured)
     {
-        if (event->buttons() & (Qt::LeftButton | Qt::MidButton))
+        if (event->buttons() & (Qt::LeftButton | Qt::MiddleButton))
         {
             setCursor(QCursor(Qt::ClosedHandCursor));
             // pan viewable range or move center frequency
             int delta_px = m_Xzero - pt.x();
             qint64 delta_hz = delta_px * m_Span / m_OverlayPixmap.width();
-            if (event->buttons() & Qt::MidButton)
+            if (event->buttons() & Qt::MiddleButton)
             {
                 m_CenterFreq += delta_hz;
                 m_DemodCenterFreq += delta_hz;
@@ -684,7 +684,7 @@ void CPlotter::mousePressEvent(QMouseEvent * event)
                 drawOverlay();
 
             }
-            else if (event->buttons() == Qt::MidButton)
+            else if (event->buttons() == Qt::MiddleButton)
             {
                 // set center freq
                 m_CenterFreq = roundFreq(freqFromX(pt.x()), m_ClickResolution);
@@ -795,8 +795,8 @@ void CPlotter::zoomOnXAxis(float level)
 // Called when a mouse wheel is turned
 void CPlotter::wheelEvent(QWheelEvent * event)
 {
-    QPoint pt = event->pos();
-    int numDegrees = event->delta() / 8;
+    auto pt = event->position();
+    int numDegrees = event->pixelDelta().manhattanLength() / 8;
     int numSteps = numDegrees / 15;  /** FIXME: Only used for direction **/
 
     /** FIXME: zooming could use some optimisation **/
@@ -804,7 +804,7 @@ void CPlotter::wheelEvent(QWheelEvent * event)
     {
         // Vertical zoom. Wheel down: zoom out, wheel up: zoom in
         // During zoom we try to keep the point (dB or kHz) under the cursor fixed
-        float zoom_fac = event->delta() < 0 ? 1.1 : 0.9;
+        float zoom_fac = event->pixelDelta().manhattanLength() < 0 ? 1.1 : 0.9;
         float ratio = (float)pt.y() / (float)m_OverlayPixmap.height();
         float db_range = m_PandMaxdB - m_PandMindB;
         float y_range = (float)m_OverlayPixmap.height();
@@ -823,7 +823,7 @@ void CPlotter::wheelEvent(QWheelEvent * event)
     }
     else if (m_CursorCaptured == XAXIS)
     {
-        zoomStepX(event->delta() < 0 ? 1.1 : 0.9, pt.x());
+        zoomStepX(event->pixelDelta().manhattanLength() < 0 ? 1.1 : 0.9, pt.x());
     }
     else if (event->modifiers() & Qt::ControlModifier)
     {
@@ -1303,8 +1303,6 @@ void CPlotter::drawOverlay()
     QRect   rect;
     QFontMetrics    metrics(m_Font);
     QPainter        painter(&m_OverlayPixmap);
-
-    painter.initFrom(this);
     painter.setFont(m_Font);
 
     // solid background
@@ -1315,7 +1313,7 @@ void CPlotter::drawOverlay()
 #define VER_MARGIN 1
 
     // X and Y axis areas
-    m_YAxisWidth = metrics.width("XXXX") + 2 * HOR_MARGIN;
+    m_YAxisWidth = metrics.horizontalAdvance("XXXX") + 2 * HOR_MARGIN;
     m_XAxisYCenter = h - metrics.height()/2;
     int xAxisHeight = metrics.height() + 2 * VER_MARGIN;
     int xAxisTop = h - xAxisHeight;
@@ -1341,7 +1339,7 @@ void CPlotter::drawOverlay()
     QString label;
     label.setNum(float((StartFreq + m_Span) / m_FreqUnits), 'f', m_FreqDigits);
     calcDivSize(StartFreq, StartFreq + m_Span,
-                qMin(w/(metrics.width(label) + metrics.width("O")), HORZ_DIVS_MAX),
+                qMin(w/(metrics.horizontalAdvance(label) + metrics.horizontalAdvance("O")), HORZ_DIVS_MAX),
                 m_StartFreqAdj, m_FreqPerDiv, m_HorDivs);
     pixperdiv = (float)w * (float) m_FreqPerDiv / (float) m_Span;
     adjoffset = pixperdiv * float (m_StartFreqAdj - StartFreq) / (float) m_FreqPerDiv;
@@ -1359,7 +1357,7 @@ void CPlotter::drawOverlay()
     painter.setPen(QColor(PLOTTER_TEXT_COLOR));
     for (int i = 0; i <= m_HorDivs; i++)
     {
-        int tw = metrics.width(m_HDivText[i]);
+        int tw = metrics.horizontalAdvance(m_HDivText[i]);
         x = (int)((float)i*pixperdiv + adjoffset);
         if (x > m_YAxisWidth)
         {
@@ -1398,7 +1396,7 @@ void CPlotter::drawOverlay()
 
     // draw amplitude values (y axis)
     int dB = m_PandMaxdB;
-    m_YAxisWidth = metrics.width("-120 ");
+    m_YAxisWidth = metrics.horizontalAdvance("-120 ");
     painter.setPen(QColor(PLOTTER_TEXT_COLOR));
     for (int i = 0; i < m_VerDivs; i++)
     {

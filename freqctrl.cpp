@@ -56,7 +56,7 @@ QSize CFreqCtrl::sizeHint() const
 /////////////////////////////////////////////////////////////////////
 //  Various helper functions
 /////////////////////////////////////////////////////////////////////
-bool CFreqCtrl::InRect(QRect &rect, QPoint &point)
+bool CFreqCtrl::InRect(QRect &rect, const QPoint &point)
 {
     if( ( point.x() < rect.right( ) ) && ( point.x() > rect.x() ) &&
         ( point.y() < rect.bottom() ) && ( point.y() > rect.y() ) )
@@ -436,25 +436,23 @@ QPoint pt = event->pos();
 /////////////////////////////////////////////////////////////////////
 //  Mouse Wheel Event overrides
 /////////////////////////////////////////////////////////////////////
-void CFreqCtrl::wheelEvent( QWheelEvent * event )
+void CFreqCtrl::wheelEvent(QWheelEvent *event)
 {
-QPoint pt = event->pos();
-int numDegrees = event->delta() / 8;
-int numSteps = numDegrees / 15;
+    QPointF pt = event->position();
+    int numDegrees = event->pixelDelta().manhattanLength() / 8;
+    int numSteps = numDegrees / 15;
 
-    for(int i=m_DigStart; i<m_NumDigits; i++)
+    for (int i = m_DigStart; i < m_NumDigits; i++)
     {
-        if( InRect( m_DigitInfo[i].dQRect, pt) )    //if in i'th digit
+        if (InRect(m_DigitInfo[i].dQRect, pt.toPoint())) // pass pt.toPoint() directly
         {
-            if(numSteps>0)
+            if (numSteps > 0)
                 IncFreq();
-            else
-                if(numSteps<0)
-                    DecFreq();
+            else if (numSteps < 0)
+                DecFreq();
         }
     }
 }
-
 
 /////////////////////////////////////////////////////////////////////
 //  Keyboard Event overrides

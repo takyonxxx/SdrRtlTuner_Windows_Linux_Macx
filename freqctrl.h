@@ -60,7 +60,7 @@ private:
     void CursorEnd();
     void MoveCursorLeft();
     void MoveCursorRight();
-    bool InRect(QRect &rect, QPoint &point);
+    bool InRect(QRect &rect, const QPoint &point);
 
     bool m_UpdateAll;
     bool m_ExternalKeyActive;

@@ -87,7 +87,7 @@ DemodulatorCtrl::DemodulatorCtrl(Receiver *receiver) :
 {
   // Assemble processing chain
   _agc = new AGC< std::complex<int16_t> >();
-  _filter_node = new IQBaseBand<int16_t>(_config.centerFrequency(), 2000,
+  _filter_node = new IQBaseBand<int16_t>(_config.centerFrequency(), 3000,
                                          _config.filterOrder(), 1, 16000.0);
   _audio_source = new sdr::Proxy();
 
@@ -103,9 +103,7 @@ DemodulatorCtrl::~DemodulatorCtrl() {
   delete _agc;
   delete _filter_node;
   delete _audio_source;
-  if (_demodObj) {
-    delete _demodObj;
-  }
+  delete _demodObj;
 }
 
 Receiver *

@@ -35,7 +35,7 @@ RTLDataSourceConfig::storeFrequency(double f) {
 
 double
 RTLDataSourceConfig::sampleRate() const {
-    return _config.value("RTLDataSource/sampleRate", 2.00e6).toDouble();
+    return _config.value("RTLDataSource/sampleRate", 2.5e6).toDouble();
 }
 
 void
@@ -286,6 +286,7 @@ RTLCtrlView::RTLCtrlView(RTLDataSource *source, QWidget *parent)
 
     // Sample rate:
     _sampleRates = new QComboBox();
+    _sampleRates->addItem("2.5 MS/s", 2.5e6);
     _sampleRates->addItem("2 MS/s", 2e6);
     _sampleRates->addItem("1.5 MS/s", 1.5e6);
     _sampleRates->addItem("1 MS/s", 1e6);
@@ -309,7 +310,7 @@ RTLCtrlView::RTLCtrlView(RTLDataSource *source, QWidget *parent)
     freqCorrectionLayout->addWidget(setFreqCorrectionButton, 0);
     layout->addRow("Correction (ppm)", freqCorrectionLayout);
 
-    layout->addRow("Sample rate", _sampleRates);
+    layout->addRow("Sample Rate", _sampleRates);
     layout->addRow("Gain", _gain);
     layout->addRow("AGC", _agc);
     setLayout(layout);
@@ -318,7 +319,6 @@ RTLCtrlView::RTLCtrlView(RTLDataSource *source, QWidget *parent)
     QObject::connect(_sampleRates, SIGNAL(currentIndexChanged(int)), this, SLOT(onSampleRateSelected(int)));
     QObject::connect(_gain, SIGNAL(currentIndexChanged(int)), this, SLOT(onGainChanged(int)));
     QObject::connect(_agc, SIGNAL(toggled(bool)), this, SLOT(onAGCToggled(bool)));
-
 
     /*for (size_t i=0; i<_devices->count(); i++)
     {

@@ -109,14 +109,23 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+
+    if(m_Receiver)
+    {
+        m_Receiver->stop();
+        delete m_Receiver;
+    }
+    if(m_Demodulator)delete m_Demodulator;
+    if(sourceView)delete sourceView;
+    if(audioView)delete audioView;
+    if(rTLCtrlView)delete rTLCtrlView;
+    if(ctrls)delete ctrls;
+
+    if(d_realFftData)delete d_realFftData;
+    if(d_iirFftData)delete d_iirFftData;
+    if(d_pwrFftData)delete d_pwrFftData;
+
     qDebug() << "exiting...";
-
-    if(audioOutputThread)audioOutputThread->stop();
-    if(m_Receiver)m_Receiver->stop();
-
-    if(d_realFftData)delete [] d_realFftData;
-    if(d_iirFftData)delete [] d_iirFftData;
-    if(d_pwrFftData)delete [] d_pwrFftData;
 
     delete ui;
 }
