@@ -81,8 +81,6 @@ private slots:
     void on_push_exit_clicked();
     void on_plotter_newDemodFreq(qint64 , qint64 );
     void on_plotter_newFilterFreq(int low, int );
-    void on_freqStepSelector_currentIndexChanged(const QString &);
-    void on_fftRateSelector_currentIndexChanged(const QString &);
     void on_waterFallColor_currentIndexChanged(int );
     void onReceiverStarted();
     void onReceiverStopped();
@@ -92,8 +90,10 @@ private slots:
     void setFrequency(qint64 freq);
 
     void on_pushIncreaseFreq_clicked();
-
     void on_pushDecreaseFreq_clicked();
+
+    void on_fftRateSelector_currentTextChanged(const QString &arg1);
+    void on_freqStepSelector_currentTextChanged(const QString &arg1);
 
 protected:
     void changeEvent( QEvent* e );

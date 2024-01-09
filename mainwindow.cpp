@@ -326,21 +326,6 @@ void MainWindow::onSource_setFrequencyCorrection(qint64 ppm)
     tunerFrequencyCorrection = ppm;
 }
 
-void MainWindow::on_fftRateSelector_currentIndexChanged(const QString &arg1)
-{
-    fftrate = arg1.toInt();
-    m_Demodulator->setRrate(fftrate);
-    ui->plotter->setFftRate(fftrate);
-    saveSettings();
-}
-
-void MainWindow::on_freqStepSelector_currentIndexChanged(const QString &arg1)
-{
-    freqStep = arg1.toInt();
-    ui->plotter->setWheelConstant(KHZ(freqStep));
-    saveSettings();
-}
-
 /* CPlotter::NewDemodFreq() is emitted */
 void MainWindow::on_plotter_newDemodFreq(qint64 freq, qint64 delta)
 {
@@ -507,17 +492,11 @@ void MainWindow::fftTimeout()
 }
 
 
-void MainWindow::on_waterFallColor_currentIndexChanged(int index)
-{
-    qDebug() << "on_waterFallColor_currentIndexChanged";
-    ui->plotter->setWaterfallPalette(index);
-}
-
 void MainWindow::on_pushIncreaseFreq_clicked()
 {
     setFrequency(tunerFrequency + freqStep * 1000);
     tunerFrequency  = m_Receiver->tunerFrequency();
-    tunerTimeout();
+    qDebug() << tunerFrequency;
     ui->freqCtrl->SetFrequency(tunerFrequency);
 }
 
@@ -525,7 +504,28 @@ void MainWindow::on_pushDecreaseFreq_clicked()
 {
     setFrequency(tunerFrequency - freqStep * 1000);
     tunerFrequency  = m_Receiver->tunerFrequency();
-    tunerTimeout();
+    qDebug() << tunerFrequency;
     ui->freqCtrl->SetFrequency(tunerFrequency);
+}
+
+void MainWindow::on_waterFallColor_currentIndexChanged(int index)
+{
+    qDebug() << "on_waterFallColor_currentIndexChanged";
+    ui->plotter->setWaterfallPalette(index);
+}
+
+void MainWindow::on_fftRateSelector_currentTextChanged(const QString &arg1)
+{
+    fftrate = arg1.toInt();
+    m_Demodulator->setRrate(fftrate);
+    ui->plotter->setFftRate(fftrate);
+    saveSettings();
+}
+
+void MainWindow::on_freqStepSelector_currentTextChanged(const QString &arg1)
+{
+    freqStep = arg1.toInt();
+    ui->plotter->setWheelConstant(KHZ(freqStep));
+    saveSettings();
 }
 
