@@ -33,7 +33,7 @@
  brew install portaudio</br>
  
  
-<b>Qt5</b> (http://qt-project.org) - Enables the libsdr-gui library implementing some graphical user interface elements like a spectrum view.</br>
+<b>Qt6</b> (http://qt-project.org) - Enables the libsdr-gui library implementing some graphical user interface elements like a spectrum view.</br>
 <b>fftw3</b> (http://www.fftw.org) - Also required by the GUI library and allows for FFT-convolution filters.</br>
 <b>PortAudio</b> (http://www.portaudio.com) - Allows for sound-card input and output.</br>
 <b>librtlsdr</b> (http://rtlsdr.org) - Allows to interface RTL2382U based USB dongles.</br>

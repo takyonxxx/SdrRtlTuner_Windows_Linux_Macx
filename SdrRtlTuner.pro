@@ -164,6 +164,7 @@ win32{
 
 
 DISTFILES += \
+    README.md \
     icons/app.ico \
     sdr/config.hh.in
 

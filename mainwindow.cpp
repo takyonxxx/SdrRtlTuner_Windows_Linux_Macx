@@ -11,7 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    setGeometry(0, 0, 1280, 720);
+    setGeometry(0, 0, 1020, 720);
 
     initReceiver();
     initObjects();
@@ -126,7 +126,6 @@ void MainWindow::stopReceiver()
     {
         if(meter_timer->isActive())
             meter_timer->stop();
-        delete meter_timer;
     }
 
     if(m_Receiver)
@@ -136,8 +135,8 @@ void MainWindow::stopReceiver()
         delete m_Receiver;
     }
 
-    if(m_Demodulator)delete m_Demodulator;
-    if(sourceView)delete sourceView;
+//    if(m_Demodulator)delete m_Demodulator;
+//    if(sourceView)delete sourceView;
     if(demodView)delete demodView;
     if(audioView)delete audioView;
     if(rTLCtrlView)delete rTLCtrlView;
@@ -509,8 +508,7 @@ void MainWindow::on_pushDecreaseFreq_clicked()
 }
 
 void MainWindow::on_waterFallColor_currentIndexChanged(int index)
-{
-    qDebug() << "on_waterFallColor_currentIndexChanged";
+{    
     ui->plotter->setWaterfallPalette(index);
 }
 

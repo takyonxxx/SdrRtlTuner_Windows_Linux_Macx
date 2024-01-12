@@ -46,13 +46,12 @@ int gettimeofday(struct timeval * tp, struct timezone * tzp)
 #define FFT_MAX_DB      20.f
 
 // Colors of type QRgb in 0xAARRGGBB format (unsigned int)
-#define PLOTTER_BGD_COLOR           0xFF1F1D1D
-#define PLOTTER_GRID_COLOR          0xFF444242
-#define PLOTTER_TEXT_COLOR          0xFFDADADA
+#define PLOTTER_BGD_COLOR           0xFF053B42
+#define PLOTTER_GRID_COLOR          0xFF238A07
+#define PLOTTER_TEXT_COLOR          0xFFEFF7ED
 #define PLOTTER_CENTER_LINE_COLOR   0xFF788296
-#define PLOTTER_FILTER_LINE_COLOR   0xFFFF7171
+#define PLOTTER_FILTER_LINE_COLOR   0xB0FF6060
 #define PLOTTER_FILTER_BOX_COLOR    0xFFA0A0A4
-// FIXME: Should cache the QColors also
 
 static inline bool val_is_out_of_range(float val, float min, float max)
 {
@@ -183,27 +182,27 @@ void CPlotter::setWaterfallPalette(int pal)
     case COLPAL_MIX:
         /*for (i = 0, j = 0; i < 256; i++, j+=3)
             m_ColorTbl[255-i].setRgb(PALTBL[j], PALTBL[j+1], PALTBL[j+2]);*/
-        for (int i = 0; i < 256; i++)
-            {
-               // level 0: black background
-               if (i < 20)
-                   m_ColorTbl[i].setRgb(0, 0, 0);
-               // level 1: black -> blue
-               else if ((i >= 20) && (i < 70))
-                   m_ColorTbl[i].setRgb(0, 0, 140*(i-20)/50);
-               // level 2: blue -> light-blue / greenish
-               else if ((i >= 70) && (i < 100))
-                   m_ColorTbl[i].setRgb(60*(i-70)/30, 125*(i-70)/30, 115*(i-70)/30 + 140);
-               // level 3: light blue -> yellow
-               else if ((i >= 100) && (i < 150))
-                   m_ColorTbl[i].setRgb(195*(i-100)/50 + 60, 130*(i-100)/50 + 125, 255-(255*(i-100)/50));
-               // level 4: yellow -> red
-               else if ((i >= 150) && (i < 250))
-                   m_ColorTbl[i].setRgb(255, 255-255*(i-150)/100, 0);
-               // level 5: red -> white
-               else if (i >= 250)
-                   m_ColorTbl[i].setRgb(255, 255*(i-250)/5, 255*(i-250)/5);
-            }
+        for (i = 0; i < 256; i++)
+        {
+            // level 0: black background
+            if (i < 20)
+                m_ColorTbl[i].setRgb(0, 0, 0);
+            // level 1: black -> blue
+            else if ((i >= 20) && (i < 70))
+                m_ColorTbl[i].setRgb(0, 0, 140*(i-20)/50);
+            // level 2: blue -> light-blue / greenish
+            else if ((i >= 70) && (i < 100))
+                m_ColorTbl[i].setRgb(60*(i-70)/30, 125*(i-70)/30, 115*(i-70)/30 + 140);
+            // level 3: light blue -> yellow
+            else if ((i >= 100) && (i < 150))
+                m_ColorTbl[i].setRgb(195*(i-100)/50 + 60, 130*(i-100)/50 + 125, 255-(255*(i-100)/50));
+            // level 4: yellow -> red
+            else if ((i >= 150) && (i < 250))
+                m_ColorTbl[i].setRgb(255, 255-255*(i-150)/100, 0);
+            // level 5: red -> white
+            else if (i >= 250)
+                m_ColorTbl[i].setRgb(255, 255*(i-250)/5, 255*(i-250)/5);
+        }
         break;
 
     case COLPAL_RED:
