@@ -135,8 +135,6 @@ void MainWindow::stopReceiver()
         delete m_Receiver;
     }
 
-//    if(m_Demodulator)delete m_Demodulator;
-//    if(sourceView)delete sourceView;
     if(demodView)delete demodView;
     if(audioView)delete audioView;
     if(rTLCtrlView)delete rTLCtrlView;
