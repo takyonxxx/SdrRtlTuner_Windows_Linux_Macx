@@ -46,6 +46,7 @@ private:
     qint64       tunerFrequencyCorrection;
     int         m_HiCutFreq;
     int         m_LowCutFreq;
+    double signal_level;
 
     DemodulatorCtrl::Demod currentDemod;
     DataSourceCtrlView* sourceView {};
@@ -58,7 +59,6 @@ private:
     float               *d_iirFftData;
     float               *d_pwrFftData;
     float               d_fftAvg;
-    float               signal_level;
 
     void initReceiver();
     void stopReceiver();

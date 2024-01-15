@@ -41,9 +41,9 @@ int gettimeofday(struct timeval * tp, struct timezone * tzp)
 
 
 #define CUR_CUT_DELTA 5		//cursor capture delta in pixels
-
 #define FFT_MIN_DB     -160.f
 #define FFT_MAX_DB      20.f
+#define FFT_MIN_DB_RANGE 2.f
 
 // Colors of type QRgb in 0xAARRGGBB format (unsigned int)
 #define PLOTTER_BGD_COLOR           0xFF053B42
@@ -76,11 +76,11 @@ static inline quint64 time_ms(void)
 }
 
 #define STATUS_TIP \
-    "Click, drag or scroll on spectrum to tune. " \
+"Click, drag or scroll on spectrum to tune. " \
     "Drag and scroll X and Y axes for pan and zoom. " \
     "Drag filter edges to adjust filter."
 
-CPlotter::CPlotter(QWidget *parent) : QFrame(parent)
+    CPlotter::CPlotter(QWidget *parent) : QFrame(parent)
 {
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     setFocusPolicy(Qt::StrongFocus);
@@ -97,6 +97,7 @@ CPlotter::CPlotter(QWidget *parent) : QFrame(parent)
 
     m_PeakHoldActive = false;
     m_PeakHoldValid = false;
+    freqStep        = DEFAULT_FREQ_STEP;
 
     m_FftCenter = 0;
     m_CenterFreq = 0;
@@ -111,7 +112,6 @@ CPlotter::CPlotter(QWidget *parent) : QFrame(parent)
     m_symetric = true;
 
     m_ClickResolution = 100;
-    m_WheelConstant = 1000;
     m_FilterClickResolution = 100;
     m_CursorCaptureDelta = CUR_CUT_DELTA;
 
@@ -219,7 +219,7 @@ void CPlotter::setWaterfallPalette(int pal)
         for (i = 0; i < 256; i++)
             m_ColorTbl[i].setRgb(0, i, i);
         break;
-    }   
+    }
 }
 
 
@@ -249,7 +249,7 @@ void CPlotter::mouseMoveEvent(QMouseEvent* event)
                 m_CursorCaptured = BOOKMARK;
             }
             else if (isPointCloseTo(pt.x(), m_DemodFreqX, m_CursorCaptureDelta))
-            {                
+            {
                 // in move demod box center frequency region
                 if (CENTER != m_CursorCaptured)
                 {
@@ -260,7 +260,7 @@ void CPlotter::mouseMoveEvent(QMouseEvent* event)
                 if (m_TooltipsEnabled)
                     QToolTip::showText(event->globalPos(),
                                        QString("Demod: %1 kHz")
-                                       .arg(m_DemodCenterFreq/1.e3f, 0, 'f', 3),
+                                           .arg(m_DemodCenterFreq/1.e3f, 0, 'f', 3),
                                        this);
             }
             else if (isPointCloseTo(pt.x(), m_DemodHiCutFreqX, m_CursorCaptureDelta))
@@ -272,7 +272,7 @@ void CPlotter::mouseMoveEvent(QMouseEvent* event)
                 if (m_TooltipsEnabled)
                     QToolTip::showText(event->globalPos(),
                                        QString("High cut: %1 Hz")
-                                       .arg(m_DemodHiCutFreq),
+                                           .arg(m_DemodHiCutFreq),
                                        this);
 
             }
@@ -285,7 +285,7 @@ void CPlotter::mouseMoveEvent(QMouseEvent* event)
                 if (m_TooltipsEnabled)
                     QToolTip::showText(event->globalPos(),
                                        QString("Low cut: %1 Hz")
-                                       .arg(m_DemodLowCutFreq),
+                                           .arg(m_DemodLowCutFreq),
                                        this);
             }
             else if (isPointCloseTo(pt.x(), m_YAxisWidth/2, m_YAxisWidth/2))
@@ -314,7 +314,7 @@ void CPlotter::mouseMoveEvent(QMouseEvent* event)
                 if (m_TooltipsEnabled)
                     QToolTip::showText(event->globalPos(),
                                        QString("F: %1 kHz")
-                                       .arg(freqFromX(pt.x())/1.e3f, 0, 'f', 3),
+                                           .arg(freqFromX(pt.x())/1.e3f, 0, 'f', 3),
                                        this);
             }
             m_GrabPosition = 0;
@@ -338,8 +338,8 @@ void CPlotter::mouseMoveEvent(QMouseEvent* event)
 
             QToolTip::showText(event->globalPos(),
                                QString("%1\n%2 kHz")
-                               .arg(tt.toString("yyyy.MM.dd hh:mm:ss.zzz"))
-                               .arg(freqFromX(pt.x())/1.e3f, 0, 'f', 3),
+                                   .arg(tt.toString("yyyy.MM.dd hh:mm:ss.zzz"))
+                                   .arg(freqFromX(pt.x())/1.e3f, 0, 'f', 3),
                                this);
         }
     }
@@ -352,7 +352,7 @@ void CPlotter::mouseMoveEvent(QMouseEvent* event)
             // move Y scale up/down
             float delta_px = m_Yzero - pt.y();
             float delta_db = delta_px * fabs(m_PandMindB - m_PandMaxdB) /
-                    (float)m_OverlayPixmap.height();
+                             (float)m_OverlayPixmap.height();
             m_PandMindB -= delta_db;
             m_PandMaxdB -= delta_db;
             if (out_of_range(m_PandMindB, m_PandMaxdB))
@@ -638,12 +638,12 @@ void CPlotter::setFftRate(int rate_hz)
 // Called when a mouse button is pressed
 void CPlotter::mousePressEvent(QMouseEvent * event)
 {
-    QPoint pt = event->pos();   
+    QPoint pt = event->pos();
 
     if (NOCAP == m_CursorCaptured)
     {
         if (isPointCloseTo(pt.x(), m_DemodFreqX, m_CursorCaptureDelta))
-        {            
+        {
             // move demod box center frequency region
             m_CursorCaptured = CENTER;
             m_GrabPosition = pt.x() - m_DemodFreqX;
@@ -661,7 +661,7 @@ void CPlotter::mousePressEvent(QMouseEvent * event)
             m_GrabPosition = pt.x() - m_DemodHiCutFreqX;
         }
         else
-        {          
+        {
             if (event->buttons() == Qt::LeftButton)
             {
                 int     best = -1;
@@ -794,35 +794,48 @@ void CPlotter::zoomOnXAxis(float level)
 // Called when a mouse wheel is turned
 void CPlotter::wheelEvent(QWheelEvent * event)
 {
-    auto pt = event->position();
-    int numDegrees = event->pixelDelta().manhattanLength() / 8;
-    int numSteps = numDegrees / 15;  /** FIXME: Only used for direction **/
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+    QPoint pt = QPoint(event->pos());
+#else
+    QPointF pt = event->position();
+#endif
+    int h = m_OverlayPixmap.height();
+    int px = qRound((qreal)pt.x() * m_DPR);
+    int py = qRound((qreal)pt.y() * m_DPR);
 
-    /** FIXME: zooming could use some optimisation **/
+    // delta is in eigths of a degree, 15 degrees is one step
+    int delta = m_InvertScrolling? -event->angleDelta().y() : event->angleDelta().y();
+    double numSteps = delta / (8.0 * 15.0);
+    // zoom faster when Ctrl is held
+    double zoomBase = (event->modifiers() & Qt::ControlModifier) ? 0.7 : 0.9;
+
     if (m_CursorCaptured == YAXIS)
     {
         // Vertical zoom. Wheel down: zoom out, wheel up: zoom in
         // During zoom we try to keep the point (dB or kHz) under the cursor fixed
-        float zoom_fac = event->pixelDelta().manhattanLength() < 0 ? 1.1 : 0.9;
-        float ratio = (float)pt.y() / (float)m_OverlayPixmap.height();
+        float zoom_fac = pow(zoomBase, numSteps);
+        float ratio = (float) py / (float) h;
         float db_range = m_PandMaxdB - m_PandMindB;
-        float y_range = (float)m_OverlayPixmap.height();
+        float y_range = (float) h;
         float db_per_pix = db_range / y_range;
-        float fixed_db = m_PandMaxdB - pt.y() * db_per_pix;
+        float fixed_db = m_PandMaxdB - py * db_per_pix;
 
-        db_range = qBound(10.f, db_range * zoom_fac, FFT_MAX_DB - FFT_MIN_DB);
+        db_range = qBound(FFT_MIN_DB_RANGE, db_range * zoom_fac, FFT_MAX_DB - FFT_MIN_DB);
         m_PandMaxdB = fixed_db + ratio * db_range;
         if (m_PandMaxdB > FFT_MAX_DB)
             m_PandMaxdB = FFT_MAX_DB;
 
         m_PandMindB = m_PandMaxdB - db_range;
-        m_PeakHoldValid = false;
+        if (m_PandMindB < FFT_MIN_DB)
+            m_PandMindB = FFT_MIN_DB;
+
+        m_histIIRValid = false;
 
         emit pandapterRangeChanged(m_PandMindB, m_PandMaxdB);
     }
     else if (m_CursorCaptured == XAXIS)
     {
-        zoomStepX(event->pixelDelta().manhattanLength() < 0 ? 1.1 : 0.9, pt.x());
+        zoomStepX(pow(zoomBase, numSteps), px);
     }
     else if (event->modifiers() & Qt::ControlModifier)
     {
@@ -843,13 +856,21 @@ void CPlotter::wheelEvent(QWheelEvent * event)
     }
     else
     {
+        numSteps = freqStep * numSteps;
+        // small steps will be lost by roundFreq, let them accumulate
+//        m_CumWheelDelta += delta;
+//        if (abs(m_CumWheelDelta) < 8*15)
+//            return;
+//        numSteps = m_CumWheelDelta / (8.0 * 15.0);
+
         // inc/dec demod frequency
-        m_DemodCenterFreq += (numSteps * m_WheelConstant );
-        m_DemodCenterFreq = roundFreq(m_DemodCenterFreq, m_WheelConstant );
+        m_DemodCenterFreq += (numSteps * m_ClickResolution);
+        m_DemodCenterFreq = roundFreq(m_DemodCenterFreq, m_ClickResolution );
         emit newDemodFreq(m_DemodCenterFreq, m_DemodCenterFreq-m_CenterFreq);
     }
 
     updateOverlay();
+    m_CumWheelDelta = 0;
 }
 
 // Called when screen size changes so must recalculate bitmaps
@@ -1070,13 +1091,13 @@ void CPlotter::draw()
             {
                 //m_PeakDetection times the std over the mean or better than current peak
                 float d = (lastPeak == -1) ? (mean - m_PeakDetection * stdev) :
-                                           m_fftbuf[lastPeak + xmin];
+                              m_fftbuf[lastPeak + xmin];
 
                 if (m_fftbuf[i + xmin] < d)
                     lastPeak=i;
 
                 if (lastPeak != -1 &&
-                        (i - lastPeak > PEAK_H_TOLERANCE || i == n-1))
+                    (i - lastPeak > PEAK_H_TOLERANCE || i == n-1))
                 {
                     m_Peaks.insert(lastPeak + xmin, m_fftbuf[lastPeak + xmin]);
                     painter2.drawEllipse(lastPeak + xmin - 5,
@@ -1103,7 +1124,7 @@ void CPlotter::draw()
             m_PeakHoldValid = true;
         }
 
-      painter2.end();
+        painter2.end();
 
     }
 
@@ -1693,13 +1714,7 @@ void CPlotter::calcDivSize (qint64 low, qint64 high, int divswanted, qint64 &adj
 #endif
 }
 
-
-int CPlotter::getWheelConstant() const
+void CPlotter::setFreqStep(unsigned int newFreqStep)
 {
-    return m_WheelConstant;
-}
-
-void CPlotter::setWheelConstant(int WheelConstant)
-{
-    m_WheelConstant = WheelConstant;
+    freqStep = newFreqStep;
 }

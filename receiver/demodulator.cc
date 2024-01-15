@@ -441,7 +441,7 @@ FMDemodulator::FMDemodulator(DemodulatorCtrl *demod)
   : QObject(), DemodInterface(), _ctrl(demod), _demod(), _deemph(), _view(0)
 {
   // connect stuff...
-  _demod.connect(&_deemph, true);
+  _demod.connect(&_deemph, false);
 }
 
 FMDemodulator::~FMDemodulator() {
@@ -524,7 +524,7 @@ FMDemodulatorView::FMDemodulatorView(FMDemodulator *demod, QWidget *parent)
   QDoubleValidator *validator = new QDoubleValidator();
   validator->setBottom(0);
   _filterWidth->setValidator(validator);
-  _demod->enableDeemph(true);
+  _demod->enableDeemph(false);
 
   QCheckBox *deemph = new QCheckBox();
   deemph->setChecked(_demod->deemphEnabled());

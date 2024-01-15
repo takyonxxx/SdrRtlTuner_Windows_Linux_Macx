@@ -149,7 +149,15 @@ protected:
     Buffer<Scalar> _buffer;
 };
 
-
+template <typename iScalar, typename oScalar, typename SScalar>
+SScalar removeDC(const Buffer<SScalar> &signal) {
+    SScalar dc = 0;
+    for (size_t i = 0; i < signal.size(); i++) {
+        dc += signal[i];
+    }
+    dc /= signal.size();
+    return dc;
+}
 
 template <class iScalar, class oScalar=iScalar>
 class FMDemod: public Sink< std::complex<iScalar> >, public Source
@@ -214,7 +222,7 @@ public:
 
 protected:
     void _process(const Buffer< std::complex<iScalar> > &in, const Buffer<oScalar> &out)
-    {       
+    {
         // The last input value
         std::complex<iScalar> last_value = _last_value;
         // calc first value
@@ -246,7 +254,6 @@ protected:
         // propergate result
         this->send(out.head(in.size()));
     }
-
 
 protected:
     int _shift;

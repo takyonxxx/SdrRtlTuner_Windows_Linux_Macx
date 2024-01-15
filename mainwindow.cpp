@@ -1,7 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "sdr/logger.hh"
-
 #include <QSplitter>
 
 using namespace  std;
@@ -36,12 +35,11 @@ void MainWindow::initReceiver()
     tunerFrequency  = DEFAULT_FREQUENCY;
     tunerFrequencyCorrection = DEFAULT_FREQUENCY_CORRECTION;
     currentDemod    = DemodulatorCtrl::DEMOD_WFM;
+    signal_level = 0;
 
     m_sSettingsFile = QCoreApplication::applicationDirPath() + "/settings.ini";
     if (QFile(m_sSettingsFile).exists())
         loadSettings();
-
-    signal_level = 0;
 
     d_realFftData = new float[MAX_FFT_SIZE];
     d_pwrFftData = new float[MAX_FFT_SIZE]();
@@ -216,7 +214,7 @@ void MainWindow::initObjects()
     ui->plotter->setClickResolution(1);
 
     ui->plotter->setFftPlotColor(QColor("#CEECF5"));
-    ui->plotter->setWheelConstant(KHZ(5));
+    ui->plotter->setFreqStep(KHZ(5));
 
     //ui->plotter->setPeakDetection(true ,2);
     ui->plotter->setFftFill(true);
@@ -399,10 +397,10 @@ void MainWindow::tunerTimeout()
     currentDemod    = m_Demodulator->getDemod();
 
     ui->plotter->setCenterFreq(tunerFrequency);
-    ui->plotter->setSampleRate(sampleRate);
-    ui->sMeter->setLevel(signal_level);
+    ui->plotter->setSampleRate(sampleRate);    
     ui->filterFreq->SetFrequency(m_HiCutFreq);
-    ui->plotter->setHiLowCutFrequencies(m_LowCutFreq, m_HiCutFreq);   
+    ui->plotter->setHiLowCutFrequencies(m_LowCutFreq, m_HiCutFreq);
+    ui->sMeter->setLevel(signal_level);
 
     auto deviceId = m_Receiver->getDeviceID();
     auto deviceName = rtlsdr_get_device_name(deviceId);
@@ -433,6 +431,28 @@ void MainWindow::onFilterChanged()
     ui->plotter->setDemodRanges(m_LowCutFreq, -KHZ(5), KHZ(5),m_HiCutFreq, true);
 }
 
+void kalmanFilterUpdate(double& x_hat, double signal, double alpha)
+{
+    // Kalman filter parameters
+    double Q = 1e-3; // Process noise covariance
+    double R = 1;    // Measurement noise covariance
+    double P = 1;     // Error covariance
+
+    // Averaging parameters
+    // double alpha = 0.1; // Averaging factor
+    // Kalman filter prediction
+    double x_hat_minus = x_hat;
+    double P_minus = P + Q;
+
+    // Kalman filter update
+    double K = P_minus / (P_minus + R);
+    x_hat = x_hat_minus + K * (signal - x_hat_minus);
+    P = (1 - K) * P_minus;
+
+    // Averaging
+    x_hat = alpha * x_hat + (1 - alpha) * signal;
+}
+
 void MainWindow::fftTimeout()
 {
     unsigned int fftsize;
@@ -441,6 +461,8 @@ void MainWindow::fftTimeout()
     float pwr_scale;
     double fullScalePower = 1.0;
     std::complex<float> pt;
+    double x_hat = 0; // State estimate
+    double x_hat_level = 0; // State estimate
 
     // 75 is default
     d_fftAvg = static_cast<float>(1.0 - 1.0e-2 * 90);
@@ -450,15 +472,12 @@ void MainWindow::fftTimeout()
         fftsize = MAX_FFT_SIZE;
 
     auto d_fftData = m_Demodulator->spectrum();
-
     if (fftsize == 0)
     {
         return;
     }
 
-    // NB: without cast to float the multiplication will overflow at 64k
-    // and pwr_scale will be inf
-    pwr_scale = static_cast<float>(1.0 / (fftsize * fftsize));
+    pwr_scale = static_cast<float>(1.0 / fftsize);
 
     for (i = 0; i < fftsize; i++)
     {
@@ -475,19 +494,17 @@ void MainWindow::fftTimeout()
         pwr = pwr_scale * (pt.imag() * pt.imag() + pt.real() * pt.real());
 
         /* calculate signal level in dBFS */
-        signal_level = 10 * std::log10(pwr / fullScalePower);
-        /* Output power in watts directly */
-
-        // double signalPower = fullScalePower * std::pow(10, signal_level / 10);
-
-        d_realFftData[i] = signal_level;
-     /* FFT averaging */
+        double fft_signal = 20 * std::log10(pwr / fftsize / fullScalePower);
+        auto level = 10 * std::log10(pwr  / fullScalePower);
+        kalmanFilterUpdate(x_hat, fft_signal, 1);
+        kalmanFilterUpdate(x_hat_level, level, 1);
+        signal_level = x_hat_level;
+        // Use the filtered and averaged signal level
+        d_realFftData[i] = x_hat;
         d_iirFftData[i] += d_fftAvg * (d_realFftData[i] - d_iirFftData[i]);
     }
-
     ui->plotter->setNewFttData(d_iirFftData, d_realFftData, static_cast<int>(fftsize));
 }
-
 
 void MainWindow::on_pushIncreaseFreq_clicked()
 {
@@ -521,7 +538,8 @@ void MainWindow::on_fftRateSelector_currentTextChanged(const QString &arg1)
 void MainWindow::on_freqStepSelector_currentTextChanged(const QString &arg1)
 {
     freqStep = arg1.toInt();
-    ui->plotter->setWheelConstant(KHZ(freqStep));
+    ui->plotter->setFreqStep(KHZ(freqStep));
     saveSettings();
 }
+
 
