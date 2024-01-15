@@ -463,6 +463,8 @@ void MainWindow::fftTimeout()
     std::complex<float> pt;
     double x_hat = 0; // State estimate
     double x_hat_level = 0; // State estimate
+    double sum_signal_level = 0;
+    int num_iterations = 0;
 
     // 75 is default
     d_fftAvg = static_cast<float>(1.0 - 1.0e-2 * 90);
@@ -495,14 +497,16 @@ void MainWindow::fftTimeout()
 
         /* calculate signal level in dBFS */
         double fft_signal = 20 * std::log10(pwr / fftsize / fullScalePower);
-        auto level = 10 * std::log10(pwr  / fullScalePower);
+        auto level = 10 * std::log10(pwr + 1.0e-20f / fullScalePower);
         kalmanFilterUpdate(x_hat, fft_signal, 1);
         kalmanFilterUpdate(x_hat_level, level, 1);
-        signal_level = x_hat_level;
-        // Use the filtered and averaged signal level
+        sum_signal_level += x_hat_level;
         d_realFftData[i] = x_hat;
         d_iirFftData[i] += d_fftAvg * (d_realFftData[i] - d_iirFftData[i]);
+        num_iterations++;
     }
+
+    signal_level = sum_signal_level / num_iterations;
     ui->plotter->setNewFttData(d_iirFftData, d_realFftData, static_cast<int>(fftsize));
 }
 
