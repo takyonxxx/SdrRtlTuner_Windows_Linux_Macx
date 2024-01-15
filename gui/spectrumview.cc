@@ -10,13 +10,13 @@ using namespace sdr::gui;
 
 SpectrumView::SpectrumView(SpectrumProvider *spectrum, QWidget *parent)
   : QWidget(parent), _spectrum(spectrum), _numXTicks(11), _numYTicks(6),
-    _maxF(std::numeric_limits<double>::infinity()), _mindB(-60)
+    _maxF(std::numeric_limits<double>::infinity()), _mindB(-80)
 {
   // Assemble pens
-  _axisPen = QPen(Qt::black);
+    _axisPen = QPen(Qt::white);
   _axisPen.setWidth(3);
   _axisPen.setStyle(Qt::SolidLine);
-  _graphPen = QPen(Qt::blue);
+  _graphPen = QPen(Qt::yellow);
   _axisPen.setWidth(2);
   _axisPen.setStyle(Qt::SolidLine);
 
@@ -84,7 +84,7 @@ SpectrumView::paintEvent(QPaintEvent *evt) {
   painter.setClipRect(evt->rect());
 
   // Draw background
-  painter.fillRect(QRect(0,0, this->width(), this->height()), QColor(Qt::white));
+  painter.fillRect(QRect(0,0, this->width(), this->height()), QColor(Qt::darkCyan));
 
   _drawAxis(painter);
 
