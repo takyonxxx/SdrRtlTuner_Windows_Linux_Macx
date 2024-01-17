@@ -112,6 +112,7 @@ RTLDataSource::setSampleRate(double rate) {
     {       
         _device->stop();
         _device->setSampleRate(rate);
+        _config.storeSampleRate(rate);
         _device->start();
     }   
     //if (is_running) { sdr::Queue::get().start(); }
@@ -265,7 +266,7 @@ RTLCtrlView::RTLCtrlView(RTLDataSource *source, QWidget *parent)
     // Frequency
     _freq = new QLineEdit();
     // Frequency Correction
-    _freqCorrection = new QLineEdit();
+//    _freqCorrection = new QLineEdit();
     /*QDoubleValidator *freq_val = new QDoubleValidator();
     freq_val->setBottom(0);
     _freq->setValidator(freq_val);*/
@@ -306,10 +307,10 @@ RTLCtrlView::RTLCtrlView(RTLDataSource *source, QWidget *parent)
     freqLayout->addWidget(_freq, 1); freqLayout->addWidget(setFreqButton, 0);
     layout->addRow("Frequency (MHz)", freqLayout);
 
-    QHBoxLayout *freqCorrectionLayout = new QHBoxLayout();
-    freqCorrectionLayout->addWidget(_freqCorrection, 1);
-    freqCorrectionLayout->addWidget(setFreqCorrectionButton, 0);
-    layout->addRow("Correction (ppm)", freqCorrectionLayout);
+//    QHBoxLayout *freqCorrectionLayout = new QHBoxLayout();
+//    freqCorrectionLayout->addWidget(_freqCorrection, 1);
+//    freqCorrectionLayout->addWidget(setFreqCorrectionButton, 0);
+//    layout->addRow("Correction (ppm)", freqCorrectionLayout);
 
     layout->addRow("Sample Rate", _sampleRates);
     layout->addRow("Gain", _gain);
@@ -388,7 +389,7 @@ void RTLCtrlView::update()
 {
     double f = _source->frequency();
     _freq->setText(QString::number(f/1000000, 'f', 2));
-    _freqCorrection->setText(QString::number(60));
+//    _freqCorrection->setText(QString::number(400));
 }
 
 void

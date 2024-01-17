@@ -346,7 +346,6 @@ void MainWindow::setFrequency(qint64 freq)
     saveSettings();
 }
 
-
 /* CPlotter::NewfilterFreq() is emitted or bookmark activated */
 void MainWindow::on_plotter_newFilterFreq(int low, int high)
 {
